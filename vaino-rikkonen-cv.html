@@ -573,9 +573,10 @@ a,button,[role="button"]{transition:color var(--transition-interactive),backgrou
             </div>
             <h3 class="project-title">ASA to FortiGate Firewall Migration</h3>
             <p class="project-desc">
-              Led a full-stack migration of enterprise perimeter security from legacy Cisco ASA firewalls to Fortinet FortiGate NGFWs.
-              The project covered policy translation, NAT re-engineering, and cutover planning. 
-              Delivered improved threat visibility, unified policy management, and a significant reduction in firewall licensing costs while removing EOL hardware from use.
+              Drove the decommissioning of end-of-life Cisco ASA firewalls by leading a full-stack migration to Fortinet FortiGate NGFWs — removing hardware that posed both an operational risk and a security liability from continued production use. 
+              The migration was complicated by years of accumulated technical debt: sparse documentation, inconsistent naming conventions, and firewall rulesets dominated by broad permit-any policies that made direct translation impossible. 
+              Rather than lifting and shifting the existing mess, the project became an opportunity to perform a full policy audit and redesign from scratch — rebuilding access rules based on actual traffic flows and application requirements. 
+              This added significant complexity to the cutover process and required staged migrations with planned maintenance windows, but delivered a genuinely hardened perimeter in place of the inherited one.
             </p>
             <div class="job-tags">
               <span class="tag tag--primary">Fortinet FortiGate</span>
@@ -592,8 +593,9 @@ a,button,[role="button"]{transition:color var(--transition-interactive),backgrou
             </div>
             <h3 class="project-title">Full-Tunnel to Split-Tunnel VPN Re-engineering</h3>
             <p class="project-desc">
-              Re-architected remote access VPN from a legacy full-tunnel design routing all user traffic through the corporate datacenter to a modern split-tunnel model.
-              Reduced hairpinning of internet-bound traffic, significantly decreasing datacenter bandwidth consumption and improving end-user latency for ~4,000 remote users.
+              Re-architected remote access VPN from a legacy full-tunnel design — where all endpoint traffic was backhauled through the corporate datacenter — to a split-tunnel model enabling coexistence with Zscaler for internet and SaaS-bound traffic. 
+              Endpoints now route general internet traffic directly through Zscaler's cloud security stack while administrative and internal network traffic continues over the traditional IPSec VPN tunnel. 
+              This eliminated hairpinning of internet-bound traffic through the datacenter, dramatically reducing bandwidth pressure on the VPN concentrators and improving end-user latency for ~4,000 remote users — while maintaining full security posture through Zscaler's inline inspection for all non-corporate destinations.
             </p>
             <div class="job-tags">
               <span class="tag tag--primary">SASE</span>
@@ -630,9 +632,9 @@ a,button,[role="button"]{transition:color var(--transition-interactive),backgrou
             </div>
             <h3 class="project-title">Shared Internet Infrastructure Re-engineering</h3>
             <p class="project-desc">
-              Re-engineered CGI's shared Internet edge infrastructure to support BFD-based fast failure detection, replacing slow timer-based convergence mechanisms.
-              Redesigned BGP peering policies and introduced more resilient routing protocols, drastically reducing failover times for datacenter internet services.
-              Improved availability SLAs for shared internet services consumed by multiple CGI client environments simultaneously.
+              Re-engineered the routing architecture of CGI's autonomous system (AS24713) to replace slow timer-based BGP convergence with BFD-based fast failure detection across all upstream transit and peering sessions. 
+              Redesigned BGP policy to enforce deterministic path selection, tightened prefix filtering, and tuned BFD timers to achieve sub-second failover for internet services hosted within the AS. 
+              The result was a measurably more resilient shared internet platform, serving multiple CGI client environments simultaneously with tighter availability SLAs and significantly reduced blast radius during upstream link failures.
             </p>
             <div class="job-tags">
               <span class="tag tag--primary">BFD</span>
