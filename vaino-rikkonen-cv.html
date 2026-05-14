@@ -347,124 +347,191 @@ a,button,[role="button"]{transition:color var(--transition-interactive),backgrou
   const canvas = document.getElementById('hero-canvas');
   const ctx = canvas.getContext('2d');
   let W, H, nodes, edges, packets;
-  const COLORS = ['#38bdf8','#34d399','#fbbf24','#818cf8','#38bdf8','#34d399'];
-  const NODE_COUNT = 28;
-  const CONNECT_DIST = 200;
-  const CANVAS_OPACITY = 0.28;
 
-  function rand(min, max) { return Math.random() * (max - min) + min; }
+  // SYN=cyan, SYN-ACK=amber, ACK=green
+  const PACKET_TYPES = [
+    { label:'SYN',     color:'#38bdf8' },
+    { label:'SYN-ACK', color:'#fbbf24' },
+    { label:'ACK',     color:'#34d399' }
+  ];
+  const NODE_COLOR  = '#38bdf8';
+  const CANVAS_OPC  = 0.32;
+  const NODE_COUNT  = 14;
+  const CONNECT_DIST = 280;
+  const HEX_R = 14;
 
-  function resize() {
-    const hero = canvas.parentElement;
-    W = canvas.width = hero.offsetWidth;
-    H = canvas.height = hero.offsetHeight;
+  function rand(min, max){ return Math.random()*(max-min)+min; }
+
+  function hexPath(x, y, r){
+    ctx.beginPath();
+    for(let i=0;i<6;i++){
+      const a = Math.PI/180*(60*i - 30);
+      i===0 ? ctx.moveTo(x+r*Math.cos(a), y+r*Math.sin(a))
+            : ctx.lineTo(x+r*Math.cos(a), y+r*Math.sin(a));
+    }
+    ctx.closePath();
+  }
+
+  function resize(){
+    W = canvas.width  = canvas.parentElement.offsetWidth;
+    H = canvas.height = canvas.parentElement.offsetHeight;
     init();
   }
 
-  function init() {
-    nodes = Array.from({length: NODE_COUNT}, () => ({
-      x: rand(0, W), y: rand(0, H),
-      vx: rand(-0.18, 0.18), vy: rand(-0.18, 0.18),
-      r: rand(3, 6), pulse: rand(0, Math.PI * 2),
-      color: COLORS[Math.floor(Math.random() * 3)]
-    }));
-    buildEdges();
-    packets = [];
-    for(let i = 0; i < 18; i++) spawnPacket();
-  }
-
-  function buildEdges() {
-    edges = [];
-    for(let i = 0; i < nodes.length; i++) {
-      for(let j = i+1; j < nodes.length; j++) {
-        const dx = nodes[i].x - nodes[j].x;
-        const dy = nodes[i].y - nodes[j].y;
-        if(Math.sqrt(dx*dx + dy*dy) < CONNECT_DIST) edges.push({a: i, b: j});
+  function init(){
+    // Place nodes in a stable grid-ish scatter
+    nodes = [];
+    const cols = Math.ceil(Math.sqrt(NODE_COUNT * W/H));
+    const rows = Math.ceil(NODE_COUNT / cols);
+    const cellW = W / cols, cellH = H / rows;
+    let idx = 0;
+    for(let r=0; r<rows && idx<NODE_COUNT; r++){
+      for(let c=0; c<cols && idx<NODE_COUNT; c++){
+        nodes.push({
+          x: cellW*c + rand(cellW*0.2, cellW*0.8),
+          y: cellH*r + rand(cellH*0.2, cellH*0.8),
+          pulse: rand(0, Math.PI*2)
+        });
+        idx++;
       }
     }
+
+    // Build edges between nearby nodes
+    edges = [];
+    for(let i=0;i<nodes.length;i++){
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        if(Math.sqrt(dx*dx+dy*dy)<CONNECT_DIST) edges.push({a:i,b:j});
+      }
+    }
+
+    packets = [];
+    for(let i=0;i<12;i++) spawnPacket();
   }
 
-  function spawnPacket() {
+  function spawnPacket(){
     if(!edges.length) return;
-    const edge = edges[Math.floor(Math.random() * edges.length)];
-    const forward = Math.random() > 0.5;
+    const edge = edges[Math.floor(Math.random()*edges.length)];
+    const forward = Math.random()>0.5;
+    // Sequence: SYN → SYN-ACK → ACK, or just pick one randomly
+    const type = PACKET_TYPES[Math.floor(Math.random()*PACKET_TYPES.length)];
     packets.push({
-      edge, forward, t: 0,
-      speed: rand(0.004, 0.009),
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      size: rand(2, 3.5)
+      edge, forward, t:0,
+      speed: rand(0.003, 0.007),
+      type,
+      trail: []
     });
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    nodes.forEach(n => {
-      n.x += n.vx; n.y += n.vy;
-      if(n.x < -20) n.x = W+20; if(n.x > W+20) n.x = -20;
-      if(n.y < -20) n.y = H+20; if(n.y > H+20) n.y = -20;
-      n.pulse += 0.025;
-    });
-    if(!draw._fc) draw._fc = 0;
-    if(++draw._fc % 120 === 0) buildEdges();
+  function draw(){
+    ctx.clearRect(0,0,W,H);
 
-    // Draw edges
-    edges.forEach(e => {
-      const a = nodes[e.a], b = nodes[e.b];
-      const dx = b.x-a.x, dy = b.y-a.y;
-      const dist = Math.sqrt(dx*dx+dy*dy);
-      ctx.globalAlpha = CANVAS_OPACITY * (1 - dist/CONNECT_DIST) * 0.5;
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 0.7; ctx.stroke();
+    // Pulse nodes
+    nodes.forEach(n => n.pulse += 0.02);
+
+    // Draw connection lines (fiber links)
+    edges.forEach(e=>{
+      const a=nodes[e.a], b=nodes[e.b];
+      const dx=b.x-a.x, dy=b.y-a.y;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      const alpha=(1-dist/CONNECT_DIST)*0.4;
+      ctx.globalAlpha=CANVAS_OPC*alpha;
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+      ctx.strokeStyle='#38bdf8'; ctx.lineWidth=0.8; ctx.stroke();
     });
 
-    // Draw nodes (router squares)
-    nodes.forEach(n => {
-      const pr = n.r + Math.sin(n.pulse) * 1.2;
-      const grd = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, pr*3.5);
-      grd.addColorStop(0, n.color); grd.addColorStop(1, 'transparent');
-      ctx.globalAlpha = CANVAS_OPACITY * 0.3;
-      ctx.beginPath(); ctx.arc(n.x, n.y, pr*3.5, 0, Math.PI*2);
-      ctx.fillStyle = grd; ctx.fill();
-      ctx.globalAlpha = CANVAS_OPACITY * 0.9;
-      ctx.beginPath(); ctx.arc(n.x, n.y, pr, 0, Math.PI*2);
-      ctx.fillStyle = n.color; ctx.fill();
-      ctx.globalAlpha = CANVAS_OPACITY * 0.6;
-      ctx.strokeStyle = n.color; ctx.lineWidth = 0.8;
-      ctx.strokeRect(n.x-pr*1.8, n.y-pr*1.8, pr*3.6, pr*3.6);
+    // Draw hexagon router nodes
+    nodes.forEach(n=>{
+      const pr = HEX_R + Math.sin(n.pulse)*1.5;
+
+      // Outer glow ring
+      ctx.globalAlpha=CANVAS_OPC*0.15;
+      hexPath(n.x, n.y, pr*2.2);
+      ctx.strokeStyle=NODE_COLOR; ctx.lineWidth=1; ctx.stroke();
+
+      // Fill hex
+      ctx.globalAlpha=CANVAS_OPC*0.25;
+      hexPath(n.x, n.y, pr);
+      ctx.fillStyle='#0c2231'; ctx.fill();
+
+      // Hex border
+      ctx.globalAlpha=CANVAS_OPC*0.9;
+      hexPath(n.x, n.y, pr);
+      ctx.strokeStyle=NODE_COLOR; ctx.lineWidth=1.5; ctx.stroke();
+
+      // Inner dot
+      ctx.globalAlpha=CANVAS_OPC*0.8;
+      ctx.beginPath(); ctx.arc(n.x, n.y, 2.5, 0, Math.PI*2);
+      ctx.fillStyle=NODE_COLOR; ctx.fill();
     });
 
-    // Draw packets
-    packets.forEach((p, i) => {
-      const a = nodes[p.edge.a], b = nodes[p.edge.b];
-      if(!a || !b) return;
+    // Draw packets with trail
+    packets.forEach((p,i)=>{
+      const a=nodes[p.edge.a], b=nodes[p.edge.b];
+      if(!a||!b) return;
       const t = p.forward ? p.t : 1-p.t;
-      const x = a.x+(b.x-a.x)*t, y = a.y+(b.y-a.y)*t;
-      const pg = ctx.createRadialGradient(x, y, 0, x, y, p.size*4);
-      pg.addColorStop(0, p.color); pg.addColorStop(1, 'transparent');
-      ctx.globalAlpha = CANVAS_OPACITY * 0.4;
-      ctx.beginPath(); ctx.arc(x, y, p.size*4, 0, Math.PI*2);
-      ctx.fillStyle = pg; ctx.fill();
-      ctx.globalAlpha = CANVAS_OPACITY * 1.2;
-      ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2);
-      ctx.fillStyle = p.color; ctx.fill();
+      const x = a.x+(b.x-a.x)*t;
+      const y = a.y+(b.y-a.y)*t;
+
+      // Trail
+      p.trail.push({x,y});
+      if(p.trail.length>10) p.trail.shift();
+      p.trail.forEach((pt,ti)=>{
+        const ta=(ti/p.trail.length);
+        ctx.globalAlpha=CANVAS_OPC*ta*0.5;
+        ctx.beginPath(); ctx.arc(pt.x,pt.y,1.5*ta,0,Math.PI*2);
+        ctx.fillStyle=p.type.color; ctx.fill();
+      });
+
+      // Glow
+      const grd=ctx.createRadialGradient(x,y,0,x,y,8);
+      grd.addColorStop(0,p.type.color); grd.addColorStop(1,'transparent');
+      ctx.globalAlpha=CANVAS_OPC*0.5;
+      ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2);
+      ctx.fillStyle=grd; ctx.fill();
+
+      // Packet dot
+      ctx.globalAlpha=CANVAS_OPC*1.4;
+      ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle=p.type.color; ctx.fill();
+
+      // Label (SYN / SYN-ACK / ACK)
+      ctx.globalAlpha=CANVAS_OPC*1.1;
+      ctx.font='bold 8px "JetBrains Mono", monospace';
+      ctx.fillStyle=p.type.color;
+      ctx.fillText(p.type.label, x+6, y-5);
+
+      // Advance
       p.t += p.speed;
-      if(p.t >= 1) {
+      if(p.t>=1){
         const arrival = p.forward ? p.edge.b : p.edge.a;
-        const next = edges.filter(e => e.a===arrival || e.b===arrival);
-        if(next.length) {
-          const ne = next[Math.floor(Math.random()*next.length)];
-          packets[i] = {edge:ne, forward:ne.a===arrival, t:0, speed:rand(0.004,0.009), color:p.color, size:p.size};
+        const nextEdges = edges.filter(e=>e.a===arrival||e.b===arrival);
+        if(nextEdges.length){
+          const ne=nextEdges[Math.floor(Math.random()*nextEdges.length)];
+          packets[i]={edge:ne,forward:ne.a===arrival,t:0,speed:rand(0.003,0.007),type:p.type,trail:[]};
         } else { spawnPacket(); packets.splice(i,1); }
       }
     });
-    while(packets.length < 18) spawnPacket();
-    ctx.globalAlpha = 1;
+
+    // Legend bottom-right
+    ctx.globalAlpha=CANVAS_OPC*0.9;
+    ctx.font='9px "JetBrains Mono", monospace';
+    PACKET_TYPES.forEach((pt,i)=>{
+      const lx=W-90, ly=H-12-(PACKET_TYPES.length-1-i)*16;
+      ctx.beginPath(); ctx.arc(lx,ly-3,4,0,Math.PI*2);
+      ctx.fillStyle=pt.color; ctx.fill();
+      ctx.fillStyle=pt.color;
+      ctx.fillText(pt.label, lx+10, ly);
+    });
+
+    while(packets.length<12) spawnPacket();
+    ctx.globalAlpha=1;
     requestAnimationFrame(draw);
   }
 
-  window.addEventListener('resize', () => { clearTimeout(resize._t); resize._t = setTimeout(resize, 150); });
-  if(document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', () => { resize(); requestAnimationFrame(draw); });
+  window.addEventListener('resize',()=>{ clearTimeout(resize._t); resize._t=setTimeout(resize,150); });
+  if(document.readyState==='loading'){
+    window.addEventListener('DOMContentLoaded',()=>{ resize(); requestAnimationFrame(draw); });
   } else { resize(); requestAnimationFrame(draw); }
 })();
 </script>
