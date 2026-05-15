@@ -175,7 +175,15 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
 
     // Combine data from index-2.html into the command responses
     const commands = {
-      'help': 'Available commands:\n  whoami          - Display profile information\n  show ip route   - Show experience/routing table\n  show bgp sum    - View IT/Network engineering skills\n  show interface  - View projects\n  ping            - Display contact details\n  clear           - Clear the terminal screen',
+      'help': `Available commands:
+  whoami          - Display profile information
+  show version    - View system uptime and certifications
+  show ip route   - Show experience/routing table
+  show bgp sum    - View IT/Network engineering skills
+  show interface  - View projects
+  show cdp nei    - View languages and soft skills
+  ping            - Display contact details
+  clear           - Clear the terminal screen`,
       
       'whoami': 'Name: Väinö Rikkonen\nRole: Infrastucture Architect\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI\'s hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.',
       
@@ -250,7 +258,26 @@ Interface: Core-Fabric (DC Migration Program)
 64 bytes from <a href="https://github.com/rikkova" target="_blank" style="color: var(--green); text-decoration: underline;">github.com/rikkova</a>: icmp_seq=3 ttl=64 time<1ms
 
 --- contact statistics ---
-3 packets transmitted, 3 received, 0% packet loss`,    };
+3 packets transmitted, 3 received, 0% packet loss`,
+    
+      'show cdp neighbors': `Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+Finnish          Eth 0/0           120        H R         Native    Bilingual
+English          Eth 0/1           120        H R         Fluent    Professional`,    
+
+      'show version': `V-OS (tm) Network Operating System Software
+Software Version 2026.05
+Compiled by Väinö Rikkonen
+
+System uptime is ${uptimeString}
+System image file is "flash:vaino-rikkonen-v3.bin"
+
+Active Licenses / Certifications:
+ - <span style="color: var(--yellow);">Cisco CCNP Service Provider</span> <span style="color: var(--dim);">[In Progress]</span>`,
+      
+    };
 
     cmd.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
@@ -263,7 +290,13 @@ Interface: Core-Fabric (DC Migration Program)
           return;
         }
 
-        // --- 2. SECRET EASTER EGG (linda) ---
+        // --- 2. SECRET EASTER EGG (sudo) ---
+
+        if (inputVal.startsWith('sudo ')) {
+          response = `guest is not in the sudoers file. This incident will be reported.`;
+        }
+        
+        // --- 3. SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
           // Clear the terminal and input
           terminal.innerHTML = '';
@@ -325,6 +358,26 @@ Interface: Core-Fabric (DC Migration Program)
           return; // Stop here so it doesn't print "command not found"
         }
 
+    // Calculate dynamic system uptime based on Date of Birth
+    const dob = new Date(1997, 8, 17); // Note: Months are 0-indexed in JS, so 8 is September
+    const now = new Date();
+    
+    let years = now.getFullYear() - dob.getFullYear();
+    let months = now.getMonth() - dob.getMonth();
+    let days = now.getDate() - dob.getDate();
+    
+    if (days < 0) {
+      months--;
+      // Get the number of days in the previous month
+      days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    
+    const uptimeString = `${years} years, ${months} months, ${days} days`;
+        
         // --- 3. STANDARD COMMANDS ---
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
