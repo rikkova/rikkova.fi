@@ -256,16 +256,80 @@ Interface: Core-Fabric (DC Migration Program)
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
         
+        // --- 1. CLEAR COMMAND ---
         if (inputVal === 'clear') {
           terminal.innerHTML = '';
           cmd.value = '';
           return;
         }
 
+        // --- 2. SECRET EASTER EGG (linda) ---
+        if (inputVal === 'linda') {
+          // Clear the terminal and input
+          terminal.innerHTML = '';
+          cmd.value = '';
+          
+          // Temporarily disable the input so the user can't type while it builds
+          cmd.disabled = true; 
+          
+          // Create a container for the heart
+          const heartDiv = document.createElement('div');
+          heartDiv.style.color = '#E31937'; // Bright Red
+          heartDiv.style.whiteSpace = 'pre'; // Preserves the spaces for the ASCII art
+          heartDiv.style.textAlign = 'center';
+          heartDiv.style.marginTop = '20px';
+          heartDiv.style.lineHeight = '1.2';
+          terminal.appendChild(heartDiv);
+
+          // The ASCII Heart separated line-by-line
+          const heartLines = [
+            "   ██████   ██████   ",
+            " █████████ █████████ ",
+            "█████████████████████",
+            "█████████████████████",
+            " ███████████████████ ",
+            "  █████████████████  ",
+            "    █████████████    ",
+            "      █████████      ",
+            "        █████        ",
+            "          █          "
+          ];
+
+          let lineIndex = 0;
+          
+          // Build the heart line-by-line every 200ms
+          const drawInterval = setInterval(() => {
+            if (lineIndex < heartLines.length) {
+              heartDiv.innerHTML += heartLines[lineIndex] + '\n';
+              terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll down
+              lineIndex++;
+            } else {
+              // Stop the timer when finished
+              clearInterval(drawInterval);
+              
+              // Add a sweet system message underneath
+              const msg = document.createElement('div');
+              msg.className = 'output';
+              msg.style.textAlign = 'center';
+              msg.style.marginTop = '15px';
+              msg.innerHTML = '<i>System status: Deeply in love.</i>';
+              terminal.appendChild(msg);
+              
+              // Re-enable the input line and put the cursor back
+              cmd.disabled = false;
+              cmd.focus();
+              terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+          }, 200); 
+          
+          return; // Stop here so it doesn't print "command not found"
+        }
+
+        // --- 3. STANDARD COMMANDS ---
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
 
-        const promptSpan = '<span class="prompt">guest@rikkova:~$ </span>';
+        const promptSpan = '<span class="prompt">guest@vrikkonen:~$ </span>';
         const commandSpan = '<span class="user-input">' + cmd.value + '</span>\n';
 
         let response = commands[inputVal];
@@ -278,7 +342,6 @@ Interface: Core-Fabric (DC Migration Program)
         outputDiv.innerHTML = promptSpan + commandSpan + response;
         terminal.appendChild(outputDiv);
         
-        // Reset input and scroll to bottom of the terminal box
         cmd.value = '';
         terminalBody.scrollTop = terminalBody.scrollHeight;
       }
