@@ -157,7 +157,7 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
     const commands = {
       'help': 'Available commands:\n  whoami          - Display profile information\n  show ip route   - Show experience/routing table\n  show bgp sum    - View IT/Network engineering skills\n  show interface  - View projects\n  ping            - Display contact details\n  clear           - Clear the terminal screen',
       
-      'whoami': 'Name: Väinö Rikkonen\nRole: Infrastucture Architect\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: I design and operate core network infrastructure across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI\'s hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.',
+      'whoami': 'Name: Väinö Rikkonen\nRole: Infrastucture Architect\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI\'s hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.',
       
       'show bgp sum': '=== Core Competencies ===\nMPLS & Segment Routing : ACTIVE\nTraffic Engineering    : ENABLED\nFRR / Fast-Reroute     : CONFIGURED\nTI-LFA                 : ENABLED\nBGP-LU / BGP-CT        : ACTIVE\nMulti-area OSPF/IS-IS  : ACTIVE\nAnsible / Python       : ACTIVE\nYANG / NETCONF         : IN USE\n\n=== Vendor Experience ===\nCisco IOS-XR / NX-OS   : ACTIVE\nJuniper JunOS          : ACTIVE\nNokia SR OS            : ACTIVE',
       
@@ -192,8 +192,26 @@ router-id 0.0.0.1
  duration "2017 – 2019"
 !
 `,
-      'show interface': 'Interface: SR-MPLS Lab Topology\n Status: UP\n Description: Full SR-MPLS topology built in GNS3/EVE-NG with TI-LFA, BGP-LU, and automated config via Ansible. Demonstrates end-to-end traffic engineering across 12 nodes.\n → next-hop GitHub\n\nInterface: Netconf Policy Automation\n Status: UP\n Description: Python toolset to generate, validate, and push BGP community-based routing policies to IOS-XR and JunOS routers.\n → next-hop GitHub',
-      
+      'show interface': `Interface: Security (ASA to FortiGate Migration)
+ Status: UP (Hardened)
+ Description: Migrated EOL Cisco ASAs to Fortinet NGFWs. Executed a complete policy audit and redesign to eliminate technical debt and broad permit-any rules, resulting in a fully hardened, application-aware perimeter.
+
+Interface: Tunnel0 (VPN Re-engineering)
+ Status: UP (Optimized)
+ Description: Re-architected legacy full-tunnel VPN to a split-tunnel model integrated with Zscaler SASE. Eliminated datacenter hairpinning, reducing bandwidth load and improving latency for ~4,000 remote users.
+
+Interface: Optical-Ring (DWDM Metro Expansion)
+ Status: UP (High-Capacity)
+ Description: Designed and deployed inter-datacenter DWDM capacity across Helsinki using Smartoptics and ADVA. Managed optical power budgets and fiber routing to support growing east-west traffic demands.
+
+Interface: AS24713-Edge (Internet Resilience)
+ Status: UP (Sub-second Convergence)
+ Description: Re-engineered BGP routing architecture. Implemented BFD and deterministic path selection, achieving sub-second failover and tighter availability SLAs for shared internet services.
+
+Interface: Core-Fabric (DC Migration Program)
+ Status: MIGRATED (Zero Impact)
+ Description: Lead Network Engineer for a large-scale datacenter migration. Orchestrated the seamless transition of routing, switching, and firewall fabrics while reducing OpEx by decommissioning EOL hardware.
+`,
       'ping': 'PING contact@rikkova.fi (your inbox)\n64 bytes from contact@rikkova.fi: icmp_seq=1 ttl=64 time<1ms\n64 bytes from linkedin.com/in/rikkova: icmp_seq=2 ttl=64\n64 bytes from github.com/rikkova: icmp_seq=3 ttl=64\n\n--- contact statistics ---\n3 packets transmitted, 3 received, 0% packet loss'
     };
 
