@@ -22,11 +22,16 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
+    /* Automatically scale everything up by 120% on desktop */
+    @media screen and (min-width: 769px) {
+      body { zoom: 1.2; }
+    }
+
     body {
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-mono);
-      font-size: 18px;
+      font-size: 15px;
       line-height: 1.7;
       overflow-x: hidden;
       display: flex;
@@ -57,7 +62,7 @@
       background: rgba(17, 21, 24, 0.85); /* Slightly transparent surface */
       backdrop-filter: blur(5px);
       width: 100%;
-      max-width: 60vw;
+      max-width: 800px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
@@ -70,7 +75,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .dot { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
     .dot.red { background: var(--red); }
     .dot.yellow { background: var(--yellow); }
     .dot.green { background: var(--green); }
@@ -117,25 +122,22 @@
     .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--dim); }
 
-/* Responsive Design for Mobile Devices */
-@media screen and (max-width: 768px) {
-  body {
-    padding: 10px; /* Adds breathing room around the terminal on small screens */
-    font-size: 13px; /* Shrinks the text slightly so more words fit per line */
-  }
-
-  .terminal-box {
-    max-width: 100%; /* Ensures the box doesn't push past the screen width */
-    margin: 0;
-    border-radius: 4px; /* Slightly sharper corners for mobile */
-  }
-
-  .terminal-body {
-    max-height: 70vh; /* Takes up a bit more of the mobile screen height */
-    padding: 1rem; /* Reduces the inner padding to give text more room */
-  }
-}
-  
+    /* Responsive Design for Mobile Devices */
+    @media screen and (max-width: 768px) {
+      body {
+        padding: 10px;
+        font-size: 13px;
+      }
+      .terminal-box {
+        max-width: 100%;
+        margin: 0;
+        border-radius: 4px;
+      }
+      .terminal-body {
+        max-height: 70vh;
+        padding: 1rem;
+      }
+    }
   </style>
 </head>
 <body onclick="document.getElementById('cmd').focus()">
@@ -168,12 +170,29 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
   </div>
 
   <script>
-    // --- TERMINAL LOGIC ---
     const terminal = document.getElementById('terminal');
     const terminalBody = document.getElementById('terminal-body');
     const cmd = document.getElementById('cmd');
 
-    // Combine data from index-2.html into the command responses
+    // 1. Calculate dynamic system uptime FIRST, before the commands dictionary
+    const dob = new Date(1997, 8, 17); // Month 8 is September
+    const now = new Date();
+    
+    let years = now.getFullYear() - dob.getFullYear();
+    let months = now.getMonth() - dob.getMonth();
+    let days = now.getDate() - dob.getDate();
+    
+    if (days < 0) {
+      months--;
+      days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    const uptimeString = `${years} years, ${months} months, ${days} days`;
+
+    // 2. Define commands dictionary
     const commands = {
       'help': `Available commands:
   whoami          - Display profile information
@@ -185,7 +204,12 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
   ping            - Display contact details
   clear           - Clear the terminal screen`,
       
-      'whoami': 'Name: Väinö Rikkonen\nRole: Infrastucture Architect\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI\'s hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.',
+      'whoami': `Name: Väinö Rikkonen
+Role: Infrastructure Architect
+Location: Helsinki, Finland · AS65001
+Status: Open to new opportunities — Established
+
+Bio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.`,
       
       'show bgp sum': `=== Routing, Switching & Optical ===
 Protocols              : BGP, OSPF, IS-IS, MPLS & Segment Routing, VXLAN, BFD
@@ -250,9 +274,9 @@ Interface: AS24713-Edge (Internet Resilience)
 
 Interface: Core-Fabric (DC Migration Program)
  Status: MIGRATED (Zero Impact)
- Description: Lead Network Engineer for a large-scale datacenter migration. Orchestrated the seamless transition of routing, switching, and firewall fabrics while reducing OpEx by decommissioning EOL hardware.
-`,
-      'ping': `PING vaino.rikkonen@gmail.com
+ Description: Lead Network Engineer for a large-scale datacenter migration. Orchestrated the seamless transition of routing, switching, and firewall fabrics while reducing OpEx by decommissioning EOL hardware.`,
+      
+      'ping': `PING [vaino.rikkonen@gmail.com](mailto:vaino.rikkonen@gmail.com)
 64 bytes from <a href="mailto:vaino.rikkonen@gmail.com" style="color: var(--green); text-decoration: underline;">vaino.rikkonen@gmail.com</a>: icmp_seq=1 ttl=64 time<1ms
 64 bytes from <a href="https://linkedin.com/in/rikkova" target="_blank" style="color: var(--green); text-decoration: underline;">linkedin.com/in/rikkova</a>: icmp_seq=2 ttl=64 time<1ms
 64 bytes from <a href="https://github.com/rikkova" target="_blank" style="color: var(--green); text-decoration: underline;">github.com/rikkova</a>: icmp_seq=3 ttl=64 time<1ms
@@ -276,45 +300,34 @@ System image file is "flash:vaino-rikkonen-v3.bin"
 
 Active Licenses / Certifications:
  - <span style="color: var(--yellow);">Cisco CCNP Service Provider</span> <span style="color: var(--dim);">[In Progress]</span>`,
-      
     };
 
+    // 3. Listen for commands
     cmd.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
         
-        // --- 1. CLEAR COMMAND ---
+        // --- CLEAR COMMAND ---
         if (inputVal === 'clear') {
           terminal.innerHTML = '';
           cmd.value = '';
           return;
         }
-
-        // --- 2. SECRET EASTER EGG (sudo) ---
-
-        if (inputVal.startsWith('sudo ')) {
-          response = `guest is not in the sudoers file. This incident will be reported.`;
-        }
         
-        // --- 3. SECRET EASTER EGG (linda) ---
+        // --- SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
-          // Clear the terminal and input
           terminal.innerHTML = '';
           cmd.value = '';
-          
-          // Temporarily disable the input so the user can't type while it builds
           cmd.disabled = true; 
           
-          // Create a container for the heart
           const heartDiv = document.createElement('div');
-          heartDiv.style.color = '#E31937'; // Bright Red
-          heartDiv.style.whiteSpace = 'pre'; // Preserves the spaces for the ASCII art
+          heartDiv.style.color = '#E31937'; 
+          heartDiv.style.whiteSpace = 'pre'; 
           heartDiv.style.textAlign = 'center';
           heartDiv.style.marginTop = '20px';
           heartDiv.style.lineHeight = '1.2';
           terminal.appendChild(heartDiv);
 
-          // The ASCII Heart separated line-by-line
           const heartLines = [
             "   ██████   ██████   ",
             " █████████ █████████ ",
@@ -330,17 +343,13 @@ Active Licenses / Certifications:
 
           let lineIndex = 0;
           
-          // Build the heart line-by-line every 200ms
           const drawInterval = setInterval(() => {
             if (lineIndex < heartLines.length) {
               heartDiv.innerHTML += heartLines[lineIndex] + '\n';
-              terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll down
+              terminalBody.scrollTop = terminalBody.scrollHeight;
               lineIndex++;
             } else {
-              // Stop the timer when finished
               clearInterval(drawInterval);
-              
-              // Add a sweet system message underneath
               const msg = document.createElement('div');
               msg.className = 'output';
               msg.style.textAlign = 'center';
@@ -348,37 +357,16 @@ Active Licenses / Certifications:
               msg.innerHTML = '<i>System status: Deeply in love.</i>';
               terminal.appendChild(msg);
               
-              // Re-enable the input line and put the cursor back
               cmd.disabled = false;
               cmd.focus();
               terminalBody.scrollTop = terminalBody.scrollHeight;
             }
           }, 200); 
           
-          return; // Stop here so it doesn't print "command not found"
+          return;
         }
-
-    // Calculate dynamic system uptime based on Date of Birth
-    const dob = new Date(1997, 8, 17); // Note: Months are 0-indexed in JS, so 8 is September
-    const now = new Date();
-    
-    let years = now.getFullYear() - dob.getFullYear();
-    let months = now.getMonth() - dob.getMonth();
-    let days = now.getDate() - dob.getDate();
-    
-    if (days < 0) {
-      months--;
-      // Get the number of days in the previous month
-      days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-    }
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-    
-    const uptimeString = `${years} years, ${months} months, ${days} days`;
         
-        // --- 3. STANDARD COMMANDS ---
+        // --- STANDARD COMMANDS & SUDO LOGIC ---
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
 
@@ -386,10 +374,14 @@ Active Licenses / Certifications:
         const commandSpan = '<span class="user-input">' + cmd.value + '</span>\n';
 
         let response = commands[inputVal];
+        
+        // Handle sudo, empty inputs, and unrecognized commands safely
         if (inputVal === '') {
           response = '';
+        } else if (inputVal.startsWith('sudo ')) {
+          response = 'guest is not in the sudoers file. This incident will be reported.';
         } else if (!response) {
-          response = '% Invalid input detected at \'^\' marker.\n-bash: ' + inputVal + ': command not found';
+          response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
         }
 
         outputDiv.innerHTML = promptSpan + commandSpan + response;
@@ -400,7 +392,7 @@ Active Licenses / Certifications:
       }
     });
 
-    // --- ANIMATED NETWORK BACKGROUND LOGIC (from main-3.js) ---
+    // --- ANIMATED NETWORK BACKGROUND LOGIC ---
     const canvas = document.getElementById('topology-bg');
     const ctx = canvas.getContext('2d');
 
@@ -429,7 +421,6 @@ Active Licenses / Certifications:
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw links (adjacencies)
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
@@ -447,7 +438,6 @@ Active Licenses / Certifications:
         }
       }
 
-      // Draw nodes (routers)
       nodes.forEach(n => {
         ctx.fillStyle = '#00ff88';
         ctx.beginPath();
@@ -455,7 +445,6 @@ Active Licenses / Certifications:
         ctx.fill();
       });
 
-      // Move nodes
       nodes.forEach(n => {
         n.x += n.vx;
         n.y += n.vy;
