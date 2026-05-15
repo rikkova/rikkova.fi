@@ -157,7 +157,7 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
     const commands = {
       'help': 'Available commands:\n  whoami          - Display profile information\n  show ip route   - Show experience/routing table\n  show bgp sum    - View IT/Network engineering skills\n  show interface  - View projects\n  ping            - Display contact details\n  clear           - Clear the terminal screen',
       
-      'whoami': 'Name: Väinö Rikkonen\nRole: Network Engineer\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: Network engineer specializing in building and operating large-scale IP/MPLS backbone networks. I treat every network like a well-designed graph: every node has a purpose, every link has a metric, and every path is deterministic.',
+      'whoami': 'Name: Väinö Rikkonen\nRole: Infrastucture Architect\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: I design and operate core network infrastructure across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI\'s hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.',
       
       'show bgp sum': '=== Core Competencies ===\nMPLS & Segment Routing : ACTIVE\nTraffic Engineering    : ENABLED\nFRR / Fast-Reroute     : CONFIGURED\nTI-LFA                 : ENABLED\nBGP-LU / BGP-CT        : ACTIVE\nMulti-area OSPF/IS-IS  : ACTIVE\nAnsible / Python       : ACTIVE\nYANG / NETCONF         : IN USE\n\n=== Vendor Experience ===\nCisco IOS-XR / NX-OS   : ACTIVE\nJuniper JunOS          : ACTIVE\nNokia SR OS            : ACTIVE',
       
@@ -165,19 +165,33 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
 router-id 0.0.0.1
  hostname CGI
  role "Infrastructure Architect"
- duration "2024 – present"
- description "I design and operate core network infrastructure across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy."
+ duration "2026 – present"
+!
+ hostname CGI
+ role "Network Designer"
+ duration "2024 – 2026"
 !
  hostname Google
  role "Data Center Technician"
  duration "2023 – 2024"
- description "I worked on infrastructure reliability and network operations within one of Google's hyperscale datacenter environments, acting as the team's SME for network maintenance. I was responsible for upholding strict global SLAs/SLOs, deploying server and network infrastructure, and performing QA testing to ensure seamless production integration. I also developed and documented diagnostic and repair guides adopted globally to streamline workflows and reduce downtime, and provided technical mentorship and cross-training to the local team."
 !
  hostname CGI
  role "Data Networking Engineer"
  duration "2021 – 2022"
- description "I managed full-stack network infrastructure for enterprise clients, serving as the primary technical lead for Cisco datacenter operations and multi-vendor integrations. My work spanned the full lifecycle — from deploying and configuring switches, routers, load balancers, and wireless controllers, to leading datacenter migrations and decommissions with zero operational impact. I was an early adopter of automation, developing Ansible and Python scripts to reduce manual workloads and improve team efficiency."
-!`,
+!
+ hostname Accenture
+ role "Cyber Defense Analyst"
+ duration "2020 – 2021"
+!
+ hostname CGI
+ role "Network Specialist"
+ duration "2019 – 2020"
+!
+ hostname CGI
+ role "IT Technician"
+ duration "2017 – 2019"
+!
+`,
       'show interface': 'Interface: SR-MPLS Lab Topology\n Status: UP\n Description: Full SR-MPLS topology built in GNS3/EVE-NG with TI-LFA, BGP-LU, and automated config via Ansible. Demonstrates end-to-end traffic engineering across 12 nodes.\n → next-hop GitHub\n\nInterface: Netconf Policy Automation\n Status: UP\n Description: Python toolset to generate, validate, and push BGP community-based routing policies to IOS-XR and JunOS routers.\n → next-hop GitHub',
       
       'ping': 'PING contact@rikkova.fi (your inbox)\n64 bytes from contact@rikkova.fi: icmp_seq=1 ttl=64 time<1ms\n64 bytes from linkedin.com/in/rikkova: icmp_seq=2 ttl=64\n64 bytes from github.com/rikkova: icmp_seq=3 ttl=64\n\n--- contact statistics ---\n3 packets transmitted, 3 received, 0% packet loss'
