@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Väinö Rikkonen - Network Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e0f;
+      --surface: #111518;
+      --border: #1e2d2f;
+      --green: #00ff88;
+      --yellow: #f0c040;
+      --red: #ff4455;
+      --text: #c8d8d0;
+      --dim: #556677;
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-display: 'Orbitron', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      cursor: text;
+    }
+
+    /* Animated topology background */
+    #topology-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    /* TERMINAL BOX */
+    .terminal-box {
+      position: relative;
+      z-index: 10;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(17, 21, 24, 0.85); /* Slightly transparent surface */
+      backdrop-filter: blur(5px);
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .terminal-bar {
+      background: #1a2226;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .dot.red { background: var(--red); }
+    .dot.yellow { background: var(--yellow); }
+    .dot.green { background: var(--green); }
+
+    .terminal-title {
+      margin-left: auto;
+      font-size: 0.85rem;
+      color: var(--dim);
+      font-family: var(--font-display);
+      letter-spacing: 1px;
+    }
+
+    .terminal-body { 
+      padding: 1.5rem; 
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .output { 
+      margin-bottom: 15px; 
+      white-space: pre-wrap; 
+      line-height: 1.5; 
+      color: var(--text);
+    }
+    
+    .prompt { color: var(--green); font-weight: bold; }
+    .user-input { color: var(--yellow); }
+
+    .input-line { display: flex; align-items: center; margin-top: 10px; }
+    
+    input {
+      background: transparent;
+      border: none;
+      color: var(--yellow);
+      font-family: inherit;
+      font-size: inherit;
+      width: 100%;
+      outline: none;
+    }
+    
+    /* Scrollbar styling for terminal body */
+    .terminal-body::-webkit-scrollbar { width: 8px; }
+    .terminal-body::-webkit-scrollbar-track { background: var(--bg); }
+    .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+  </style>
+</head>
+<body onclick="document.getElementById('cmd').focus()">
+  <!-- Animated Background Canvas -->
+  <canvas id="topology-bg"></canvas>
+
+  <div class="terminal-box">
+    <div class="terminal-bar">
+      <div class="dot red"></div>
+      <div class="dot yellow"></div>
+      <div class="dot green"></div>
+      <div class="terminal-title">rikkova@core-router-01 ~</div>
+    </div>
+    
+    <div class="terminal-body" id="terminal-body">
+      <div id="terminal">
+        <div class="output">Welcome to V-OS Network Terminal v2.0.
+Login: guest
+Access: Granted
+Establishing BGP sessions... <span style="color:var(--green)">[OK]</span>
+
+Type '<span style="color:var(--green)">help</span>' to see a list of available commands.</div>
+      </div>
+      
+      <div class="input-line">
+        <span class="prompt">guest@rikkova:~$ </span>
+        <input type="text" id="cmd" autofocus autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- TERMINAL LOGIC ---
+    const terminal = document.getElementById('terminal');
+    const terminalBody = document.getElementById('terminal-body');
+    const cmd = document.getElementById('cmd');
+
+    // Combine data from index-2.html into the command responses
+    const commands = {
+      'help': 'Available commands:\n  whoami          - Display profile information\n  show ip route   - Show experience/routing table\n  show bgp sum    - View IT/Network engineering skills\n  show interface  - View projects\n  ping            - Display contact details\n  clear           - Clear the terminal screen',
+      
+      'whoami': 'Name: Väinö Rikkonen\nRole: Network Engineer\nLocation: Helsinki, Finland · AS65001\nStatus: Open to new opportunities — Established\n\nBio: Network engineer specializing in building and operating large-scale IP/MPLS backbone networks. I treat every network like a well-designed graph: every node has a purpose, every link has a metric, and every path is deterministic.',
+      
+      'show bgp sum': '=== Core Competencies ===\nMPLS & Segment Routing : ACTIVE\nTraffic Engineering    : ENABLED\nFRR / Fast-Reroute     : CONFIGURED\nTI-LFA                 : ENABLED\nBGP-LU / BGP-CT        : ACTIVE\nMulti-area OSPF/IS-IS  : ACTIVE\nAnsible / Python       : ACTIVE\nYANG / NETCONF         : IN USE\n\n=== Vendor Experience ===\nCisco IOS-XR / NX-OS   : ACTIVE\nJuniper JunOS          : ACTIVE\nNokia SR OS            : ACTIVE',
+      
+      'show ip route': '! == EXPERIENCE ==\nrouter-id 0.0.0.1\n hostname Elisa-Networks\n role "Senior Network Engineer"\n duration "2022 – present"\n description "Design and operate MPLS/SR backbone for national ISP. TI-LFA, BGP-LU, peering policy."\n!\n hostname Nokia-Bell-Labs-Contract\n role "Network Architect"\n duration "2019 – 2022"\n description "SR-MPLS migration project for Tier-1 carrier. PCE deployment, YANG modeling."\n!\n hostname Telia-Finland\n role "Network Engineer"\n duration "2016 – 2019"\n description "Core OSPF/IS-IS operations, MPLS TE, incident response."\n!',
+      
+      'show interface': 'Interface: SR-MPLS Lab Topology\n Status: UP\n Description: Full SR-MPLS topology built in GNS3/EVE-NG with TI-LFA, BGP-LU, and automated config via Ansible. Demonstrates end-to-end traffic engineering across 12 nodes.\n → next-hop GitHub\n\nInterface: Netconf Policy Automation\n Status: UP\n Description: Python toolset to generate, validate, and push BGP community-based routing policies to IOS-XR and JunOS routers.\n → next-hop GitHub',
+      
+      'ping': 'PING contact@rikkova.fi (your inbox)\n64 bytes from contact@rikkova.fi: icmp_seq=1 ttl=64 time<1ms\n64 bytes from linkedin.com/in/rikkova: icmp_seq=2 ttl=64\n64 bytes from github.com/rikkova: icmp_seq=3 ttl=64\n\n--- contact statistics ---\n3 packets transmitted, 3 received, 0% packet loss'
+    };
+
+    cmd.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const inputVal = cmd.value.trim().toLowerCase();
+        
+        if (inputVal === 'clear') {
+          terminal.innerHTML = '';
+          cmd.value = '';
+          return;
+        }
+
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+
+        const promptSpan = '<span class="prompt">guest@rikkova:~$ </span>';
+        const commandSpan = '<span class="user-input">' + cmd.value + '</span>\n';
+
+        let response = commands[inputVal];
+        if (inputVal === '') {
+          response = '';
+        } else if (!response) {
+          response = '% Invalid input detected at \'^\' marker.\n-bash: ' + inputVal + ': command not found';
+        }
+
+        outputDiv.innerHTML = promptSpan + commandSpan + response;
+        terminal.appendChild(outputDiv);
+        
+        // Reset input and scroll to bottom of the terminal box
+        cmd.value = '';
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+      }
+    });
+
+    // --- ANIMATED NETWORK BACKGROUND LOGIC (from main-3.js) ---
+    const canvas = document.getElementById('topology-bg');
+    const ctx = canvas.getContext('2d');
+
+    let nodes = [];
+    const NODE_COUNT = 30;
+    const MAX_DIST = 180;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function initNodes() {
+      nodes = [];
+      for (let i = 0; i < NODE_COUNT; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          r: Math.random() * 3 + 2,
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw links (adjacencies)
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < MAX_DIST) {
+            const alpha = 1 - dist / MAX_DIST;
+            ctx.strokeStyle = `rgba(0, 255, 136, ${alpha * 0.6})`;
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw nodes (routers)
+      nodes.forEach(n => {
+        ctx.fillStyle = '#00ff88';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Move nodes
+      nodes.forEach(n => {
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+      });
+
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    initNodes();
+    draw();
+    window.addEventListener('resize', () => { resize(); initNodes(); });
+  </script>
+</body>
+</html>
