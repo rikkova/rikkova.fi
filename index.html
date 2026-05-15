@@ -116,6 +116,26 @@
     .terminal-body::-webkit-scrollbar-track { background: var(--bg); }
     .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+/* Responsive Design for Mobile Devices */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px; /* Adds breathing room around the terminal on small screens */
+    font-size: 13px; /* Shrinks the text slightly so more words fit per line */
+  }
+
+  .terminal-box {
+    max-width: 100%; /* Ensures the box doesn't push past the screen width */
+    margin: 0;
+    border-radius: 4px; /* Slightly sharper corners for mobile */
+  }
+
+  .terminal-body {
+    max-height: 70vh; /* Takes up a bit more of the mobile screen height */
+    padding: 1rem; /* Reduces the inner padding to give text more room */
+  }
+}
+  
   </style>
 </head>
 <body onclick="document.getElementById('cmd').focus()">
