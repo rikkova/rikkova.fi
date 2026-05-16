@@ -427,7 +427,7 @@ Active Licenses / Certifications:
         // Handle sudo, empty inputs, and unrecognized commands safely
         if (inputVal === '') {
           response = '';
-        } else if (inputVal.startsWith('sudo ')) {
+        } else if (inputVal === 'sudo' || inputVal.startsWith('sudo ')) {
           response = 'guest is not in the sudoers file. This incident will be reported.';
         } else if (!response) {
           response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
