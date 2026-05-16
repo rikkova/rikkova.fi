@@ -570,15 +570,28 @@ Active Licenses / Certifications:
         }
       }
 
-      // 2. Generate Network Traffic (Packets)
-      // 15% chance per frame to send a packet across a random active link
+      // 2. Generate Network Traffic (Packets representing TCP Handshake)
       if (activeLinks.length > 0 && Math.random() < 0.15) { 
         const link = activeLinks[Math.floor(Math.random() * activeLinks.length)];
+        
+        // Randomly assign a packet type: 0 = SYN, 1 = SYN-ACK, 2 = ACK
+        const packetType = Math.floor(Math.random() * 3);
+        let pColor;
+        
+        if (packetType === 0) {
+          pColor = '#f0c040'; // SYN (Yellow) - Initiating connection
+        } else if (packetType === 1) {
+          pColor = '#ff4455'; // SYN-ACK (Red) - Acknowledging and responding
+        } else {
+          pColor = '#00ff88'; // ACK (Green) - Connection established
+        }
+
         packets.push({
           source: link.source,
           target: link.target,
           progress: 0,
-          speed: 0.015 + Math.random() * 0.02 // Speed of packet transmission
+          speed: 0.015 + Math.random() * 0.02,
+          color: pColor // Store the color for drawing
         });
       }
 
