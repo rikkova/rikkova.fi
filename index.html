@@ -422,6 +422,47 @@ Active Licenses / Certifications:
         return;
       }
 
+      // --- TAB COMPLETION LOGIC ---
+      if (e.key === 'Tab') {
+        e.preventDefault(); // Prevent focus shifting to another HTML element
+        const inputVal = cmd.value.toLowerCase();
+        
+        // Get all available commands (from your dictionary + special ones like clear/sudo)
+        const allCommands = Object.keys(commands).concat(['clear', 'sudo']);
+        
+        // Find matching commands
+        const matches = allCommands.filter(c => c.startsWith(inputVal));
+        
+        if (matches.length === 1) {
+          // If exactly one match, autocomplete it!
+          cmd.value = matches[0];
+        } else if (matches.length > 1) {
+          // If multiple matches, show them to the user (like real bash)
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          outputDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">${cmd.value}</span>\n${matches.join('  ')}`;
+          terminal.appendChild(outputDiv);
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+        return;
+      }
+
+            // --- CTRL+C (SIGINT) LOGIC ---
+      if (e.ctrlKey && e.key === 'c') {
+        e.preventDefault();
+        
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        // Print the prompt, whatever they were typing, and the ^C symbol
+        outputDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">${cmd.value}</span>^C`;
+        terminal.appendChild(outputDiv);
+        
+        cmd.value = ''; // Clear input
+        historyIndex = -1;
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        return;
+      }
+      
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
         
