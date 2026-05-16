@@ -538,7 +538,7 @@ Active Licenses / Certifications:
           y: Math.random() * canvas.height,
           vx: (Math.random() - 0.5) * 0.15, // Extremely slow movement
           vy: (Math.random() - 0.5) * 0.15,
-          r: Math.random() * 4 + 6, // Nodes are now between 6px and 10px in radius
+          r: Math.random() * 2 + 3, // Slightly larger nodes
         });
       }
     }
@@ -561,7 +561,7 @@ Active Licenses / Certifications:
             // Draw link line
             const alpha = 1 - dist / MAX_DIST;
             ctx.strokeStyle = `rgba(0, 255, 136, ${alpha * 0.4})`;
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -609,14 +609,17 @@ Active Licenses / Certifications:
         const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
 
         // Draw glowing packet using its assigned TCP handshake color
-        ctx.fillStyle = '#ffffff'; 
-        ctx.shadowBlur = 18; // Increased glow radius
-        ctx.shadowColor = p.color; 
+        ctx.fillStyle = '#ffffff'; // Keep the core white for brightness
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color; // The glow effect uses the SYN/ACK color
         
+        // Optionally, make the dot itself colored instead of white:
+        // ctx.fillStyle = p.color; 
+
         ctx.beginPath();
-        ctx.arc(currX, currY, 3, 0, Math.PI * 2); // Increased packet size from 1.5/1.8 to 3
+        ctx.arc(currX, currY, 1.8, 0, Math.PI * 2); // Slightly larger packet
         ctx.fill();
-        ctx.shadowBlur = 0; 
+        ctx.shadowBlur = 0; // Reset shadow
       }
 
       // 4. Draw and Update Nodes (Hexagon Routers)
