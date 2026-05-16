@@ -309,7 +309,7 @@ PID    Runtime(ms)  Invoked   uSecs   5Sec   1Min   5Min TTY Process
  305        923481      431    2142  12.3%  10.5%   9.2%   0 CCNP_SP_Study_Guide.pdf
  409        152341       45    3385   5.0%   4.4%   0.9%   0 Coffee.exe`,
 
-      'curl ifconfig.me': `2606:4700:3031::ac43:cd56
+      'curl': `2606:4700:3031::ac43:cd56
 
 Wait, that's Cloudflare.
 Are you sitting behind a WAF? Me too ;).`,
@@ -457,16 +457,8 @@ Active Licenses / Certifications:
 
         let response = commands[inputVal];
 
-        // --- DYNAMIC COMMAND LOGIC ---
-        
-        // Catch any curl command
-        if (inputVal === 'curl' || inputVal.startsWith('curl ')) {
-          // Fallback to the ifconfig.me joke if they just type 'curl' or something else
-          response = commands['curl ifconfig.me'] || commands['curl']; 
-        }
-
         // Handle the dynamic nmap time (if you added it earlier)
-        if ((inputVal === 'nmap' || inputVal.startsWith('nmap ')) && response) {
+        if (inputVal === 'nmap' && response) {
           const d = new Date();
           const year = d.getFullYear();
           const month = String(d.getMonth() + 1).padStart(2, '0');
