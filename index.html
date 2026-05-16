@@ -309,10 +309,29 @@ PID    Runtime(ms)  Invoked   uSecs   5Sec   1Min   5Min TTY Process
  305        923481      431    2142  12.3%  10.5%   9.2%   0 CCNP_SP_Study_Guide.pdf
  409        152341       45    3385   5.0%   4.4%   0.9%   0 Coffee.exe`,
 
-      'curl': `2606:4700:3031::ac43:cd56
+      'curl': `StatusCode        : 200
+StatusDescription : OK
+Content           : 2606:4700:3031::ac43:cd56
+RawContent        : HTTP/1.1 200 OK
+                    Connection: keep-alive
+                    Vary: Origin
+                    cf-cache-status: DYNAMIC
+                    CF-RAY: 9fca09dc1b485288-HEL
+                    Content-Length: 25
+                    Content-Type: text/plain
+                    Date: {{CURRENT_TIME}}
+                    Server: cloudflare
+Forms             :
+Headers           : {[Connection, keep-alive], [Vary, Origin], [cf-cache-status, DYNAMIC], [CF-RAY,
+                    9fca09dc1b485288-HEL], [Server, cloudflare]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : 
+RawContentLength  : 25
 
-Wait, that's Cloudflare.
-Are you sitting behind a WAF? Me too ;).`,
+Wait... that Content IP is a Cloudflare proxy.
+Are you sitting behind a WAF? Me too.`,
       
       'show interface': `Interface: Security (ASA to FortiGate Migration)
  Status: UP (Hardened)
