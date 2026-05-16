@@ -100,6 +100,19 @@
       line-height: 1.5; 
       color: var(--text);
     }
+
+    .interactive-node {
+      color: var(--yellow);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+    .interactive-node:hover {
+      color: #ffffff;
+      text-shadow: 0 0 8px var(--yellow);
+      text-decoration: underline;
+    }
     
     .prompt { color: var(--green); font-weight: bold; }
     .user-input { color: var(--yellow); }
@@ -307,6 +320,71 @@ S    192.168.0.0/16 [1/0] via Zscaler_SASE
 
 Trace complete. Next hop: Unknown (Routing dynamically...)`,
 
+      'show topology': `
+      <span style="color: var(--dim);">[ External Networks ]</span>
+               |
+  +-------------------------+
+  |  <span class="interactive-node" onclick="document.getElementById('cmd').value='show run edge'; const e = new KeyboardEvent('keydown', {key: 'Enter'}); document.getElementById('cmd').dispatchEvent(e);">[ AS24713 ] Internet Edge</span>  |
+  +-------------------------+
+         |           |
+    <span class="interactive-node" onclick="document.getElementById('cmd').value='show run fw1'; const e = new KeyboardEvent('keydown', {key: 'Enter'}); document.getElementById('cmd').dispatchEvent(e);">(FW-01)</span>     <span class="interactive-node" onclick="document.getElementById('cmd').value='show run fw2'; const e = new KeyboardEvent('keydown', {key: 'Enter'}); document.getElementById('cmd').dispatchEvent(e);">(FW-02)</span>
+         |           |
+  +-------------------------+
+  |  <span class="interactive-node" onclick="document.getElementById('cmd').value='show run core'; const e = new KeyboardEvent('keydown', {key: 'Enter'}); document.getElementById('cmd').dispatchEvent(e);">[ AS1854 ] Core MPLS Ring</span>  |
+  +-------------------------+
+         |           |
+  +-------------------------+
+  |  <span class="interactive-node" onclick="document.getElementById('cmd').value='show run fabric'; const e = new KeyboardEvent('keydown', {key: 'Enter'}); document.getElementById('cmd').dispatchEvent(e);">[ VXLAN ] DC Spine/Leaf</span>  |
+  +-------------------------+
+             |
+      <span style="color: var(--dim);">[ CGI Cloud Hosting ]</span>
+
+<i style="color: var(--dim);">Hint: Click on any colored node in the topology to view its configuration.</i>`,
+
+            'show run edge': `Building configuration...
+!
+router bgp 24713
+ bgp router-id 1.1.1.1
+ description "CGI Internet Edge"
+ neighbor TIER-1-ISP route-map PREFER-IN in
+!
+! Focus: Implemented BFD for sub-second failover and strict route-maps 
+! to control inbound transit traffic, guaranteeing high availability SLAs.`,
+
+      'show run core': `Building configuration...
+!
+router isis 1
+ net 49.0001.1921.6800.0001.00
+ metric-style wide
+!
+segment-routing mpls
+!
+! Focus: Designed and operated the global MPLS backbone, migrating legacy
+! LDP architectures to Segment Routing for advanced Traffic Engineering.`,
+
+      'show run fabric': `Building configuration...
+!
+interface nve1
+  no shutdown
+  source-interface loopback1
+  host-reachability protocol bgp
+  member vni 10000 mcast-group 239.1.1.1
+!
+! Focus: Lead the transition of DC fabrics to EVPN/VXLAN. Reduced OpEx 
+! and hardware footprint while supporting massive multi-tenant scale.`,
+
+      'show run fw1': `Firewall Policy - Primary Perimeter
+!
+! Action: Replaced EOL Cisco ASAs with Fortinet NGFWs.
+! Result: Removed technical debt, eliminated "permit ip any any" rules,
+! and integrated application-layer (Layer 7) visibility into the perimeter.`,
+
+      'show run fw2': `Firewall Policy - Secondary Perimeter / SASE
+!
+! Action: Integrated Zscaler Zero-Trust architecture.
+! Result: Deprecated legacy full-tunnel VPNs, eliminating DC hairpinning
+! and reducing latency for ~4,000 remote workers globally.`,
+      
       'top': `CPU utilization for five seconds: 85%/15%; one minute: 82%; five minutes: 78%
 PID    Runtime(ms)  Invoked   uSecs   5Sec   1Min   5Min TTY Process
  101       3498234     1423    2458  45.2%  42.1%  39.8%   0 Python/Ansible (Automation)
