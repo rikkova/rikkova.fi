@@ -275,14 +275,7 @@
   nmap            - Scan active services and protocols
   diagnostics     - Run diagnostics
   clear           - Clear the terminal screen`,
-      
-      'whoami': `Name: Väinö Rikkonen
-Role: Infrastructure Architect
-Location: Vantaa, Finland · AS65001
-Status: Open to new opportunities — Established
-
-Bio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.`,
-      
+       
       'show bgp sum': `=== Routing, Switching & Optical ===
 Protocols              : BGP, OSPF, IS-IS, MPLS & Segment Routing, VXLAN, BFD
 Cisco OS & Hardware    : IOS-XR/XE, NX-OS, NCS, ASR, Nexus, Catalyst, ISE
@@ -688,6 +681,65 @@ Active Licenses / Certifications:
           catDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">soffumaikku</span>\n` + cats + `<i style="color: var(--dim);">Two cute network cats found in the system.</i>\n\n`;
           
           terminalBody.scrollTop = terminalBody.scrollHeight;
+          return;
+        }
+
+        // --- DECRYPTION EFFECT (whoami) ---
+        if (inputVal === 'whoami') {
+          cmd.disabled = true;
+          
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          terminal.appendChild(outputDiv);
+          
+          // Print the prompt and command first
+          outputDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">whoami</span>\n<span style="color: var(--dim);">Decrypting user profile...</span>\n\n`;
+          
+          const targetText = `Name: Väinö Rikkonen
+Role: Infrastructure Architect
+Location: Vantaa, Finland · AS65001
+Status: Open to new opportunities — Established
+
+Bio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.`;
+
+          // Create a span to hold the animating text
+          const textSpan = document.createElement('span');
+          outputDiv.appendChild(textSpan);
+          
+          const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+          let iterations = 0;
+          
+          const interval = setInterval(() => {
+            textSpan.innerText = targetText.split('')
+              .map((letter, index) => {
+                // If the character is a space or newline, keep it so formatting doesn't break
+                if (letter === ' ' || letter === '\n') return letter;
+                
+                // Once the iteration passes the character's index, lock in the real letter
+                if (index < iterations) {
+                  return letter;
+                }
+                
+                // Otherwise, show a random hacker character
+                return letters[Math.floor(Math.random() * letters.length)];
+              })
+              .join('');
+            
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+            
+            // Speed of the reveal: larger fraction = faster reveal
+            iterations += 1.5; 
+            
+            if (iterations >= targetText.length) {
+              clearInterval(interval);
+              textSpan.innerText = targetText; // Ensure exact match at the end
+              cmd.disabled = false;
+              cmd.focus();
+              terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+          }, 30); // Runs every 30ms for a smooth framerate
+          
+          cmd.value = '';
           return;
         }
 
