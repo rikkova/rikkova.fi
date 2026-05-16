@@ -520,7 +520,7 @@ Active Licenses / Certifications:
 
     let nodes = [];
     let packets = [];
-    const NODE_COUNT = 40; // Number of routers/switches
+    const NODE_COUNT = 25; // Number of routers/switches
     const MAX_DIST = 200;  // Maximum link distance
 
     function resize() {
@@ -569,7 +569,7 @@ Active Licenses / Certifications:
       }
 
       // 2. Generate Network Traffic (Initiate TCP Handshake with SYN)
-      if (Math.random() < 0.08) { 
+      if (Math.random() < 0.015) { 
         // Pick a random Source node
         const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
         
