@@ -254,7 +254,6 @@
   traceroute      - Trace career path and job history
   top             - Monitor active tasks and current focus
   nmap            - Scan active services and protocols
-  theme           - Change theme (hacker, light, cisco)
   clear           - Clear the terminal screen`,
       
       'whoami': `Name: Väinö Rikkonen
@@ -362,13 +361,7 @@ Team-Lead        Mgmt 0/0          120        S R         Human     Mentorship
 Architecture     Po1               120        S R         Design    Big-Picture
 Problem-Solve    Lo0               120        R           Logic     RCA`,  
 
-      'theme': `Available themes:
-  theme hacker    - (Classic Green on Black)
-  theme light     - (For absolute psychopaths)
-  theme cisco     - (IOS Blue/Teal)
-
-Usage: type 'theme <name>'`,
-      
+   
       'show version': `V-OS (tm) Network Operating System Software
 Software Version 2026.05
 Compiled by Väinö Rikkonen
@@ -392,33 +385,7 @@ Active Licenses / Certifications:
           return;
         }
 
-        if (inputVal.startsWith('theme ')) {
-          const selectedTheme = inputVal.split(' ')[1];
-          const root = document.documentElement;
-          
-          if (selectedTheme === 'light') {
-            root.style.setProperty('--bg', '#f0f0f0');
-            root.style.setProperty('--surface', '#ffffff');
-            root.style.setProperty('--text', '#333333');
-            root.style.setProperty('--green', '#005500');
-            response = 'Theme changed to Light Mode. Proceed with caution.';
-          } else if (selectedTheme === 'cisco') {
-            root.style.setProperty('--bg', '#002233');
-            root.style.setProperty('--surface', '#003344');
-            root.style.setProperty('--text', '#ffffff');
-            root.style.setProperty('--green', '#00aaff');
-            response = 'Theme changed to Cisco IOS Mode.';
-          } else if (selectedTheme === 'hacker') {
-            root.style.setProperty('--bg', '#0a0e0f');
-            root.style.setProperty('--surface', '#111518');
-            root.style.setProperty('--text', '#c8d8d0');
-            root.style.setProperty('--green', '#00ff88');
-            response = 'Theme reset to Hacker Mode.';
-          } else {
-            response = `Theme '${selectedTheme}' not found.`;
-          }
-        }
-        
+     
         // --- SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
           terminal.innerHTML = '';
