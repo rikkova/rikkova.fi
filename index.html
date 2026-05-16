@@ -674,20 +674,18 @@ Active Licenses / Certifications:
           cmd.value = '';
           
           const catDiv = document.createElement('div');
-          // Using var(--text) for the cats and var(--red) for the heart
-          catDiv.style.whiteSpace = 'pre'; 
+          catDiv.className = 'output'; // Ensures it gets the standard text color
           catDiv.style.marginTop = '20px';
-          catDiv.style.lineHeight = '1.2';
           terminal.appendChild(catDiv);
 
-          // ASCII Art of two cats sitting together
-          const cats = `
+          // We use double backslashes \\ so JavaScript doesn't swallow them
+          const cats = `<pre style="font-family: var(--font-mono); margin: 15px 0;">
    /\\_/\\           /\\_/\\
   ( o.o ) <span style="color: var(--red);">♥</span> ( =^.^= )
    > ^ <           ( m m )
-          `;
+</pre>`;
 
-          catDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">soffumaikku</span>\n` + cats + `\n<i style="color: var(--dim);">Two cute network cats found in the system.</i>\n\n`;
+          catDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">soffumaikku</span>\n` + cats + `<i style="color: var(--dim);">Two cute network cats found in the system.</i>\n\n`;
           
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return;
