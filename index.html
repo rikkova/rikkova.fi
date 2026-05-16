@@ -483,7 +483,39 @@ Active Licenses / Certifications:
           return;
         }
         
+        if (inputVal === 'ping') {
+          cmd.disabled = true;
+          const pingDiv = document.createElement('div');
+          pingDiv.className = 'output';
+          terminal.appendChild(pingDiv);
+          
+          let pings = 0;
+          pingDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">ping</span>\nPinging contact.rikkova.fi [2606:4700:3031::ac43:cd56] with 56 bytes of data:\n`;
+          
+          const interval = setInterval(() => {
+            pings++;
+            let contact = '';
+            if(pings === 1) contact = '<a href="mailto:vaino.rikkonen@gmail.com" style="color: var(--green);">vaino.rikkonen@gmail.com</a>';
+            if(pings === 2) contact = '<a href="https://linkedin.com/in/rikkova" style="color: var(--green);">linkedin.com/in/rikkova</a>';
+            if(pings === 3) contact = '<a href="https://github.com/rikkova" style="color: var(--green);">github.com/rikkova</a>';
+            
+            pingDiv.innerHTML += `64 bytes from ${contact}: icmp_seq=${pings} ttl=64 time<1ms\n`;
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+            
+            if (pings >= 3) {
+              clearInterval(interval);
+              pingDiv.innerHTML += `\n--- contact statistics ---\n3 packets transmitted, 3 received, 0% packet loss`;
+              cmd.disabled = false;
+              cmd.focus();
+              terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+          }, 1000); // 1 second delay per ping
+          
+          cmd.value = '';
+          return;
+        }
 
+        
         if (inputVal === 'diagnostics') {
           cmd.disabled = true; // prevent typing while loading
           
