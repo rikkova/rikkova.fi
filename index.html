@@ -235,8 +235,8 @@
       await typeText("Access: Granted\n");
       await sleep(500);
       
-      // 4. BGP Sessions with blinking dots
-      await typeText("Establishing encrypted session");
+      // 4. Encrypted session with blinking dots
+      await typeText("Establishing an encrypted session");
       for (let i = 0; i < 3; i++) {
         await sleep(600); // wait before each dot
         bootOutput.innerHTML += ".";
