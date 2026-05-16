@@ -545,6 +545,23 @@ Active Licenses / Certifications:
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return;
         }
+        
+        // --- EXIT ROOT MODE ---
+        if (inputVal === 'exit' && isRoot) {
+          isRoot = false;
+          currentPrompt = '<span class="prompt">guest@rikkova:~$ </span>';
+          document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
+          cmd.style.color = 'var(--yellow)';
+          
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">exit</span>\nlogout`;
+          terminal.appendChild(outputDiv);
+          
+          cmd.value = '';
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          return;
+        }
     
     // 3. Listen for commands
     cmd.addEventListener('keydown', function(e) {
