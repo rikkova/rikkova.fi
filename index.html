@@ -390,7 +390,11 @@ Active Licenses / Certifications:
           cmd.value = '';
           return;
         }
-
+        
+        // --- DYNAMIC COMMAND LOGIC ---
+        if (inputVal === 'curl' || inputVal.startsWith('curl ')) {
+          response = commands['curl ifconfig.me'];
+        }
      
         // --- SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
