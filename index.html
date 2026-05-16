@@ -489,10 +489,28 @@ Active Licenses / Certifications:
         }
 
         // Handle curl dynamic HTTP Date header
+        // Handle curl dynamic HTTP Date header in Helsinki time (EEST/EET)
         if (inputVal === 'curl' && response) {
           const d = new Date();
-          // toUTCString() generates the exact format: "Sat, 16 May 2026 11:28:22 GMT"
-          response = response.replace('{{CURL_DATE}}', d.toUTCString());
+          
+          // Format specific to Helsinki to get the correct EET/EEST abbreviation
+          const helsinkiTime = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Europe/Helsinki',
+            weekday: 'short',
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short'
+          }).format(d);
+          
+          // The format returns: "Sat, 16 May 2026, 14:45:00 EEST"
+          // We remove the comma after the year to match HTTP header standards
+          const formattedHttpDate = helsinkiTime.replace(/(\d{4}),/, '$1');
+          
+          response = response.replace('{{CURL_DATE}}', formattedHttpDate);
         }
 
         // --- HANDLE SUDO, EMPTY INPUTS, ERRORS ---
