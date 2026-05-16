@@ -1041,9 +1041,11 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           response = response.replace(/{{CURRENT_TIME}}/g, formattedTime);
         }
 
-        // --- HANDLE  EMPTY INPUTS, ERRORS ---
+        // --- HANDLE SUDO, EMPTY INPUTS, ERRORS ---
         if (inputVal === '') {
           response = '';
+        } else if (inputVal === 'sudo' || inputVal.startsWith('sudo ')) {
+          response = 'guest is not in the sudoers file. This incident will be reported.';
         } else if (!response) {
           response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
         }
