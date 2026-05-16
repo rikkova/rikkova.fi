@@ -667,6 +667,32 @@ Active Licenses / Certifications:
           cmd.value = '';
           return; // Skip normal output processing
         }
+
+        // --- SECRET EASTER EGG (soffumaikku - Two Cats) ---
+        if (inputVal === 'soffumaikku') {
+          terminal.innerHTML = '';
+          cmd.value = '';
+          
+          const catDiv = document.createElement('div');
+          // Using var(--text) for the cats and var(--red) for the heart
+          catDiv.style.whiteSpace = 'pre'; 
+          catDiv.style.marginTop = '20px';
+          catDiv.style.lineHeight = '1.2';
+          terminal.appendChild(catDiv);
+
+          // ASCII Art of two cats sitting together
+          const cats = `
+   /\\_/\\           /\\_/\\
+  ( o.o ) <span style="color: var(--red);">♥</span> ( =^.^= )
+   > ^ <           ( m m )
+          `;
+
+          catDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">soffumaikku</span>\n` + cats + `\n<i style="color: var(--dim);">Two cute network cats found in the system.</i>\n\n`;
+          
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          return;
+        }
+
         
         // --- SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
