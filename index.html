@@ -600,24 +600,26 @@ Active Licenses / Certifications:
         let p = packets[i];
         p.progress += p.speed;
         
-        // Remove packet if it reached destination router
         if (p.progress >= 1) {
           packets.splice(i, 1);
           continue;
         }
 
-        // Calculate packet position along the line
         const currX = p.source.x + (p.target.x - p.source.x) * p.progress;
         const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
 
-        // Draw glowing packet
-        ctx.fillStyle = '#ffffff'; 
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = '#00ff88';
+        // Draw glowing packet using its assigned TCP handshake color
+        ctx.fillStyle = '#ffffff'; // Keep the core white for brightness
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color; // The glow effect uses the SYN/ACK color
+        
+        // Optionally, make the dot itself colored instead of white:
+        // ctx.fillStyle = p.color; 
+
         ctx.beginPath();
-        ctx.arc(currX, currY, 1.5, 0, Math.PI * 2);
+        ctx.arc(currX, currY, 1.8, 0, Math.PI * 2); // Slightly larger packet
         ctx.fill();
-        ctx.shadowBlur = 0; // Reset shadow for other drawings
+        ctx.shadowBlur = 0; // Reset shadow
       }
 
       // 4. Draw and Update Nodes (Hexagon Routers)
