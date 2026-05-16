@@ -607,14 +607,30 @@ Active Licenses / Certifications:
         ctx.shadowBlur = 0; // Reset shadow for other drawings
       }
 
-      // 4. Draw and Update Nodes (Routers)
+      // 4. Draw and Update Nodes (Hexagon Routers)
       nodes.forEach(n => {
-        // Draw router node (Hollow circle to look like dashboard icons)
+        const hexRadius = n.r + 1; // Slightly larger to accommodate the shape
+        
         ctx.fillStyle = '#0a0e0f'; 
         ctx.strokeStyle = '#00ff88'; 
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        
+        // Draw Hexagon by plotting 6 points around the center
+        for (let i = 0; i < 6; i++) {
+          // Angle in radians (60 degrees per point). Start at 30 deg offset so flat sides are top/bottom
+          const angle = (Math.PI / 3) * i + (Math.PI / 6); 
+          const hx = n.x + hexRadius * Math.cos(angle);
+          const hy = n.y + hexRadius * Math.sin(angle);
+          
+          if (i === 0) {
+            ctx.moveTo(hx, hy);
+          } else {
+            ctx.lineTo(hx, hy);
+          }
+        }
+        ctx.closePath(); // Connect the last point to the first
+        
         ctx.fill();
         ctx.stroke();
 
