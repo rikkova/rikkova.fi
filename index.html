@@ -570,28 +570,17 @@ Active Licenses / Certifications:
         }
       }
 
-      // 2. Generate Network Traffic (Packets representing TCP Handshake)
-      if (activeLinks.length > 0 && Math.random() < 0.15) { 
+      // 2. Generate Network Traffic (Initiate TCP Handshake with SYN)
+      if (activeLinks.length > 0 && Math.random() < 0.05) { 
         const link = activeLinks[Math.floor(Math.random() * activeLinks.length)];
         
-        // Randomly assign a packet type: 0 = SYN, 1 = SYN-ACK, 2 = ACK
-        const packetType = Math.floor(Math.random() * 3);
-        let pColor;
-        
-        if (packetType === 0) {
-          pColor = '#f0c040'; // SYN (Yellow) - Initiating connection
-        } else if (packetType === 1) {
-          pColor = '#ff4455'; // SYN-ACK (Red) - Acknowledging and responding
-        } else {
-          pColor = '#00ff88'; // ACK (Green) - Connection established
-        }
-
         packets.push({
           source: link.source,
           target: link.target,
           progress: 0,
-          speed: 0.015 + Math.random() * 0.02,
-          color: pColor // Store the color for drawing
+          speed: 0.01 + Math.random() * 0.015,
+          type: 'SYN',
+          color: '#f0c040' // SYN (Yellow) - Initiating
         });
       }
 
@@ -600,26 +589,48 @@ Active Licenses / Certifications:
         let p = packets[i];
         p.progress += p.speed;
         
+        // Handshake state machine: What happens when a packet reaches destination?
         if (p.progress >= 1) {
-          packets.splice(i, 1);
+          if (p.type === 'SYN') {
+            // Target received SYN, send SYN-ACK back to Source
+            packets.push({
+              source: p.target, // Swap source/target
+              target: p.source,
+              progress: 0,
+              speed: p.speed, // Keep the same latency/speed
+              type: 'SYN-ACK',
+              color: '#ff4455' // SYN-ACK (Red)
+            });
+          } else if (p.type === 'SYN-ACK') {
+            // Source received SYN-ACK, send final ACK back to Target
+            packets.push({
+              source: p.target, // Swap back
+              target: p.source,
+              progress: 0,
+              speed: p.speed,
+              type: 'ACK',
+              color: '#00ff88' // ACK (Green)
+            });
+          }
+          // If type is ACK, the handshake is complete. It just disappears!
+          
+          packets.splice(i, 1); // Remove the completed packet
           continue;
         }
 
+        // Calculate current position
         const currX = p.source.x + (p.target.x - p.source.x) * p.progress;
         const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
 
-        // Draw glowing packet using its assigned TCP handshake color
-        ctx.fillStyle = '#ffffff'; // Keep the core white for brightness
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p.color; // The glow effect uses the SYN/ACK color
+        // Draw glowing packet
+        ctx.fillStyle = '#ffffff'; 
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = p.color; 
         
-        // Optionally, make the dot itself colored instead of white:
-        // ctx.fillStyle = p.color; 
-
         ctx.beginPath();
-        ctx.arc(currX, currY, 1.8, 0, Math.PI * 2); // Slightly larger packet
+        ctx.arc(currX, currY, 3, 0, Math.PI * 2); 
         ctx.fill();
-        ctx.shadowBlur = 0; // Reset shadow
+        ctx.shadowBlur = 0; 
       }
 
       // 4. Draw and Update Nodes (Hexagon Routers)
