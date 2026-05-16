@@ -493,6 +493,8 @@ Active Licenses / Certifications:
         if (awaitingPassword) {
           awaitingPassword = false;
           cmd.type = 'text'; 
+          // Reset the prompt UI if they abort password entry
+          document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
         }
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
@@ -527,23 +529,26 @@ Active Licenses / Certifications:
         if (awaitingPassword) {
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
-          outputDiv.innerHTML = `Password: \n`;
           
           if (inputVal === 'cisco') {
             isRoot = true;
             awaitingPassword = false;
             currentPrompt = '<span class="prompt" style="color: var(--red);">root@rikkova:~# </span>';
+            
+            // Set the active input prompt to the new root prompt
             document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
-            outputDiv.innerHTML += `Authentication successful. Root privileges granted.\nType 'help' to view elevated commands.`;
+            outputDiv.innerHTML = `Password: \nAuthentication successful. Root privileges granted.\nType 'help' to view elevated commands.`;
             cmd.style.color = 'var(--red)';
           } else {
             awaitingPassword = false;
-            cmd.type = 'text';
-            outputDiv.innerHTML += `su: Authentication failure`;
+            // Set the active input prompt back to guest
+            document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
+            outputDiv.innerHTML = `Password: \nsu: Authentication failure`;
           }
+          
           terminal.appendChild(outputDiv);
           cmd.value = '';
-          cmd.type = 'text';
+          cmd.type = 'text'; // Restore normal typing
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return; 
         }
@@ -552,10 +557,16 @@ Active Licenses / Certifications:
         if (inputVal === 'su' || inputVal === 'su -') {
           awaitingPassword = true;
           cmd.type = 'password'; 
+          
+          // Print the command to history
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\nPassword: `;
+          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>`;
           terminal.appendChild(outputDiv);
+          
+          // Change the actual input prompt to "Password: "
+          document.querySelector('.input-line .prompt').innerText = 'Password: ';
+          
           cmd.value = '';
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return;
