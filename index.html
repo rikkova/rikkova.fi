@@ -271,6 +271,7 @@
   ping            - Display contact details
   traceroute      - Trace career path and job history
   curl            - Display external IP address information
+  wget resume     - Download my resume (PDF)
   top             - Monitor active tasks and current focus
   nmap            - Scan active services and protocols
   diagnostics     - Run diagnostics
@@ -661,6 +662,69 @@ Active Licenses / Certifications:
           return; // Skip normal output processing
         }
 
+        // --- DOWNLOAD RESUME LOGIC (wget) ---
+        if (inputVal === 'wget resume' || inputVal === 'wget resume.pdf') {
+          cmd.disabled = true;
+          
+          const wgetDiv = document.createElement('div');
+          wgetDiv.className = 'output';
+          terminal.appendChild(wgetDiv);
+          
+          const githubRawUrl = "https://raw.githubusercontent.com/rikkova/rikkova.fi/main/resume_vaino.rikkonen.pdf"; // TODO: Update this URL!
+          
+          wgetDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">${cmd.value}</span>\n`;
+          wgetDiv.innerHTML += `Resolving github.com (github.com)... 140.82.113.3\n`;
+          
+          setTimeout(() => {
+            wgetDiv.innerHTML += `Connecting to github.com|140.82.113.3|:443... connected.\n`;
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+          }, 600);
+
+          setTimeout(() => {
+            wgetDiv.innerHTML += `HTTP request sent, awaiting response... 200 OK\n`;
+            wgetDiv.innerHTML += `Length: 1048576 (1.0M) [application/pdf]\n`;
+            wgetDiv.innerHTML += `Saving to: ‘resume_vaino.rikkonen.pdf’\n\n`;
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+            
+            // Simulate the progress bar jumping to 100%
+            let progress = 0;
+            const progressSpan = document.createElement('span');
+            wgetDiv.appendChild(progressSpan);
+            
+            const interval = setInterval(() => {
+              progress += 20;
+              const bar = '='.repeat(progress / 5) + '>'.repeat(progress < 100 ? 1 : 0) + ' '.repeat(20 - (progress / 5));
+              progressSpan.innerText = `resume_vaino.rikkonen.pdf    ${progress}%[${bar}]   1.00M  --.-KB/s    in 0.${Math.floor(Math.random()*9)}s`;
+              
+              if (progress >= 100) {
+                clearInterval(interval);
+                
+                // Add completion text
+                const currentD = new Date();
+                const timeString = `${currentD.getFullYear()}-${String(currentD.getMonth()+1).padStart(2, '0')}-${String(currentD.getDate()).padStart(2, '0')} ${String(currentD.getHours()).padStart(2, '0')}:${String(currentD.getMinutes()).padStart(2, '0')}`;
+                
+                wgetDiv.innerHTML += `\n\n${timeString} (12.4 MB/s) - ‘resume_vaino.rikkonen.pdf’ saved [1048576/1048576]`;
+                
+                // Trigger the actual download
+                const link = document.createElement('a');
+                link.href = githubRawUrl;
+                link.download = 'resume_vaino.rikkonen.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                cmd.disabled = false;
+                cmd.focus();
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+              }
+            }, 150);
+            
+          }, 1200);
+          
+          cmd.value = '';
+          return;
+        }
+        
         // --- SECRET EASTER EGG (soffumaikku - Two Cats) ---
         if (inputVal === 'soffumaikku') {
           terminal.innerHTML = '';
