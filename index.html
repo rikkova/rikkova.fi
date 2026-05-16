@@ -519,8 +519,9 @@ Active Licenses / Certifications:
     const ctx = canvas.getContext('2d');
 
     let nodes = [];
-    const NODE_COUNT = 30;
-    const MAX_DIST = 180;
+    let packets = [];
+    const NODE_COUNT = 40; // Number of routers/switches
+    const MAX_DIST = 200;  // Maximum link distance
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -529,13 +530,15 @@ Active Licenses / Certifications:
 
     function initNodes() {
       nodes = [];
+      packets = [];
       for (let i = 0; i < NODE_COUNT; i++) {
         nodes.push({
+          id: i,
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.4,
-          vy: (Math.random() - 0.5) * 0.4,
-          r: Math.random() * 3 + 2,
+          vx: (Math.random() - 0.5) * 0.15, // Extremely slow movement
+          vy: (Math.random() - 0.5) * 0.15,
+          r: Math.random() * 2 + 3, // Slightly larger nodes
         });
       }
     }
@@ -543,15 +546,22 @@ Active Licenses / Certifications:
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      let activeLinks = [];
+
+      // 1. Draw Links & Map Adjacencies
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
           const dy = nodes[i].y - nodes[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
+          
           if (dist < MAX_DIST) {
+            activeLinks.push({ source: nodes[i], target: nodes[j], dist: dist });
+            
+            // Draw link line
             const alpha = 1 - dist / MAX_DIST;
-            ctx.strokeStyle = `rgba(0, 255, 136, ${alpha * 0.6})`;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = `rgba(0, 255, 136, ${alpha * 0.4})`;
+            ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -560,16 +570,59 @@ Active Licenses / Certifications:
         }
       }
 
+      // 2. Generate Network Traffic (Packets)
+      // 15% chance per frame to send a packet across a random active link
+      if (activeLinks.length > 0 && Math.random() < 0.15) { 
+        const link = activeLinks[Math.floor(Math.random() * activeLinks.length)];
+        packets.push({
+          source: link.source,
+          target: link.target,
+          progress: 0,
+          speed: 0.015 + Math.random() * 0.02 // Speed of packet transmission
+        });
+      }
+
+      // 3. Draw and Update Packets
+      for (let i = packets.length - 1; i >= 0; i--) {
+        let p = packets[i];
+        p.progress += p.speed;
+        
+        // Remove packet if it reached destination router
+        if (p.progress >= 1) {
+          packets.splice(i, 1);
+          continue;
+        }
+
+        // Calculate packet position along the line
+        const currX = p.source.x + (p.target.x - p.source.x) * p.progress;
+        const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
+
+        // Draw glowing packet
+        ctx.fillStyle = '#ffffff'; 
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#00ff88';
+        ctx.beginPath();
+        ctx.arc(currX, currY, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset shadow for other drawings
+      }
+
+      // 4. Draw and Update Nodes (Routers)
       nodes.forEach(n => {
-        ctx.fillStyle = '#00ff88';
+        // Draw router node (Hollow circle to look like dashboard icons)
+        ctx.fillStyle = '#0a0e0f'; 
+        ctx.strokeStyle = '#00ff88'; 
+        ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();
-      });
+        ctx.stroke();
 
-      nodes.forEach(n => {
+        // Update position slowly
         n.x += n.vx;
         n.y += n.vy;
+
+        // Bounce off canvas edges
         if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
         if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
       });
