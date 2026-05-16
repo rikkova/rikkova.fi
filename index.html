@@ -170,6 +170,9 @@
     const terminalBody = document.getElementById('terminal-body');
     const cmd = document.getElementById('cmd');
 
+    let commandHistory = [];
+    let historyIndex = -1;
+    
     // 1. Calculate dynamic system uptime FIRST, before the commands dictionary
     const dob = new Date(1997, 8, 17); // Month 8 is September
     const now = new Date();
@@ -400,6 +403,35 @@ Active Licenses / Certifications:
 
     // 3. Listen for commands
     cmd.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault(); // Prevent cursor from jumping to the beginning
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          cmd.value = commandHistory[commandHistory.length - 1 - historyIndex];
+        }
+        return;
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex > 0) {
+          historyIndex--;
+          cmd.value = commandHistory[commandHistory.length - 1 - historyIndex];
+        } else if (historyIndex === 0) {
+          historyIndex = -1;
+          cmd.value = '';
+        }
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        const inputVal = cmd.value.trim().toLowerCase();
+        
+        // Push command to history (only if it's not empty and not the same as the last one)
+        if (inputVal !== '' && commandHistory[commandHistory.length - 1] !== inputVal) {
+          commandHistory.push(inputVal);
+        }
+        historyIndex = -1; // Reset index on enter
+
+        // ... rest of your Enter logic ...
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
         
