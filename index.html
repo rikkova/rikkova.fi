@@ -154,20 +154,16 @@
     
     <div class="terminal-body" id="terminal-body">
       <div id="terminal">
-        <div class="output">Welcome to V-OS Network Terminal v2.0.
-Login: guest
-Access: Granted
-Establishing BGP sessions... <span style="color:var(--green)">[OK]</span>
-
-Type '<span style="color:var(--green)">help</span>' to see a list of available commands.</div>
+        <!-- Text will be injected here by JavaScript -->
+        <div class="output" id="boot-output"></div>
       </div>
       
-      <div class="input-line">
+      <!-- Added id="input-line" and hidden it by default -->
+      <div class="input-line" id="input-line" style="display: none;">
         <span class="prompt">guest@rikkova:~$ </span>
-        <input type="text" id="cmd" autofocus autocomplete="off" spellcheck="false">
+        <input type="text" id="cmd" autocomplete="off" spellcheck="false">
       </div>
     </div>
-  </div>
 
   <script>
     const terminal = document.getElementById('terminal');
@@ -192,6 +188,59 @@ Type '<span style="color:var(--green)">help</span>' to see a list of available c
     }
     const uptimeString = `${years} years, ${months} months, ${days} days`;
 
+    // --- BOOT SEQUENCE LOGIC ---
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    async function runBootSequence() {
+      const bootOutput = document.getElementById('boot-output');
+      const inputLine = document.getElementById('input-line');
+      
+      // Helper to simulate typing
+      const typeText = async (text, delay = 25) => {
+        for (let char of text) {
+          bootOutput.innerHTML += char;
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          await sleep(delay);
+        }
+      };
+
+      // 1. Initial greeting
+      await typeText("Welcome to V-OS Network Terminal v2.0.\n");
+      await sleep(300);
+      
+      // 2. Login
+      await typeText("Login: ");
+      await sleep(400);
+      await typeText("guest\n", 50); // type "guest" a bit slower
+      await sleep(200);
+      
+      // 3. Access
+      await typeText("Access: Granted\n");
+      await sleep(500);
+      
+      // 4. BGP Sessions with blinking dots
+      await typeText("Establishing BGP sessions");
+      for (let i = 0; i < 3; i++) {
+        await sleep(600); // wait before each dot
+        bootOutput.innerHTML += ".";
+      }
+      
+      await sleep(800); // suspense pause
+      bootOutput.innerHTML += ' <span style="color:var(--green)">[OK]</span>\n\n';
+      
+      // 5. Help prompt
+      await sleep(400);
+      bootOutput.innerHTML += "Type '<span style=\"color:var(--green)\">help</span>' to see a list of available commands.";
+      
+      // 6. Finish boot: Show input line and focus it
+      inputLine.style.display = 'flex';
+      cmd.focus();
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    // Start the boot sequence when page loads
+    runBootSequence();
+    
     // 2. Define commands dictionary
     const commands = {
       'help': `Available commands:
