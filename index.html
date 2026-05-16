@@ -1045,10 +1045,22 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         if (inputVal === '') {
           response = '';
         } else if (inputVal === 'sudo' || inputVal.startsWith('sudo ')) {
-          response = 'guest is not in the sudoers file. This incident will be reported.';
+          if (isRoot) {
+            response = 'You are already root.';
+          } else {
+            response = 'guest is not in the sudoers file. This incident will be reported.';
+          }
         } else if (!response) {
           response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
         }
+
+        outputDiv.innerHTML = promptSpan + commandSpan + response;
+        terminal.appendChild(outputDiv);
+        
+        cmd.value = '';
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+      }
+    }); // This closes cmd.addEventListener
 
         outputDiv.innerHTML = promptSpan + commandSpan + response;
         terminal.appendChild(outputDiv);
