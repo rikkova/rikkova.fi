@@ -319,7 +319,7 @@ RawContent        : HTTP/1.1 200 OK
                     CF-RAY: 9fca09dc1b485288-HEL
                     Content-Length: 25
                     Content-Type: text/plain
-                    Date: ${uptimeString}
+                    Date: {{CURL_DATE}}
                     Server: cloudflare
 Forms             :
 Headers           : {[Connection, keep-alive], [Vary, Origin], [cf-cache-status, DYNAMIC], [CF-RAY,
@@ -472,7 +472,9 @@ Active Licenses / Certifications:
 
         let response = commands[inputVal];
 
-        // Handle the dynamic nmap time (if you added it earlier)
+        // --- DYNAMIC COMMAND LOGIC ---
+        
+        // Handle nmap dynamic time
         if (inputVal === 'nmap' && response) {
           const d = new Date();
           const year = d.getFullYear();
@@ -484,6 +486,13 @@ Active Licenses / Certifications:
           
           const timeString = `${year}-${month}-${day} ${hours}:${mins} ${tz}`;
           response = response.replace('{{CURRENT_TIME}}', timeString);
+        }
+
+        // Handle curl dynamic HTTP Date header
+        if (inputVal === 'curl' && response) {
+          const d = new Date();
+          // toUTCString() generates the exact format: "Sat, 16 May 2026 11:28:22 GMT"
+          response = response.replace('{{CURL_DATE}}', d.toUTCString());
         }
 
         // --- HANDLE SUDO, EMPTY INPUTS, ERRORS ---
