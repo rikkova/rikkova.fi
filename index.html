@@ -246,11 +246,13 @@
       'help': `Available commands:
   whoami          - Display profile information
   show version    - View system uptime and certifications
-  show ip route   - Show experience/routing table
+  show ip route   - View network architecture scope
   show bgp sum    - View IT/Network engineering skills
   show interface  - View projects
   show cdp nei    - View languages and soft skills
   ping            - Display contact details
+  traceroute      - Trace career path and job history
+  top             - Monitor active tasks and current focus
   clear           - Clear the terminal screen`,
       
       'whoami': `Name: Väinö Rikkonen
@@ -275,36 +277,36 @@ NetDevOps              : Python, Ansible, Terraform, Git
 Programmability        : NETCONF, RESTCONF, gNMI, Cisco NSO/NDFC
 Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
       
-      'show ip route': `! == EXPERIENCE ==
-router-id 0.0.0.1
- hostname <span style="color: #E31937; font-weight: bold;">CGI</span>
- role "Infrastructure Architect"
- duration "2026 – present"
-!
- hostname <span style="color: #E31937; font-weight: bold;">CGI</span>
- role "Network Designer"
- duration "2024 – 2026"
-!
- hostname <span style="color: #4285F4; font-weight: bold;">G</span><span style="color: #EA4335; font-weight: bold;">o</span><span style="color: #FBBC05; font-weight: bold;">o</span><span style="color: #4285F4; font-weight: bold;">g</span><span style="color: #34A853; font-weight: bold;">l</span><span style="color: #EA4335; font-weight: bold;">e</span>
- role "Data Center Technician"
- duration "2023 – 2024"
-!
- hostname <span style="color: #E31937; font-weight: bold;">CGI</span>
- role "Data Networking Engineer"
- duration "2021 – 2022"
-!
- hostname <span style="color: #A100FF; font-weight: bold;">Accenture</span>
- role "Cyber Defense Analyst"
- duration "2020 – 2021"
-!
- hostname <span style="color: #E31937; font-weight: bold;">CGI</span>
- role "Network Specialist"
- duration "2019 – 2020"
-!
- hostname <span style="color: #E31937; font-weight: bold;">CGI</span>
- role "IT Technician"
- duration "2017 – 2019"
-!`,
+      'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
+
+Gateway of last resort is 0.0.0.0 to network 0.0.0.0
+
+B    0.0.0.0/0 [20/0] via AS24713 (Internet Edge)
+       * Handles CGI external connectivity, peering policy, and edge routing.
+O    10.0.0.0/8 [110/2] via AS1854 (MPLS & Segment Routing Backbone)
+       * Core backbone providing traffic engineering and sub-second failover.
+C    172.16.0.0/12 is directly connected, VXLAN_Fabric
+       * Underlay/Overlay fabric supporting global Data Center hosting.
+S    192.168.0.0/16 [1/0] via Zscaler_SASE
+       * Zero-Trust remote user access (Migrated from legacy VPN).`,
+
+      'traceroute': `traceroute to career.rikkova.fi (192.168.100.1), 30 hops max, 60 byte packets
+ 1  IT-Technician.cgi.com (10.0.1.1)  1.234 ms  1.456 ms  1.678 ms
+ 2  Network-Specialist.cgi.com (10.0.2.1)  2.345 ms  2.567 ms  2.890 ms
+ 3  Cyber-Defense.accenture.com (10.0.3.1)  3.456 ms  3.789 ms  4.123 ms
+ 4  DC-Tech.google.com (10.0.4.1)  14.567 ms  15.890 ms  16.123 ms  [High Latency: Heavy Lifting Required]
+ 5  Network-Designer.cgi.com (10.0.5.1)  5.678 ms  5.890 ms  6.123 ms
+ 6  Infra-Architect.cgi.com (192.168.100.1)  6.345 ms  6.567 ms  6.890 ms
+
+Trace complete. Next hop: Unknown (Routing dynamically...)`,
+
+      'top': `CPU utilization for five seconds: 85%/15%; one minute: 82%; five minutes: 78%
+PID    Runtime(ms)  Invoked   uSecs   5Sec   1Min   5Min TTY Process
+ 101       3498234     1423    2458  45.2%  42.1%  39.8%   0 Python/Netmiko (Automation)
+ 204       1823942      892    2044  22.5%  25.0%  28.1%   0 BGP Route Reflector Design
+ 305        923481      431    2142  12.3%  10.5%   9.2%   0 CCNP_SP_Study_Guide.pdf
+ 409        152341       45    3385   5.0%   4.4%   0.9%   0 Coffee.exe`,
+      
       'show interface': `Interface: Security (ASA to FortiGate Migration)
  Status: UP (Hardened)
  Description: Migrated EOL Cisco ASAs to Fortinet NGFWs. Executed a complete policy audit and redesign to eliminate technical debt and broad permit-any rules, resulting in a fully hardened, application-aware perimeter.
