@@ -253,6 +253,7 @@
   ping            - Display contact details
   traceroute      - Trace career path and job history
   top             - Monitor active tasks and current focus
+  nmap            - Scan active services and protocols
   clear           - Clear the terminal screen`,
       
       'whoami': `Name: Väinö Rikkonen
@@ -326,6 +327,21 @@ Interface: AS24713-Edge (Internet Resilience)
 Interface: Core-Fabric (DC Migration Program)
  Status: MIGRATED (Zero Impact)
  Description: Lead Network Engineer for a large-scale datacenter migration. Orchestrated the seamless transition of routing, switching, and firewall fabrics while reducing OpEx by decommissioning EOL hardware.`,
+
+      'nmap': `Starting Nmap 7.93 ( https://nmap.org ) at {{CURRENT_TIME}}
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00013s latency).
+Not shown: 994 closed tcp ports (reset)
+
+PORT      STATE SERVICE      VERSION
+22/tcp    open  ssh          Secure Communication & Automation
+80/tcp    open  http         REST API / Webhook Integration
+179/tcp   open  bgp          Core Routing & Peering Policy
+443/tcp   open  https        Encrypted Tunnels / SASE / IPsec
+830/tcp   open  netconf      Infrastructure as Code (IaC)
+6653/tcp  open  openflow     SDN & VXLAN Fabric Management
+
+Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds`,
       
       'ping': `Pinging contact.rikkova.fi [2606:4700:3031::ac43:cd56] with 56 bytes of data:
 64 bytes from <a href="mailto:vaino.rikkonen@gmail.com" style="color: var(--green); text-decoration: underline;">vaino.rikkonen@gmail.com</a>: icmp_seq=1 ttl=64 time<1ms
@@ -428,7 +444,31 @@ Active Licenses / Certifications:
         const commandSpan = '<span class="user-input">' + cmd.value + '</span>\n';
 
         let response = commands[inputVal];
+
+        // --- DYNAMIC COMMAND LOGIC ---
+        if (inputVal === 'nmap' && response) {
+          const d = new Date();
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const hours = String(d.getHours()).padStart(2, '0');
+          const mins = String(d.getMinutes()).padStart(2, '0');
+          
+          // Grabs the local timezone abbreviation (e.g., EEST, EST, GMT)
+          const tz = d.toLocaleTimeString('en-us', {timeZoneName:'short'}).split(' ')[2] || ''; 
+          
+          const timeString = `${year}-${month}-${day} ${hours}:${mins} ${tz}`;
+          response = response.replace('{{CURRENT_TIME}}', timeString);
+        }
         
+        // --- HANDLE SUDO, EMPTY INPUTS, ERRORS ---
+        if (inputVal === '') {
+          response = '';
+        } else if (inputVal === 'sudo' || inputVal.startsWith('sudo ')) {
+          response = 'guest is not in the sudoers file. This incident will be reported.';
+        } else if (!response) {
+          response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
+        }
         // Handle sudo, empty inputs, and unrecognized commands safely
         if (inputVal === '') {
           response = '';
