@@ -90,16 +90,10 @@
 
     .terminal-body { 
       padding: 1.5rem; 
-      height: 60vh;
+      max-height: 60vh;
       overflow-y: auto;
-      display: flex;
-      flex-direction: column;
     }
-    
-    #terminal {
-      flex-grow: 1; /* Pushes the input line to the bottom naturally */
-    }
-    
+
     .output { 
       margin-bottom: 15px; 
       white-space: pre-wrap; 
@@ -159,15 +153,14 @@
     </div>
     
     <div class="terminal-body" id="terminal-body">
-      <!-- The terminal output will be injected here by Javascript -->
-      <div id="terminal"></div>
-      
-      <!-- We hide the input line initially using style="display: none;" -->
-      <div class="input-line" id="input-line" style="display: none;">
-        <span class="prompt">guest@rikkova:~$ </span>
-        <input type="text" id="cmd" autocomplete="off" spellcheck="false">
+      <div id="terminal">
+        <div class="output">Welcome to V-OS Network Terminal v2.0.
+Login: guest
+Access: Granted
+Establishing BGP sessions... <span style="color:var(--green)">[OK]</span>
+
+Type '<span style="color:var(--green)">help</span>' to see a list of available commands.</div>
       </div>
-    </div>
       
       <div class="input-line">
         <span class="prompt">guest@rikkova:~$ </span>
@@ -180,58 +173,6 @@
     const terminal = document.getElementById('terminal');
     const terminalBody = document.getElementById('terminal-body');
     const cmd = document.getElementById('cmd');
-    const inputLine = document.getElementById('input-line'); // Grab the hidden input line
-
-    // --- TYPEWRITER BOOT SEQUENCE ---
-    const welcomeText = `Welcome to V-OS Network Terminal v2.0.
-Login: guest
-Access: Granted
-Establishing BGP sessions... <span style="color:var(--green)">[OK]</span>
-
-Type '<span style="color:var(--green)">help</span>' to see a list of available commands.`;
-
-    const welcomeDiv = document.createElement('div');
-    welcomeDiv.className = 'output';
-    terminal.appendChild(welcomeDiv);
-
-    let charIndex = 0;
-    let isHtmlTag = false;
-    let textToType = "";
-
-    function typeWriter() {
-      if (charIndex < welcomeText.length) {
-        let char = welcomeText.charAt(charIndex);
-        
-        // Check if we are starting an HTML tag (like <span>)
-        if (char === '<') isHtmlTag = true;
-        
-        textToType += char;
-        charIndex++;
-        
-        if (isHtmlTag) {
-          // Fast-forward instantly through the HTML tag so it doesn't print broken code
-          while (charIndex < welcomeText.length && welcomeText.charAt(charIndex - 1) !== '>') {
-            textToType += welcomeText.charAt(charIndex);
-            charIndex++;
-          }
-          isHtmlTag = false;
-          welcomeDiv.innerHTML = textToType;
-          typeWriter(); // Immediately type the next character
-        } else {
-          welcomeDiv.innerHTML = textToType;
-          // Randomize typing speed slightly (between 10ms and 40ms) for realism
-          setTimeout(typeWriter, Math.random() * 30 + 10);
-        }
-      } else {
-        // Animation finished: Show the input line and put the cursor inside it
-        inputLine.style.display = 'flex';
-        cmd.focus();
-        terminalBody.scrollTop = terminalBody.scrollHeight;
-      }
-    }
-
-    // Start the animation immediately when the page loads
-    typeWriter();
 
     // 1. Calculate dynamic system uptime FIRST, before the commands dictionary
     const dob = new Date(1997, 8, 17); // Month 8 is September
@@ -366,11 +307,6 @@ Active Licenses / Certifications:
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
         
-        // --- PREVENT EMPTY ENTER SPAM ---
-        if (inputVal === '') {
-          return; // Do absolutely nothing if the input is empty
-        }
-
         // --- CLEAR COMMAND ---
         if (inputVal === 'clear') {
           terminal.innerHTML = '';
@@ -439,8 +375,10 @@ Active Licenses / Certifications:
 
         let response = commands[inputVal];
         
-        // Handle sudo and unrecognized commands safely
-        if (inputVal.startsWith('sudo ')) {
+        // Handle sudo, empty inputs, and unrecognized commands safely
+        if (inputVal === '') {
+          response = '';
+        } else if (inputVal.startsWith('sudo ')) {
           response = 'guest is not in the sudoers file. This incident will be reported.';
         } else if (!response) {
           response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
