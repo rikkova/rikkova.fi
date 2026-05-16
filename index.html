@@ -546,87 +546,110 @@ Active Licenses / Certifications:
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      let activeLinks = [];
-
-      // 1. Draw Links & Map Adjacencies
+      // 1. Draw Links (Full Mesh / Highly Interlinked)
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
           const dy = nodes[i].y - nodes[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           
-          if (dist < MAX_DIST) {
-            activeLinks.push({ source: nodes[i], target: nodes[j], dist: dist });
-            
-            // Draw link line
-            const alpha = 1 - dist / MAX_DIST;
-            ctx.strokeStyle = `rgba(0, 255, 136, ${alpha * 0.4})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.stroke();
-          }
+          // The further away, the more transparent the link. 
+          // This simulates thick local fabrics and faint long-haul WAN links.
+          // Max canvas width is roughly the max distance.
+          let alpha = 0.25 - (dist / (canvas.width * 0.8)); 
+          if (alpha < 0.02) alpha = 0.02; // Ensure even longest links are barely visible
+
+          ctx.strokeStyle = `rgba(0, 255, 136, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
         }
       }
 
       // 2. Generate Network Traffic (Initiate TCP Handshake with SYN)
-      if (activeLinks.length > 0 && Math.random() < 0.05) { 
-        const link = activeLinks[Math.floor(Math.random() * activeLinks.length)];
+      if (Math.random() < 0.08) { 
+        // Pick a random Source node
+        const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
         
+        // Calculate distances to all OTHER nodes to simulate a routing table
+        let routingTable = [];
+        let totalWeight = 0;
+        
+        for (let i = 0; i < nodes.length; i++) {
+          if (nodes[i] === sourceNode) continue;
+          
+          const dx = sourceNode.x - nodes[i].x;
+          const dy = sourceNode.y - nodes[i].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          // Weight calculation: Inverse of distance squared.
+          // This makes short links astronomically preferred (like OSPF cost),
+          // but long-haul links still have a tiny fraction of a chance to be used.
+          const weight = 1 / (dist * dist); 
+          routingTable.push({ target: nodes[i], weight: weight, dist: dist });
+          totalWeight += weight;
+        }
+
+        // Weighted random selection (The "Routing Decision")
+        let randomChoice = Math.random() * totalWeight;
+        let selectedTarget = routingTable[0].target;
+        let selectedDist = routingTable[0].dist;
+        
+        for (let i = 0; i < routingTable.length; i++) {
+          randomChoice -= routingTable[i].weight;
+          if (randomChoice <= 0) {
+            selectedTarget = routingTable[i].target;
+            selectedDist = routingTable[i].dist;
+            break;
+          }
+        }
+        
+        // Speed is based on distance so long-haul packets don't take 5 minutes to arrive
+        // but short packets don't instantly teleport.
+        const dynamicSpeed = 2 / selectedDist; 
+
         packets.push({
-          source: link.source,
-          target: link.target,
+          source: sourceNode,
+          target: selectedTarget,
           progress: 0,
-          speed: 0.01 + Math.random() * 0.015,
+          speed: dynamicSpeed,
           type: 'SYN',
-          color: '#f0c040' // SYN (Yellow) - Initiating
+          color: '#f0c040' // SYN (Yellow)
         });
       }
 
-      // 3. Draw and Update Packets
+      // 3. Draw and Update Packets (Stateful TCP Handshake)
       for (let i = packets.length - 1; i >= 0; i--) {
         let p = packets[i];
         p.progress += p.speed;
         
-        // Handshake state machine: What happens when a packet reaches destination?
+        // Handshake state machine
         if (p.progress >= 1) {
           if (p.type === 'SYN') {
-            // Target received SYN, send SYN-ACK back to Source
             packets.push({
-              source: p.target, // Swap source/target
-              target: p.source,
-              progress: 0,
-              speed: p.speed, // Keep the same latency/speed
-              type: 'SYN-ACK',
-              color: '#ff4455' // SYN-ACK (Red)
+              source: p.target, target: p.source,
+              progress: 0, speed: p.speed,
+              type: 'SYN-ACK', color: '#ff4455'
             });
           } else if (p.type === 'SYN-ACK') {
-            // Source received SYN-ACK, send final ACK back to Target
             packets.push({
-              source: p.target, // Swap back
-              target: p.source,
-              progress: 0,
-              speed: p.speed,
-              type: 'ACK',
-              color: '#00ff88' // ACK (Green)
+              source: p.target, target: p.source,
+              progress: 0, speed: p.speed,
+              type: 'ACK', color: '#00ff88'
             });
           }
-          // If type is ACK, the handshake is complete. It just disappears!
-          
-          packets.splice(i, 1); // Remove the completed packet
+          packets.splice(i, 1);
           continue;
         }
 
-        // Calculate current position
         const currX = p.source.x + (p.target.x - p.source.x) * p.progress;
         const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
 
-        // Draw glowing packet
         ctx.fillStyle = '#ffffff'; 
         ctx.shadowBlur = 18;
         ctx.shadowColor = p.color; 
-        
         ctx.beginPath();
         ctx.arc(currX, currY, 3, 0, Math.PI * 2); 
         ctx.fill();
@@ -635,36 +658,24 @@ Active Licenses / Certifications:
 
       // 4. Draw and Update Nodes (Hexagon Routers)
       nodes.forEach(n => {
-        const hexRadius = n.r + 1; // Slightly larger to accommodate the shape
-        
+        const hexRadius = n.r + 1; 
         ctx.fillStyle = '#0a0e0f'; 
         ctx.strokeStyle = '#00ff88'; 
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        
-        // Draw Hexagon by plotting 6 points around the center
         for (let i = 0; i < 6; i++) {
-          // Angle in radians (60 degrees per point). Start at 30 deg offset so flat sides are top/bottom
           const angle = (Math.PI / 3) * i + (Math.PI / 6); 
           const hx = n.x + hexRadius * Math.cos(angle);
           const hy = n.y + hexRadius * Math.sin(angle);
-          
-          if (i === 0) {
-            ctx.moveTo(hx, hy);
-          } else {
-            ctx.lineTo(hx, hy);
-          }
+          if (i === 0) ctx.moveTo(hx, hy);
+          else ctx.lineTo(hx, hy);
         }
-        ctx.closePath(); // Connect the last point to the first
-        
+        ctx.closePath(); 
         ctx.fill();
         ctx.stroke();
 
-        // Update position slowly
         n.x += n.vx;
         n.y += n.vy;
-
-        // Bounce off canvas edges
         if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
         if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
       });
