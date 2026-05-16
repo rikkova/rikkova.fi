@@ -184,10 +184,6 @@
     const terminalBody = document.getElementById('terminal-body');
     const cmd = document.getElementById('cmd');
 
-    let isRoot = false;
-    let awaitingPassword = false;
-    let currentPrompt = '<span class="prompt">guest@rikkova:~$ </span>';
-    
     let commandHistory = [];
     let historyIndex = -1;
     
@@ -483,86 +479,6 @@ Active Licenses / Certifications:
  - <span style="color: var(--yellow);">Cisco CCNP Service Provider</span> <span style="color: var(--dim);">[In Progress]</span>`,
     };
 
-        // --- PASSWORD ENTRY LOGIC ---
-        if (awaitingPassword) {
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          // Don't echo the password to the screen (like real Linux)
-          outputDiv.innerHTML = `Password: \n`;
-          
-          if (inputVal === 'cisco') {
-            isRoot = true;
-            awaitingPassword = false;
-            currentPrompt = '<span class="prompt" style="color: var(--red);">root@rikkova:~# </span>';
-            
-            // Update the UI prompts immediately
-            document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
-            outputDiv.innerHTML += `Authentication successful. Root privileges granted.\nType 'help' to view elevated commands.`;
-            
-            // Change the user's input text to red to signify danger!
-            cmd.style.color = 'var(--red)';
-          } else {
-            awaitingPassword = false;
-            cmd.type = 'text'; // Show text again
-            outputDiv.innerHTML += `su: Authentication failure`;
-          }
-          
-          terminal.appendChild(outputDiv);
-          cmd.value = '';
-          cmd.type = 'text'; // Restore normal typing
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return; // Skip normal processing
-        }
-
-        // --- INITIATE ROOT LOGIN (su -) ---
-        if (inputVal === 'su' || inputVal === 'su -') {
-          awaitingPassword = true;
-          cmd.type = 'password'; // Hide typing characters
-          
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\nPassword: `;
-          terminal.appendChild(outputDiv);
-          
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
-        }
-
-        // --- ROOT ONLY COMMANDS ---
-        if (inputVal === 'cat /etc/shadow') {
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          
-          if (isRoot) {
-            outputDiv.innerHTML = `${currentPrompt}<span class="user-input" style="color: var(--red);">${cmd.value}</span>\nroot:$6$xyz123$abc...:19245:0:99999:7:::\nguest:$6$abc789$xyz...:19245:0:99999:7:::\n\n<i style="color: var(--red);">Naughty naughty... looking at password hashes are we?</i>`;
-          } else {
-            outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\ncat: /etc/shadow: Permission denied`;
-          }
-          
-          terminal.appendChild(outputDiv);
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
-        }
-        
-        // --- EXIT ROOT MODE ---
-        if (inputVal === 'exit' && isRoot) {
-          isRoot = false;
-          currentPrompt = '<span class="prompt">guest@rikkova:~$ </span>';
-          document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
-          cmd.style.color = 'var(--yellow)';
-          
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">exit</span>\nlogout`;
-          terminal.appendChild(outputDiv);
-          
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
-        }
-    
     // 3. Listen for commands
     cmd.addEventListener('keydown', function(e) {
       if (e.key === 'ArrowUp') {
@@ -613,18 +529,13 @@ Active Licenses / Certifications:
       if (e.ctrlKey && e.key === 'c') {
         e.preventDefault();
         
-        // Abort password entry if active
-        if (awaitingPassword) {
-          awaitingPassword = false;
-          cmd.type = 'text'; 
-        }
-
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
-        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>^C`;
+        // Print the prompt, whatever they were typing, and the ^C symbol
+        outputDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">${cmd.value}</span>^C`;
         terminal.appendChild(outputDiv);
         
-        cmd.value = ''; 
+        cmd.value = ''; // Clear input
         historyIndex = -1;
         terminalBody.scrollTop = terminalBody.scrollHeight;
         return;
@@ -980,7 +891,7 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
 
-        const promptSpan = currentPrompt;
+        const promptSpan = '<span class="prompt">guest@rikkova:~$ </span>';
         const commandSpan = '<span class="user-input">' + cmd.value + '</span>\n';
 
         let baseCommand = inputVal;
@@ -1045,22 +956,10 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         if (inputVal === '') {
           response = '';
         } else if (inputVal === 'sudo' || inputVal.startsWith('sudo ')) {
-          if (isRoot) {
-            response = 'You are already root.';
-          } else {
-            response = 'guest is not in the sudoers file. This incident will be reported.';
-          }
+          response = 'guest is not in the sudoers file. This incident will be reported.';
         } else if (!response) {
           response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
         }
-
-        outputDiv.innerHTML = promptSpan + commandSpan + response;
-        terminal.appendChild(outputDiv);
-        
-        cmd.value = '';
-        terminalBody.scrollTop = terminalBody.scrollHeight;
-      }
-    }); // This closes cmd.addEventListener
 
         outputDiv.innerHTML = promptSpan + commandSpan + response;
         terminal.appendChild(outputDiv);
