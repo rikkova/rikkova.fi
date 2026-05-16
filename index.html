@@ -361,6 +361,8 @@ Nmap scan report for localhost (127.0.0.1)
 Host is up (0.00013s latency).
 Not shown: 994 closed tcp ports (reset)
 
+      'diagnostics': `Starting system diagnostics...`,
+
 PORT      STATE SERVICE      VERSION
 22/tcp    open  ssh          Secure Communication & Automation
 80/tcp    open  http         REST API / Webhook Integration
@@ -479,7 +481,33 @@ Active Licenses / Certifications:
           return;
         }
         
-    
+
+        if (inputVal === 'diagnostics') {
+          cmd.disabled = true; // prevent typing while loading
+          
+          let progress = 0;
+          const diagDiv = document.createElement('div');
+          diagDiv.className = 'output';
+          terminal.appendChild(diagDiv);
+
+          const interval = setInterval(() => {
+            progress += 5;
+            const bar = '█'.repeat(progress / 5) + '░'.repeat(20 - (progress / 5));
+            diagDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">diagnostics</span>\nRunning system diagnostics...\n[${bar}] ${progress}%`;
+            
+            if (progress >= 100) {
+              clearInterval(interval);
+              diagDiv.innerHTML += '\n\nCPU: OK\nRAM: OK\nRouting Table: OPTIMAL\nCandidate Status: HIRE IMMEDIATELY';
+              cmd.disabled = false;
+              cmd.focus();
+              terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+          }, 100);
+          
+          cmd.value = '';
+          return; // Skip normal output processing
+        }
+        
         // --- SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
           terminal.innerHTML = '';
@@ -539,7 +567,38 @@ Active Licenses / Certifications:
         const promptSpan = '<span class="prompt">guest@rikkova:~$ </span>';
         const commandSpan = '<span class="user-input">' + cmd.value + '</span>\n';
 
-        let response = commands[inputVal];
+        let baseCommand = inputVal;
+        let grepTerm = null;
+
+        // Check for Linux pipe '| grep' or Cisco pipe '| i' or '| include'
+        if (inputVal.includes('| grep ')) {
+          const parts = inputVal.split('| grep ');
+          baseCommand = parts[0].trim();
+          grepTerm = parts[1].trim();
+        } else if (inputVal.includes('| i ')) {
+          const parts = inputVal.split('| i ');
+          baseCommand = parts[0].trim();
+          grepTerm = parts[1].trim();
+        }
+
+        let response = commands[baseCommand];
+
+        // --- GREP FILTERING LOGIC ---
+        if (response && grepTerm) {
+          // Split response into lines, and only keep lines that match the grep term
+          const lines = response.split('\n');
+          const matchedLines = lines.filter(line => line.toLowerCase().includes(grepTerm));
+          
+          if (matchedLines.length > 0) {
+            // Highlight the searched term in red
+            const regex = new RegExp(grepTerm, 'gi');
+            response = matchedLines.map(line => 
+              line.replace(regex, match => `<span style="color: var(--red);">${match}</span>`)
+            ).join('\n');
+          } else {
+            response = ''; // Return nothing if no match, just like real grep
+          }
+        }
 
         // --- GLOBAL PLACEHOLDER REPLACEMENTS ---
         if (response && response.includes('{{CURRENT_TIME}}')) {
