@@ -319,7 +319,7 @@ RawContent        : HTTP/1.1 200 OK
                     CF-RAY: 9fca09dc1b485288-HEL
                     Content-Length: 25
                     Content-Type: text/plain
-                    Date: {{CURL_DATE}}
+                    Date: {{CURRENT_TIME}}
                     Server: cloudflare
 Forms             :
 Headers           : {[Connection, keep-alive], [Vary, Origin], [cf-cache-status, DYNAMIC], [CF-RAY,
@@ -473,23 +473,7 @@ Active Licenses / Certifications:
         let response = commands[inputVal];
 
         // --- DYNAMIC COMMAND LOGIC ---
-        
-        // Handle nmap dynamic time
-        if (inputVal === 'nmap' && response) {
-          const d = new Date();
-          const year = d.getFullYear();
-          const month = String(d.getMonth() + 1).padStart(2, '0');
-          const day = String(d.getDate()).padStart(2, '0');
-          const hours = String(d.getHours()).padStart(2, '0');
-          const mins = String(d.getMinutes()).padStart(2, '0');
-          const tz = d.toLocaleTimeString('en-us', {timeZoneName:'short'}).split(' ')[2] || ''; 
-          
-          const timeString = `${year}-${month}-${day} ${hours}:${mins} ${tz}`;
-          response = response.replace('{{CURRENT_TIME}}', timeString);
-        }
-
-        // Handle curl dynamic HTTP Date header
-        // Handle curl dynamic HTTP Date header in Helsinki time (EEST/EET)
+        // Handle dynamic HTTP Date header in Helsinki time (EEST/EET)
         if (inputVal === 'curl' && response) {
           const d = new Date();
           
@@ -510,7 +494,7 @@ Active Licenses / Certifications:
           // We remove the comma after the year to match HTTP header standards
           const formattedHttpDate = helsinkiTime.replace(/(\d{4}),/, '$1');
           
-          response = response.replace('{{CURL_DATE}}', formattedHttpDate);
+          response = response.replace('{{CURRENT_TIME}}', formattedHttpDate);
         }
 
         // --- HANDLE SUDO, EMPTY INPUTS, ERRORS ---
