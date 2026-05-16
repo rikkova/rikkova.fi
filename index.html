@@ -472,9 +472,8 @@ Active Licenses / Certifications:
 
         let response = commands[inputVal];
 
-        // --- DYNAMIC COMMAND LOGIC ---
-        // Handle dynamic HTTP Date header in Helsinki time (EEST/EET)
-        if (inputVal === 'curl' && response) {
+        // --- GLOBAL PLACEHOLDER REPLACEMENTS ---
+        if (response && response.includes('{{CURRENT_TIME}}')) {
           const d = new Date();
           
           // Format specific to Helsinki to get the correct EET/EEST abbreviation
@@ -491,10 +490,11 @@ Active Licenses / Certifications:
           }).format(d);
           
           // The format returns: "Sat, 16 May 2026, 14:45:00 EEST"
-          // We remove the comma after the year to match HTTP header standards
-          const formattedHttpDate = helsinkiTime.replace(/(\d{4}),/, '$1');
+          // We remove the comma after the year to make it cleaner (e.g. for HTTP headers)
+          const formattedTime = helsinkiTime.replace(/(\d{4}),/, '$1');
           
-          response = response.replace('{{CURRENT_TIME}}', formattedHttpDate);
+          // Use regex /{{CURRENT_TIME}}/g to replace ALL instances in the string, not just the first one
+          response = response.replace(/{{CURRENT_TIME}}/g, formattedTime);
         }
 
         // --- HANDLE SUDO, EMPTY INPUTS, ERRORS ---
