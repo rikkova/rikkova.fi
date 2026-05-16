@@ -807,6 +807,32 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           return;
         }
 
+        // --- HISTORY COMMAND LOGIC ---
+        if (inputVal === 'history') {
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          
+          let historyOutput = '';
+          
+          // Loop through the commandHistory array and number them
+          if (commandHistory.length > 0) {
+            commandHistory.forEach((cmdStr, index) => {
+              // Format it exactly like bash history: "  1  whoami"
+              // The padStart(4, ' ') ensures the numbers align on the right
+              historyOutput += `<span style="color: var(--dim);">${String(index + 1).padStart(4, ' ')}</span>  ${cmdStr}\n`;
+            });
+          }
+          
+          // Add the current 'history' command to the end of the output (since it hasn't been pushed yet)
+          historyOutput += `<span style="color: var(--dim);">${String(commandHistory.length + 1).padStart(4, ' ')}</span>  history`;
+
+          outputDiv.innerHTML = `<span class="prompt">guest@rikkova:~$ </span><span class="user-input">${cmd.value}</span>\n${historyOutput}`;
+          terminal.appendChild(outputDiv);
+          
+          cmd.value = '';
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          return;
+        }
         
         // --- SECRET EASTER EGG (linda) ---
         if (inputVal === 'linda') {
