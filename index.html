@@ -90,10 +90,16 @@
 
     .terminal-body { 
       padding: 1.5rem; 
-      max-height: 60vh;
+      height: 60vh;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
-
+    
+    #terminal {
+      flex-grow: 1; /* Pushes the input line to the bottom naturally */
+    }
+    
     .output { 
       margin-bottom: 15px; 
       white-space: pre-wrap; 
@@ -360,6 +366,11 @@ Active Licenses / Certifications:
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
         
+        // --- PREVENT EMPTY ENTER SPAM ---
+        if (inputVal === '') {
+          return; // Do absolutely nothing if the input is empty
+        }
+
         // --- CLEAR COMMAND ---
         if (inputVal === 'clear') {
           terminal.innerHTML = '';
@@ -428,10 +439,8 @@ Active Licenses / Certifications:
 
         let response = commands[inputVal];
         
-        // Handle sudo, empty inputs, and unrecognized commands safely
-        if (inputVal === '') {
-          response = '';
-        } else if (inputVal.startsWith('sudo ')) {
+        // Handle sudo and unrecognized commands safely
+        if (inputVal.startsWith('sudo ')) {
           response = 'guest is not in the sudoers file. This incident will be reported.';
         } else if (!response) {
           response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
