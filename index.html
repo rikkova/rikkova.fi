@@ -164,6 +164,9 @@
         <input type="text" id="cmd" autocomplete="off" spellcheck="false">
       </div>
     </div>
+  </div>
+
+  <script>
 
   <script>
     const terminal = document.getElementById('terminal');
@@ -258,6 +261,7 @@
   curl            - Display external IP address information
   top             - Monitor active tasks and current focus
   nmap            - Scan active services and protocols
+  diagnostics     - Run diagnostics
   clear           - Clear the terminal screen`,
       
       'whoami': `Name: Väinö Rikkonen
@@ -361,8 +365,6 @@ Nmap scan report for localhost (127.0.0.1)
 Host is up (0.00013s latency).
 Not shown: 994 closed tcp ports (reset)
 
-      'diagnostics': `Starting system diagnostics...`,
-
 PORT      STATE SERVICE      VERSION
 22/tcp    open  ssh          Secure Communication & Automation
 80/tcp    open  http         REST API / Webhook Integration
@@ -372,6 +374,8 @@ PORT      STATE SERVICE      VERSION
 6653/tcp  open  openflow     SDN & VXLAN Fabric Management
 
 Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds`,
+
+      'diagnostics': `Starting system diagnostics...`,
       
       'ping': `Pinging contact.rikkova.fi [2606:4700:3031::ac43:cd56] with 56 bytes of data:
 64 bytes from <a href="mailto:vaino.rikkonen@gmail.com" style="color: var(--green); text-decoration: underline;">vaino.rikkonen@gmail.com</a>: icmp_seq=1 ttl=64 time<1ms
