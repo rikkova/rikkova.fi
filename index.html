@@ -646,47 +646,6 @@ Active Licenses / Certifications:
         
         return;
       }
-
-      // --- KERNEL PANIC (sudo rm -rf /) EASTER EGG ---
-      if (inputVal === 'sudo rm -rf /' || inputVal === 'rm -rf /') {
-        cmd.disabled = true;
-        
-        const outputDiv = document.createElement('div');
-        outputDiv.className = 'output';
-        terminal.appendChild(outputDiv);
-        
-        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n\n`;
-        terminalBody.scrollTop = terminalBody.scrollHeight;
-
-        setTimeout(() => {
-          let spamText = "";
-          // Generate a fake memory dump
-          for(let i=0; i<40; i++) {
-             let hex = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-             spamText += `[<span style="color:var(--dim)">${hex}</span>] EXT4-fs (vda1): warning: mounting unchecked fs, running e2fsck is recommended\n`;
-             spamText += `[<span style="color:var(--dim)">${hex}</span>] VFS: Busy inodes after unmount of vda1. Self-destructing...\n`;
-          }
-          
-          outputDiv.innerHTML += spamText;
-          outputDiv.innerHTML += `\n<span style="color:var(--red); font-weight:bold;">KERNEL PANIC - NOT SYNCING: Attempted to kill init!</span>\n`;
-          outputDiv.innerHTML += `<span style="color:var(--red);">CPU: 0 PID: 1 Comm: init Not tainted 5.15.0-generic #1</span>\n`;
-          outputDiv.innerHTML += `<span style="color:var(--red);">Hardware name: V-OS Virtual Router</span>\n`;
-          outputDiv.innerHTML += `\nSystem halted.\n`;
-          
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-        }, 800);
-        
-        // After reading the kernel panic, force a reload!
-        setTimeout(() => {
-          terminal.innerHTML = '';
-          cmd.value = '';
-          cmd.disabled = false;
-          inputLine.style.display = 'none';
-          runBootSequence(); 
-        }, 6000);
-        
-        return;
-      }
         
         // 3. PASSWORD ENTRY LOGIC
         if (awaitingPassword) {
