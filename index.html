@@ -260,7 +260,7 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
 
       // 2. Hardware Boot Logs
       const hardwareLogs = [
-        "Initializing hardware memory... 16384M OK",
+        "Initializing hardware memory... 16384Mb OK",
         "Checking NVRAM consistency... OK",
         "Mounting flash filesystem... DONE",
         "Loading control plane OS... OK",
@@ -278,8 +278,8 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
       
       // Apply fallbacks if the API call failed (using approx May 2026 numbers)
       if (!fetchSuccess) {
-        v4Count = "958,412";
-        v6Count = "215,830";
+        v4Count = "123,456";
+        v6Count = "123,456";
       }
 
       bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Loading IPv4 routing table... ${v4Count} prefixes\n`;
@@ -307,7 +307,7 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
       await sleep(400);
       
       // 5. Encrypted session with blinking dots
-      await typeText("Establishing IPsec/BGP sessions");
+      await typeText("Establishing SSH session");
       for (let i = 0; i < 3; i++) {
         await sleep(500); 
         bootOutput.innerHTML += ".";
