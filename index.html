@@ -368,6 +368,7 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
   curl            - Display external IP address information
   history         - Display command history
   top             - Monitor active tasks and current focus
+  theme        - Change terminal color scheme (default, amber, cyan, hacker)
   nmap            - Scan active services and protocols
   diagnostics     - Run diagnostics
   clear           - Clear the terminal screen`,
@@ -700,6 +701,74 @@ Active Licenses / Certifications:
           return;
         }
 
+      // --- THEME SWITCHER LOGIC ---
+      if (inputVal.startsWith('theme')) {
+        const parts = inputVal.split(' ');
+        const requestedTheme = parts.length > 1 ? parts[1].trim() : '';
+        
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        terminal.appendChild(outputDiv);
+        
+        // Print the prompt
+        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        
+        const root = document.documentElement; // Selects the :root CSS pseudoclass
+        
+        if (requestedTheme === 'amber') {
+          root.style.setProperty('--green', '#ffb000');
+          root.style.setProperty('--yellow', '#ffb000');
+          root.style.setProperty('--red', '#ff6600');
+          root.style.setProperty('--text', '#ffb000');
+          root.style.setProperty('--bg', '#1a0f00');
+          root.style.setProperty('--surface', '#261600');
+          root.style.setProperty('--border', '#402600');
+          outputDiv.innerHTML += `Applying 'amber' theme... Phosphor matrices engaged.\n`;
+          
+        } else if (requestedTheme === 'cyan') {
+          root.style.setProperty('--green', '#00e5ff');
+          root.style.setProperty('--yellow', '#00b8ff');
+          root.style.setProperty('--red', '#ff0055');
+          root.style.setProperty('--text', '#b3f0ff');
+          root.style.setProperty('--bg', '#00111a');
+          root.style.setProperty('--surface', '#001a26');
+          root.style.setProperty('--border', '#00334d');
+          outputDiv.innerHTML += `Applying 'cyan' theme... Glaciers frozen.\n`;
+          
+        } else if (requestedTheme === 'hacker') {
+          root.style.setProperty('--green', '#00ff00');
+          root.style.setProperty('--yellow', '#00ff00');
+          root.style.setProperty('--red', '#00ff00');
+          root.style.setProperty('--text', '#00ff00');
+          root.style.setProperty('--bg', '#000000');
+          root.style.setProperty('--surface', '#050505');
+          root.style.setProperty('--border', '#003300');
+          outputDiv.innerHTML += `Applying 'hacker' theme... I'm in.\n`;
+          
+        } else if (requestedTheme === 'default' || requestedTheme === '') {
+          // Reset to your original values from the CSS file
+          root.style.setProperty('--green', '#00ff88');
+          root.style.setProperty('--yellow', '#f0c040');
+          root.style.setProperty('--red', '#ff4455');
+          root.style.setProperty('--text', '#c8d8d0');
+          root.style.setProperty('--bg', '#0a0e0f');
+          root.style.setProperty('--surface', '#111518');
+          root.style.setProperty('--border', '#1e2d2f');
+          
+          if (requestedTheme === '') {
+            outputDiv.innerHTML += `Usage: theme <name>\nAvailable themes: default, amber, cyan, hacker\n`;
+          } else {
+            outputDiv.innerHTML += `Applying 'default' theme... Modern terminal restored.\n`;
+          }
+        } else {
+          outputDiv.innerHTML += `Theme '${requestedTheme}' not found.\nAvailable themes: default, amber, cyan, hacker\n`;
+        }
+        
+        cmd.value = '';
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        return;
+      }
+        
         // 7. ANIMATED TRACEROUTE
         if (inputVal === 'traceroute' || inputVal.startsWith('traceroute ')) {
           cmd.disabled = true; 
