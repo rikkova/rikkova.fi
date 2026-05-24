@@ -224,29 +224,67 @@
         }
       };
 
-      await typeText("Welcome to V-OS Network Terminal v2.0.\n");
-      await sleep(300);
+      // 1. Instantly print a cool ASCII OS Logo
+      const logo = `<span style="color: var(--green);">
+ __     __      ____  _____ 
+ \\ \\   / /     / __ \\/ ____|
+  \\ \\_/ /_____| |  | \\___ \\ 
+   \\   /______| |  | |___) |
+    \\_/        \\____/_____/ 
+</span>
+V-OS Network Operating System v2.0
+Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
+      
+      bootOutput.innerHTML += logo;
+      await sleep(400);
+
+      // 2. Rapid Hardware Boot Logs (Mimicking a real router)
+      const bootLogs = [
+        "Initializing hardware memory... 16384M OK",
+        "Checking NVRAM consistency... OK",
+        "Mounting flash filesystem... DONE",
+        "Loading control plane OS... OK",
+        "Initializing crypto engine... [FIPS 140-2 ACTIVE]",
+        "Loading BGP routing table... 0 entries",
+        "Bringing up line protocols... UP",
+      ];
+      
+      // Print them rapidly with slight random delays for realism
+      for (const log of bootLogs) {
+        bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> ${log}\n`;
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        await sleep(Math.random() * 80 + 20); // Random delay between 20ms and 100ms
+      }
+      
+      await sleep(500);
+      bootOutput.innerHTML += "\n";
+      
+      // 3. Login Sequence
+      await typeText("User Access Verification\n\n");
+      await sleep(200);
       
       await typeText("Login: ");
       await sleep(400);
-      await typeText("guest\n", 50); 
+      await typeText("guest\n", 70); // Type guest a little slower like a human
       await sleep(200);
       
       await typeText("Access: Granted\n");
-      await sleep(500);
+      await sleep(400);
       
-      await typeText("Establishing an encrypted session");
+      // 4. Encrypted session with blinking dots
+      await typeText("Establishing IPsec/BGP sessions");
       for (let i = 0; i < 3; i++) {
-        await sleep(600); 
+        await sleep(500); 
         bootOutput.innerHTML += ".";
       }
       
-      await sleep(800); 
+      await sleep(600); 
       bootOutput.innerHTML += ' <span style="color:var(--green)">[OK]</span>\n\n';
       
-      await sleep(400);
-      bootOutput.innerHTML += "Type '<span style=\"color:var(--green)\">help</span>' to see a list of available commands.";
+      await sleep(300);
+      bootOutput.innerHTML += "Type '<span style=\"color:var(--green)\">help</span>' to see a list of available commands.\n";
       
+      // 5. Finish boot: Show input line and focus it
       inputLine.style.display = 'flex';
       cmd.focus();
       terminalBody.scrollTop = terminalBody.scrollHeight;
