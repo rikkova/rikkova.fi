@@ -363,6 +363,7 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
   show topology   - View interactive topology
   ping            - Display contact details
   traceroute      - Trace career path and job history
+  tcpdump         - Capture live traffic
   wget resume     - Download my resume (PDF)
   curl            - Display external IP address information
   history         - Display command history
@@ -907,6 +908,79 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           return;
         }
 
+      // --- TCPDUMP / PACKET CAPTURE LOGIC ---
+      if (inputVal === 'tcpdump' || inputVal.startsWith('tcpdump')) {
+        cmd.disabled = true; // Prevent typing while capture runs
+        
+        const dumpDiv = document.createElement('div');
+        dumpDiv.className = 'output';
+        terminal.appendChild(dumpDiv);
+        
+        // Print the initial tcpdump header
+        dumpDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        dumpDiv.innerHTML += `tcpdump: verbose output suppressed, use -v or -vv for full protocol decode\n`;
+        dumpDiv.innerHTML += `listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes\n\n`;
+        
+        const packetsSpan = document.createElement('span');
+        dumpDiv.appendChild(packetsSpan);
+        
+        let packetCount = 0;
+        const maxPackets = Math.floor(Math.random() * 25) + 35; // Generate 35-60 packets total
+        
+        // Pool of realistic IP addresses (Internal, CGI, Google, Cloudflare)
+        const ips = ["192.168.100.45", "10.0.1.1", "10.0.2.1", "8.8.8.8", "1.1.1.1", "172.16.0.5", "140.82.113.3"];
+        
+        const generatePacket = () => {
+          const src = ips[Math.floor(Math.random() * ips.length)];
+          let dst = ips[Math.floor(Math.random() * ips.length)];
+          while(dst === src) dst = ips[Math.floor(Math.random() * ips.length)]; // Ensure src != dst
+          
+          const srcPort = Math.floor(Math.random() * 50000) + 1024;
+          
+          // Generate realistic microsecond timestamp
+          const now = new Date();
+          const ts = `<span style="color: var(--dim)">${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(Math.floor(Math.random()*999999)).padStart(6,'0')}</span>`;
+          
+          const types = [
+            `IP ${src}.${srcPort} > ${dst}.443: Flags [S], seq ${Math.floor(Math.random()*1000000000)}, win 65535, length 0`,
+            `IP ${dst}.443 > ${src}.${srcPort}: Flags [S.], seq ${Math.floor(Math.random()*1000000000)}, ack ${Math.floor(Math.random()*1000000000)}, win 65535, length 0`,
+            `IP ${src}.${srcPort} > ${dst}.443: Flags [.], ack 1, win 256, length 0`,
+            `IP ${src}.179 > ${dst}.${srcPort}: <span style="color: var(--green); font-weight: bold;">BGP</span>, length: 19 (Keepalive Message)`,
+            `IP ${dst}.${srcPort} > ${src}.179: <span style="color: var(--green); font-weight: bold;">BGP</span>, length: 65 (Update Message)`,
+            `IP ${src}.${srcPort} > ${dst}.443: Flags [P.], seq 1:517, ack 1, win 256, length 516: <span style="color: var(--yellow);">HTTP</span>`,
+            `IP ${src} > ${dst}: ICMP echo request, id ${Math.floor(Math.random()*5000)}, seq 1, length 64`,
+            `IP ${dst} > ${src}: ICMP echo reply, id ${Math.floor(Math.random()*5000)}, seq 1, length 64`
+          ];
+          
+          const packet = types[Math.floor(Math.random() * types.length)];
+          return `${ts} ${packet}\n`;
+        };
+        
+        // Print packets rapidly using an interval
+        const interval = setInterval(() => {
+          packetsSpan.innerHTML += generatePacket();
+          terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll down
+          packetCount++;
+          
+          if (packetCount >= maxPackets) {
+            clearInterval(interval); // Stop the capture
+            
+            // Print the capture summary
+            const summarySpan = document.createElement('span');
+            summarySpan.innerHTML = `\n${packetCount} packets captured\n${packetCount + Math.floor(Math.random() * 3)} packets received by filter\n0 packets dropped by kernel\n`;
+            dumpDiv.appendChild(summarySpan);
+            
+            // Re-enable user input
+            cmd.disabled = false;
+            cmd.focus();
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+          }
+        }, 60); // 60ms delay creates a fast, hacker-movie style scroll
+        
+        cmd.value = '';
+        return;
+      }
+        
         // 13. HISTORY COMMAND
         if (inputVal === 'history') {
           const outputDiv = document.createElement('div');
