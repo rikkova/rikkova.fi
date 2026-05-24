@@ -19,6 +19,38 @@
       --font-display: 'Orbitron', sans-serif;
     }
 
+    /* --- CRT Scanlines & Glow Overlay --- */
+    .crt-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 999;
+      pointer-events: none; /* Let clicks pass through to terminal */
+      opacity: 0.15;
+    }
+
+    /* Add a subtle green glow to the text */
+    .terminal-box {
+      text-shadow: 0 0 2px rgba(0, 255, 136, 0.4);
+    }
+    
+    /* Screen flicker animation */
+    @keyframes flicker {
+      0% { opacity: 0.15; }
+      50% { opacity: 0.18; }
+      100% { opacity: 0.15; }
+    }
+    .crt-overlay {
+      animation: flicker 4s infinite;
+    }
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
@@ -154,6 +186,7 @@
   </style>
 </head>
 <body onclick="document.getElementById('cmd').focus()">
+  <div class="crt-overlay"></div>
   <!-- Animated Background Canvas -->
   <canvas id="topology-bg"></canvas>
 
