@@ -621,32 +621,7 @@ Active Licenses / Certifications:
           cmd.value = '';
           return;
         }
-
-      // --- CISCO RELOAD EASTER EGG ---
-      if (inputVal === 'reload') {
-        cmd.disabled = true;
-        
-        const outputDiv = document.createElement('div');
-        outputDiv.className = 'output';
-        terminal.appendChild(outputDiv);
-        
-        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n\n`;
-        outputDiv.innerHTML += `System configuration has been modified. Save? [yes/no]: no\n`;
-        outputDiv.innerHTML += `Proceed with reload? [confirm]\n`;
-        terminalBody.scrollTop = terminalBody.scrollHeight;
-        
-        setTimeout(() => {
-          // Clear everything and run the boot sequence again!
-          terminal.innerHTML = '';
-          cmd.value = '';
-          cmd.disabled = false;
-          inputLine.style.display = 'none'; // Hide input line until boot finishes
-          runBootSequence(); 
-        }, 1500); // Wait 1.5 seconds for dramatic effect
-        
-        return;
-      }
-        
+       
         // 3. PASSWORD ENTRY LOGIC
         if (awaitingPassword) {
           const outputDiv = document.createElement('div');
