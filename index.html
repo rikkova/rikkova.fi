@@ -704,7 +704,7 @@ Active Licenses / Certifications:
       // --- THEME SWITCHER LOGIC ---
       if (inputVal.startsWith('theme')) {
         const parts = inputVal.split(' ');
-        const requestedTheme = parts.length > 1 ? parts[1].trim() : '';
+        const requestedTheme = parts.length > 1 ? parts[1].trim().toLowerCase() : '';
         
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
@@ -745,6 +745,28 @@ Active Licenses / Certifications:
           root.style.setProperty('--border', '#003300');
           outputDiv.innerHTML += `Applying 'hacker' theme... I'm in.\n`;
           
+        } else if (requestedTheme === 'google') {
+          // Google's official brand colors + Light Mode!
+          root.style.setProperty('--green', '#34A853'); // Google Green
+          root.style.setProperty('--yellow', '#4285F4'); // Google Blue (used for inputs/highlights)
+          root.style.setProperty('--red', '#EA4335'); // Google Red
+          root.style.setProperty('--text', '#202124'); // Dark gray text for readability
+          root.style.setProperty('--bg', '#ffffff'); // Pure white background
+          root.style.setProperty('--surface', '#f1f3f4'); // Google Light Gray surface
+          root.style.setProperty('--border', '#dadce0'); 
+          outputDiv.innerHTML += `Applying 'google' theme... <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span> Material Design engaged.\n`;
+
+        } else if (requestedTheme === 'bmw') {
+          // Classic BMW E-series dashboard cluster
+          root.style.setProperty('--green', '#FF7F00'); // Classic BMW Amber
+          root.style.setProperty('--yellow', '#FF8C00'); // Slightly lighter amber for inputs
+          root.style.setProperty('--red', '#FF0000'); // Dashboard warning red
+          root.style.setProperty('--text', '#FF7F00'); // Amber text
+          root.style.setProperty('--bg', '#000000'); // Pitch black dashboard
+          root.style.setProperty('--surface', '#0a0a0a'); // Dark plastic
+          root.style.setProperty('--border', '#1a1a1a');
+          outputDiv.innerHTML += `Applying 'bmw' theme... Instrument cluster illuminated.\n`;
+
         } else if (requestedTheme === 'default' || requestedTheme === '') {
           // Reset to your original values from the CSS file
           root.style.setProperty('--green', '#00ff88');
@@ -756,12 +778,12 @@ Active Licenses / Certifications:
           root.style.setProperty('--border', '#1e2d2f');
           
           if (requestedTheme === '') {
-            outputDiv.innerHTML += `Usage: theme <name>\nAvailable themes: default, amber, cyan, hacker\n`;
+            outputDiv.innerHTML += `Usage: theme <name>\nAvailable themes: default, amber, cyan, hacker, google, bmw\n`;
           } else {
             outputDiv.innerHTML += `Applying 'default' theme... Modern terminal restored.\n`;
           }
         } else {
-          outputDiv.innerHTML += `Theme '${requestedTheme}' not found.\nAvailable themes: default, amber, cyan, hacker\n`;
+          outputDiv.innerHTML += `Theme '${requestedTheme}' not found.\nAvailable themes: default, amber, cyan, hacker, google, bmw\n`;
         }
         
         cmd.value = '';
