@@ -291,6 +291,9 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
         bootOutput.innerHTML += ".";
       }
       
+      await sleep(600); 
+      bootOutput.innerHTML += ' <span style="color:var(--green)">[OK]</span>\n\n';
+      
       // 5. Login Sequence
       await typeText("User Access Verification\n\n");
       await sleep(200);
@@ -302,11 +305,7 @@ Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
       
       await typeText("Access: Granted\n");
       await sleep(400);
-      
-
-      
-      await sleep(600); 
-      bootOutput.innerHTML += ' <span style="color:var(--green)">[OK]</span>\n\n';
+        
       
       await sleep(300);
       bootOutput.innerHTML += "Type '<span style=\"color:var(--green)\">help</span>' to see a list of available commands.\n";
