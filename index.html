@@ -296,7 +296,7 @@
       bootOutput.innerHTML += `V-OS Network Operating System v2.0\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
       await sleep(150);
-      bootOutput.innerHTML += `Copyright (c) 1997-${new Date().getFullYear()} Väinö Rikkonen. All rights reserved.\n\n`;
+      bootOutput.innerHTML += `Copyright (c) 1997-${new Date().getFullYear()} VÃ¤inÃ¶ Rikkonen. All rights reserved.\n\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
       await sleep(400);
 
@@ -593,7 +593,7 @@ Problem-Solve    Lo0               120        R           Logic     RCA`,
 
       'show version': `V-OS (tm) Network Operating System Software
 Software Version 2026.05
-Compiled by Väinö Rikkonen
+Compiled by VÃ¤inÃ¶ Rikkonen
 
 System uptime is ${uptimeString}
 System image file is "flash:vaino-rikkonen-v3.bin"
@@ -1036,7 +1036,7 @@ Active Licenses / Certifications:
 
           const interval = setInterval(() => {
             progress += 5;
-            const bar = '█'.repeat(progress / 5) + '░'.repeat(20 - (progress / 5));
+            const bar = 'â–ˆ'.repeat(progress / 5) + 'â–‘'.repeat(20 - (progress / 5));
             diagDiv.innerHTML = `${currentPrompt}<span class="user-input">diagnostics</span>\nRunning system diagnostics...\n[${bar}] ${progress}%`;
             
             if (progress >= 100) {
@@ -1067,7 +1067,7 @@ Active Licenses / Certifications:
           }, 600);
 
           setTimeout(() => {
-            wgetDiv.innerHTML += `HTTP request sent, awaiting response... 200 OK\nLength: 1048576 (1.0M) [application/pdf]\nSaving to: ‘resume_vaino_rikkonen.pdf’\n\n`;
+            wgetDiv.innerHTML += `HTTP request sent, awaiting response... 200 OK\nLength: 1048576 (1.0M) [application/pdf]\nSaving to: â€˜resume_vaino_rikkonen.pdfâ€™\n\n`;
             terminalBody.scrollTop = terminalBody.scrollHeight;
             
             let progress = 0;
@@ -1084,7 +1084,7 @@ Active Licenses / Certifications:
                 const currentD = new Date();
                 const timeString = `${currentD.getFullYear()}-${String(currentD.getMonth()+1).padStart(2, '0')}-${String(currentD.getDate()).padStart(2, '0')} ${String(currentD.getHours()).padStart(2, '0')}:${String(currentD.getMinutes()).padStart(2, '0')}`;
                 
-                wgetDiv.innerHTML += `\n\n${timeString} (12.4 MB/s) - ‘resume_vaino_rikkonen.pdf’ saved [1048576/1048576]`;
+                wgetDiv.innerHTML += `\n\n${timeString} (12.4 MB/s) - â€˜resume_vaino_rikkonen.pdfâ€™ saved [1048576/1048576]`;
                 
                 const link = document.createElement('a');
                 link.href = githubRawUrl;
@@ -1114,7 +1114,7 @@ Active Licenses / Certifications:
 
           const cats = `<pre style="font-family: var(--font-mono); margin: 15px 0;">
    /\\_/\\      /\\_/\\
-  ( o.o ) <span style="color: var(--red);">♥</span> ( =^.^= )
+  ( o.o ) <span style="color: var(--red);">â™¥</span> ( =^.^= )
    > ^ <     ( m m )
 </pre>`;
           catDiv.innerHTML = `${currentPrompt}<span class="user-input">soffumaikku</span>\n` + cats + `<i style="color: var(--dim);">Two cute network cats found in the system.</i>\n\n`;
@@ -1130,10 +1130,10 @@ Active Licenses / Certifications:
           terminal.appendChild(outputDiv);
           outputDiv.innerHTML = `${currentPrompt}<span class="user-input">whoami</span>\n<span style="color: var(--dim);">Decrypting user profile...</span>\n\n`;
           
-          const targetText = `Name: Väinö Rikkonen
+          const targetText = `Name: VÃ¤inÃ¶ Rikkonen
 Role: Infrastructure Architect
-Location: Vantaa, Finland · AS65001
-Status: Open to new opportunities — Established
+Location: Vantaa, Finland Â· AS65001
+Status: Open to new opportunities â€” Established
 
 Bio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.`;
 
@@ -1270,16 +1270,16 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           terminal.appendChild(heartDiv);
 
           const heartLines = [
-            "   ██████   ██████   ",
-            " █████████ █████████ ",
-            "█████████████████████",
-            "█████████████████████",
-            " ███████████████████ ",
-            "  █████████████████  ",
-            "    █████████████    ",
-            "      █████████      ",
-            "        █████        ",
-            "          █          "
+            "   â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ   â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ   ",
+            " â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ ",
+            "â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ",
+            "â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ",
+            " â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ ",
+            "  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ  ",
+            "    â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ    ",
+            "      â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ      ",
+            "        â–ˆâ–ˆâ–ˆâ–ˆâ–ˆ        ",
+            "          â–ˆ          "
           ];
           let lineIndex = 0;
           const drawInterval = setInterval(() => {
