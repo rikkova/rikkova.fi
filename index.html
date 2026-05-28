@@ -273,18 +273,31 @@
       const v4Count = (baseIPv4 + v4Jitter).toLocaleString('en-US');
       const v6Count = (baseIPv6 + v6Jitter).toLocaleString('en-US');
 
-      // 1. Instantly print the ASCII OS Logo
-      const logo = `<span style="color: var(--green);">
+      // 1. Animate the ASCII OS Logo line by line
+      const rawLogo = `
  __     __      ____  _____ 
  \\ \\   / /     / __ \\/ ____|
   \\ \\_/ /_____| |  | \\___ \\ 
    \\   /______| |  | |___) |
-    \\_/        \\____/_____/ 
-</span>
-V-OS Network Operating System v2.0
-Copyright (c) 1997-2026 Väinö Rikkonen. All rights reserved.\n\n`;
+    \\_/        \\____/_____/ `;
       
-      bootOutput.innerHTML += logo;
+      // Split the logo by line so we can animate it
+      const logoLines = rawLogo.split('\n');
+      
+      // Print the ASCII art line by line in green
+      for (const line of logoLines) {
+        bootOutput.innerHTML += `<span style="color: var(--green);">${line}</span>\n`;
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        await sleep(60); // 60ms delay per line for that classic modem draw effect
+      }
+      
+      // Print the copyright info line by line
+      await sleep(150);
+      bootOutput.innerHTML += `V-OS Network Operating System v2.0\n`;
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+      await sleep(150);
+      bootOutput.innerHTML += `Copyright (c) 1997-${new Date().getFullYear()} Väinö Rikkonen. All rights reserved.\n\n`;
+      terminalBody.scrollTop = terminalBody.scrollHeight;
       await sleep(400);
 
       // 2. Hardware Boot Logs
