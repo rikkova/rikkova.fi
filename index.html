@@ -421,26 +421,29 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
                                                    +===================+
                                                    |                   |
                                                    |   CORE NETWORK    |
-                                                   |  (IOS-XR / NXOS)   |
+                                                   |  (IOS-XR / NXOS)  |
                                                    |                   |
                                                    +===================+
                                                       |      |      |
  <span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                              |      |      |
-                                         gNMI  |      |      | NetFlow
-   +--------------+      +--------------+             |      |      |
-   |              |      |              |<------------+      |      |
-   |   Grafana    |<-----|   InfluxDB   |                    |      |
-   | (Dashboards) |      | (Time-Series)|<-------+           |      v
-   |              |      |      DB)     |        |     +------------+
-   +--------------+      +--------------+        |     |   pmacct   |
-                                                 |     | (Flow Col) |
-      <span style="color: var(--green)">TIG Stack</span>                                  |     +------------+
-      <span style="color: var(--green)">Telegraf, InfluxDB, Grafana</span>                |
-                                                 |           | BMP
-                                                 |     +-----v------+
-                                                 |     |  OpenBMP   |
-                                                 +-----| (BGP Mon)  |
-                                                       +------------+
+                                                 gNMI |      |      | NetFlow
+                                         +------------v+     |      |
+                                         |  Telegraf   |     |      |
+                                         | (Data Col)  |     |      |
+                                         +-------------+     |      |
+                                                |            |      |
+   +--------------+      +--------------+       |            |      |
+   |              |      |              |<------+            |      v
+   |   Grafana    |<-----|   InfluxDB   |              +------------+
+   | (Dashboards) |      | (Time-Series)|<-------------|   pmacct   |
+   |              |      |      DB)     |              | (Flow Col) |
+   +--------------+      +--------------+              +------------+
+                                 ^                           
+      <span style="color: var(--green)">TIG Stack</span>                  |                     | BMP
+      <span style="color: var(--green)">Telegraf, InfluxDB, Grafana</span>|               +-----v------+
+                                 |               |  OpenBMP   |
+                                 +---------------| (BGP Mon)  |
+                                                 +------------+
 
 <span style="color: var(--yellow)">System Overview:</span>
 - <span style="color: var(--green)">Automation:</span> Netbox acts as the declarative Source of Truth. Changes pushed via Git 
@@ -926,6 +929,42 @@ Active Licenses / Certifications:
         cmd.value = '';
         terminalBody.scrollTop = terminalBody.scrollHeight;
         return;
+      }
+
+      // --- ANIMATED SHOW ARCHITECTURE LOGIC ---
+      if (inputVal === 'show architecture' || inputVal === 'show arch' || inputVal === 'show automation') {
+        cmd.disabled = true; // Prevent typing while the diagram is drawing
+        
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        terminal.appendChild(outputDiv);
+        
+        // Print the prompt and the command the user typed
+        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n\n`;
+        
+        // Grab the architecture text from your dictionary and split it by line
+        const archText = commands['show architecture'];
+        const archLines = archText.split('\n');
+        
+        let lineIndex = 0;
+        
+        // Print one line every 35 milliseconds
+        const drawInterval = setInterval(() => {
+          if (lineIndex < archLines.length) {
+            outputDiv.innerHTML += archLines[lineIndex] + '\n';
+            terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll with the drawing
+            lineIndex++;
+          } else {
+            // Finished drawing
+            clearInterval(drawInterval);
+            cmd.disabled = false;
+            cmd.focus();
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+          }
+        }, 35); // Adjust this number (e.g., 20 for faster, 60 for slower)
+        
+        cmd.value = '';
+        return; // Exit here so the default instant-printer doesn't run!
       }
         
         // 7. ANIMATED TRACEROUTE
