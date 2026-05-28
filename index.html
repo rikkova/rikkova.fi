@@ -446,33 +446,34 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 
 'show dwdm': `<span style="color: var(--yellow)">=== ACTIVE DWDM / ENCRYPTED 400G DCI ===</span>
 
-          <span style="color: var(--dim)">[ WEST DC ]</span>                           <span style="color: var(--dim)">[ EAST DC ]</span>
-          +----------------------+           +----------------------+
-          | WEST PAIR            |           | EAST PAIR            |
-          | Smartoptics DWDM 1   |===========| Smartoptics DWDM 1   |
-          | Smartoptics DWDM 2   |===========| Smartoptics DWDM 2   |
-          +----------+-----------+           +-----------+----------+
-                     |                                   |
-              400G encrypted wave                 400G encrypted wave
-                     |                                   |
-             +-------+--------+                 +--------+-------+
-             |  EDFA / VOA    |                 |  EDFA / VOA    |
-             | gain / atten   |                 | gain / atten   |
-             +-------+--------+                 +--------+-------+
-                     |                                   |
-             +-------+--------+                 +--------+-------+
-             | 4 x 100G split |                 | 4 x 100G split |
-             +--+----+----+---+                 +---+----+----+--+
-                |    |    |                           |    |    |
-                |    |    +------ Internet Edge       |    |    +------ Internet Edge
-                |    +----------- VXLAN Fabric        |    +----------- VXLAN Fabric
-                +---------------- MPLS Router         +---------------- MPLS Router
-                +---------------- Storage Repl        +---------------- Storage Repl
+        <span style="color: var(--dim)">[ DC1 / WEST ]</span>                          <span style="color: var(--dim)">[ DC2 / WEST ]</span>
+        +----------------------+             +----------------------+
+        | Smartoptics DWDM 1   |=============| Smartoptics DWDM 1   |
+        +----------+-----------+   West Fib  +-----------+----------+
+                   |                                       |
+              +----+----+                             +----+----+
+              | EDFA/VOA|                             | EDFA/VOA|
+              +----+----+                             +----+----+
+                    \\                                   //
+                     \\                                 //
+                      +-------------------------------+
+                      | MPLS | VXLAN | EDGE | STORAGE |
+                      +-------------------------------+
+                     //                                 \\
+                    //                                   \\
+              +----+----+                             +----+----+
+              | EDFA/VOA|                             | EDFA/VOA|
+              +----+----+                             +----+----+
+                   |                                       |
+        +----------+-----------+             +-----------+----------+
+        | Smartoptics DWDM 2   |=============| Smartoptics DWDM 2   |
+        +----------------------+   East Fib  +----------------------+
+        <span style="color: var(--dim)">[ DC1 / EAST ]</span>                          <span style="color: var(--dim)">[ DC2 / EAST ]</span>
 
 <span style="color: var(--yellow)">Transport view:</span>
-- <span style="color: var(--green)">400G encrypted wave:</span> Secure optical transport between west and east sites.
-- <span style="color: var(--green)">EDFA / VOA:</span> Optical gain and power balancing across the span.
-- <span style="color: var(--green)">4 x 100G breakout:</span> MPLS, VXLAN, Internet edge, and storage replication.`,
+- <span style="color: var(--green)">Shared services:</span> MPLS routing, VXLAN fabric, Internet edge, and storage replication are carried across both optical paths.
+- <span style="color: var(--green)">West/East paths:</span> Diverse encrypted 400G transport between the two data centers.
+- <span style="color: var(--green)">EDFA / VOA:</span> Optical gain and power balancing on each path.`,
       
       
       'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
