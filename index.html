@@ -84,7 +84,6 @@
       pointer-events: none;
     }
 
-
     /* TERMINAL BOX */
     .terminal-box {
       position: relative;
@@ -168,71 +167,6 @@
     .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--dim); }
 
-.arch-node {
-  color: var(--green);
-  font-weight: bold;
-  text-shadow: 0 0 6px rgba(0,255,136,0.35);
-  animation: nodePulse 1.8s ease-in-out infinite;
-}
-
-.arch-flow {
-  color: var(--yellow);
-  animation: flowPulse 1.2s ease-in-out infinite;
-}
-
-.arch-flow.dim {
-  color: var(--dim);
-  animation: flowPulseSoft 1.8s ease-in-out infinite;
-}
-
-.arch-flow.d1 { animation-delay: 0.15s; }
-.arch-flow.d2 { animation-delay: 0.3s; }
-.arch-flow.d3 { animation-delay: 0.45s; }
-.arch-flow.d4 { animation-delay: 0.6s; }
-.arch-flow.d5 { animation-delay: 0.75s; }
-
-@keyframes flowPulse {
-  0%, 100% {
-    opacity: 0.45;
-    text-shadow: 0 0 2px rgba(240,192,64,0.10);
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 8px rgba(240,192,64,0.55), 0 0 14px rgba(240,192,64,0.25);
-  }
-}
-
-@keyframes flowPulseSoft {
-  0%, 100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 0 0 6px rgba(85,102,119,0.35);
-  }
-}
-
-@keyframes nodePulse {
-  0%, 100% {
-    opacity: 0.85;
-    text-shadow: 0 0 4px rgba(0,255,136,0.20);
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 10px rgba(0,255,136,0.75), 0 0 18px rgba(0,255,136,0.35);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .arch-node,
-  .arch-flow,
-  .arch-flow.dim {
-    animation: none;
-    text-shadow: none;
-    opacity: 1;
-  }
-}
-    
     /* Responsive Design for Mobile Devices */
     @media screen and (max-width: 768px) {
       body {
@@ -474,31 +408,31 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 <span style="color: var(--dim)">[ SOURCE OF TRUTH ]</span>        <span style="color: var(--dim)">[ CI/CD PIPELINE ]</span>              <span style="color: var(--dim)">[ EXECUTION ]</span>
 
    +------------+         +---------------+           +-------------+
-   |   <span class="arch-node">NetBox</span>   | API     | <span class="arch-node">GitLab CI/CD</span>  | Trigger   |   <span class="arch-node">Ansible</span>   |
-   | (Inventory)|<span class="arch-flow d1">========></span>| (Code/Review) |<span class="arch-flow d2">========></span>| (Playbooks) |
+   |   NetBox   | API     | GitLab CI/CD  | Trigger   |   Ansible   |
+   | (Inventory)|-------->| (Code/Review) |---------->| (Playbooks) |
    +------------+         +---------------+           +-------------+
-         <span class="arch-flow dim d1">|</span>                        <span class="arch-flow dim d2">|</span>                          <span class="arch-flow dim d3">|</span>
-         <span class="arch-flow dim d2">|</span>         +--------------<span class="arch-node">v</span>--------------+           <span class="arch-flow dim d4">|</span> Push Config
-         <span class="arch-flow dim d3">|</span>         |           <span class="arch-node">Batfish</span>           |           <span class="arch-flow dim d5">|</span> (API/SSH)
-         +--------<span class="arch-flow d3">========></span>| (Pre-deployment Validation) |           <span class="arch-flow dim d1">|</span>
-       Inventory   +-----------------------------+           <span class="arch-flow dim d2">|</span>
-                                                             <span class="arch-node">v</span>
+         |                        |                          |
+         |         +--------------v--------------+           | Push Config
+         |         |           Batfish           |           | (API/SSH)
+         +-------->| (Pre-deployment Validation) |           |
+       Inventory   +-----------------------------+           |
+                                                             v
                                                    +===================+
-                                                   |   <span class="arch-node">CORE NETWORK</span>    |
+                                                   |   CORE NETWORK    |
                                                    |  (IOS-XR / NXOS)  |
                                                    +===================+
-                                                      <span class="arch-flow dim d1">|</span>           <span class="arch-flow dim d3">|</span>
-<span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                     gNMI <span class="arch-flow dim d2">|</span>           <span class="arch-flow dim d4">|</span> NetFlow / BMP
-                                                      <span class="arch-flow dim d3">|</span>           <span class="arch-flow dim d5">|</span>
-                                         +------------<span class="arch-node">v</span>+    +-----<span class="arch-node">v</span>------+
-                                         |  <span class="arch-node">Telegraf</span>   |    |   <span class="arch-node">pmacct</span>   |
+                                                      |           |
+<span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                     gNMI |           | NetFlow / BMP
+                                                      |           |
+                                         +------------v+    +-----v------+
+                                         |  Telegraf   |    |   pmacct   |
                                          | (Data Col)  |    |(Flow/BMP)  |
                                          +------------++    +-----+------+
-                                                      <span class="arch-flow dim d2">|</span>           <span class="arch-flow dim d4">|</span>
-                                                      +-----<span class="arch-node">+</span>-----+
-                                                            <span class="arch-flow d5">|</span>
-   +--------------+      +--------------+                   <span class="arch-flow d1">|</span>
-   |   <span class="arch-node">Grafana</span>    |<-----|   <span class="arch-node">InfluxDB</span>   |<------------------+
+                                                      |           |
+                                                      +-----+-----+
+                                                            |
+   +--------------+      +--------------+                   |
+   |   Grafana    |<-----|   InfluxDB   |<------------------+
    | (Dashboards) |      | (Time-Series)|
    +--------------+      |      DB)     |
                          +--------------+
@@ -508,6 +442,7 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 <span style="color: var(--yellow)">System Overview:</span>
 - <span style="color: var(--green)">Automation:</span> NetBox acts as the source of truth, GitLab pipelines validate intent, Batfish checks changes before deployment, and Ansible pushes the approved configuration.
 - <span style="color: var(--green)">Observability:</span> Telegraf streams telemetry over gNMI, pmacct collects NetFlow and BMP data, InfluxDB stores the time-series data, and Grafana presents it visually.`,
+
       
       'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
 
