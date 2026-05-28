@@ -369,6 +369,7 @@
       'help': `Available commands:
   whoami            - Display profile information
   show architecture - View CI/CD automation & TIG observability stack
+  show dwdm         - View active DWDM / 400G DCI transport
   show version      - View system uptime and certifications
   show ip route     - View network architecture scope
   show bgp sum      - View IT/Network engineering skills
@@ -443,6 +444,37 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 - <span style="color: var(--green)">Automation:</span> NetBox acts as the source of truth, GitLab pipelines validate intent, Batfish checks changes before deployment, and Ansible pushes the approved configuration.
 - <span style="color: var(--green)">Observability:</span> Telegraf streams telemetry over gNMI, pmacct collects NetFlow and BMP data, InfluxDB stores the time-series data, and Grafana presents it visually.`,
 
+'show dwdm': `<span style="color: var(--yellow)">=== ACTIVE DWDM / ENCRYPTED 400G DCI TRANSPORT ===</span>
+
+                <span style="color: var(--dim)">[ SITE A / WEST DC ]</span>                           <span style="color: var(--dim)">[ SITE B / EAST DC ]</span>
+                +----------------------+                       +----------------------+
+                |  WEST PAIR           |                       |  EAST PAIR           |
+                |  Smartoptics DWDM 1  |===== West Fiber ======|  Smartoptics DWDM 1  |
+                |  Smartoptics DWDM 2  |===== East Fiber ======|  Smartoptics DWDM 2  |
+                +----------+-----------+                       +-----------+----------+
+                           |                                               |
+                    400G encrypted wave                             400G encrypted wave
+                           |                                               |
+                 +---------+----------+                         +----------+---------+
+                 | EDFA / VOA control |                         | EDFA / VOA control |
+                 | gain + attenuation |                         | gain + attenuation |
+                 +---------+----------+                         +----------+---------+
+                           |                                               |
+                 +---------+---------+                           +---------+---------+
+                 |  4 x 100G split   |                           |  4 x 100G split   |
+                 +----+----+----+----+                           +----+----+----+----+
+                      |    |    |    |                                |    |    |    |
+                      v    v    v    v                                v    v    v    v
+                 +------+ +------+ +---------+ +-----------+     +------+ +------+ +---------+ +-----------+
+                 | MPLS | |VXLAN | |Internet | |Storage /  |     | MPLS | |VXLAN | |Internet | |Storage /  |
+                 |Router| |Fabric| |Edge/BGP | |Replication|     |Router| |Fabric| |Edge/BGP | |Replication|
+                 +------+ +------+ +---------+ +-----------+     +------+ +------+ +---------+ +-----------+
+
+<span style="color: var(--yellow)">Transport view:</span>
+- <span style="color: var(--green)">400G encrypted wave:</span> Secure optical transport between west and east sites.
+- <span style="color: var(--green)">EDFA / VOA:</span> Optical gain and power balancing across the span.
+- <span style="color: var(--green)">4 x 100G breakout:</span> Service split for MPLS routing, VXLAN fabric, Internet edge, and storage replication.`,
+      
       
       'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
 
