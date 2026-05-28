@@ -599,6 +599,80 @@ Active Licenses / Certifications:
         return;
       }
 
+      // --- CISCO-STYLE CONTEXTUAL HELP (?) LOGIC ---
+      if (e.key === '?' && !awaitingPassword) {
+        e.preventDefault(); // Stop the '?' from actually being typed into the input field
+        
+        const inputValLower = cmd.value.toLowerCase();
+        
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        
+        // Print the prompt with what they have typed so far, plus the '?'
+        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}?</span>\n`;
+        
+        let helpText = '';
+        
+        // 1. Root level commands (Empty input)
+        if (inputValLower === '' || inputValLower.trim() === '') {
+          helpText = `Exec commands:
+  clear        history      ping         tcpdump
+  curl         nmap         show         theme
+  diagnostics  sudo         traceroute   top
+  help         su           wget         whoami`;
+        
+        // 2. Sub-commands for 'show '
+        } else if (inputValLower === 'show' || inputValLower === 'show ') {
+          helpText = `  bgp        View IT/Network engineering skills
+  cdp        View languages and soft skills
+  interface  View projects
+  ip         View network architecture scope
+  run        View configuration
+  topology   View interactive topology
+  version    View system uptime and certifications`;
+        
+        // 3. Deep sub-commands (e.g. 'show ip ', 'show bgp ')
+        } else if (inputValLower === 'show ip' || inputValLower === 'show ip ') {
+          helpText = `  route      View network architecture scope`;
+        } else if (inputValLower === 'show cdp' || inputValLower === 'show cdp ') {
+          helpText = `  nei        View languages and soft skills`;
+        } else if (inputValLower === 'show bgp' || inputValLower === 'show bgp ') {
+          helpText = `  sum        View IT/Network engineering skills`;
+        
+        // 4. Sub-commands for 'theme '
+        } else if (inputValLower === 'theme' || inputValLower === 'theme ') {
+          helpText = `  amber      Classic mainframe phosphor
+  bmw        E-series dashboard lights
+  cyan       Sci-fi blue
+  default    Modern hacker terminal
+  google     Material Light Mode
+  hacker     Matrix green`;
+        
+        // 5. Sub-commands for 'wget '
+        } else if (inputValLower === 'wget' || inputValLower === 'wget ') {
+          helpText = `  resume     Download my resume PDF`;
+          
+        // 6. Partial matching (e.g. typing 'sh' and hitting '?')
+        } else {
+          const allCommands = ['clear', 'curl', 'diagnostics', 'help', 'history', 'nmap', 'ping', 'show', 'su', 'sudo', 'tcpdump', 'theme', 'top', 'traceroute', 'wget', 'whoami'];
+          // Find commands that start with the currently typed string
+          const matches = allCommands.filter(c => c.startsWith(inputValLower.trim()));
+          
+          if (matches.length > 0 && !inputValLower.endsWith(' ')) {
+            helpText = matches.join('  ');
+          } else {
+            helpText = `  <cr>`; // Cisco style for "Carriage Return expected" (Command is complete)
+          }
+        }
+        
+        outputDiv.innerHTML += helpText + '\n';
+        terminal.appendChild(outputDiv);
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        
+        // Notice we do NOT clear cmd.value. The user keeps typing right where they left off!
+        return;
+      }
+      
       // --- CTRL+C (SIGINT) LOGIC ---
       if (e.ctrlKey && e.key === 'c') {
         e.preventDefault();
