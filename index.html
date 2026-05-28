@@ -414,19 +414,19 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
    +------------+         +---------------+           +-------------+
          |                        |                          |
          |         +--------------v--------------+           | Push Config
-         |         |           Batfish           |           | (NETCONF/SSH)
+         |         |           Batfish           |           | (API/SSH)
          +-------->| (Pre-deployment Validation) |           |
        Inventory   +-----------------------------+           |
                                                              V
                                                    +===================+
                                                    |                   |
                                                    |   CORE NETWORK    |
-                                                   |  (IOS-XR / EOS)   |
+                                                   |  (IOS-XR / NXOS)   |
                                                    |                   |
                                                    +===================+
                                                       |      |      |
  <span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                              |      |      |
-                                        gNMI/NETCONF  |      |      | NetFlow/IPFIX
+                                         gNMI  |      |      | NetFlow
    +--------------+      +--------------+             |      |      |
    |              |      |              |<------------+      |      |
    |   Grafana    |<-----|   InfluxDB   |                    |      |
