@@ -84,67 +84,7 @@
       pointer-events: none;
     }
 
-.arch-node {
-  color: var(--green);
-  font-weight: bold;
-  text-shadow: 0 0 6px rgba(0,255,136,0.35);
-  animation: nodePulse 1.8s ease-in-out infinite;
-}
 
-.arch-flow {
-  color: var(--yellow);
-  animation: flowPulse 1.2s ease-in-out infinite;
-}
-
-.arch-flow.dim {
-  color: var(--dim);
-  animation: flowPulseSoft 1.8s ease-in-out infinite;
-}
-
-.arch-flow.d1 { animation-delay: 0.15s; }
-.arch-flow.d2 { animation-delay: 0.3s; }
-.arch-flow.d3 { animation-delay: 0.45s; }
-.arch-flow.d4 { animation-delay: 0.6s; }
-.arch-flow.d5 { animation-delay: 0.75s; }
-
-@keyframes flowPulse {
-  0%, 100% {
-    opacity: 0.45;
-    text-shadow: 0 0 2px rgba(240,192,64,0.10);
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 8px rgba(240,192,64,0.55), 0 0 14px rgba(240,192,64,0.25);
-  }
-}
-
-@keyframes flowPulseSoft {
-  0%, 100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 0 0 6px rgba(85,102,119,0.35);
-  }
-}
-
-@keyframes nodePulse {
-  0%, 100% {
-    opacity: 0.85;
-    text-shadow: 0 0 4px rgba(0,255,136,0.20);
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 10px rgba(0,255,136,0.75), 0 0 18px rgba(0,255,136,0.35);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .arch-node,
-  .arch-flow,
-  .arch-flow.dim {
-    
-    
     /* TERMINAL BOX */
     .terminal-box {
       position: relative;
@@ -228,6 +168,41 @@
     .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--dim); }
 
+      .arch-node {
+        color: var(--green);
+        font-weight: bold;
+        animation: nodePulse 1.8s ease-in-out infinite;
+      }
+      
+      .arch-flow {
+        color: var(--yellow);
+        animation: flowPulse 1.2s ease-in-out infinite;
+      }
+      
+      .arch-d1 { animation-delay: 0.15s; }
+      .arch-d2 { animation-delay: 0.3s; }
+      .arch-d3 { animation-delay: 0.45s; }
+      .arch-d4 { animation-delay: 0.6s; }
+      
+      @keyframes flowPulse {
+        0%, 100% { opacity: 0.45; text-shadow: none; }
+        50% { opacity: 1; text-shadow: 0 0 6px rgba(240,192,64,0.45); }
+      }
+      
+      @keyframes nodePulse {
+        0%, 100% { opacity: 0.85; text-shadow: none; }
+        50% { opacity: 1; text-shadow: 0 0 8px rgba(0,255,136,0.55); }
+      }
+      
+      @media (prefers-reduced-motion: reduce) {
+        .arch-node,
+        .arch-flow {
+          animation: none;
+          text-shadow: none;
+          opacity: 1;
+        }
+      }
+    
     /* Responsive Design for Mobile Devices */
     @media screen and (max-width: 768px) {
       body {
