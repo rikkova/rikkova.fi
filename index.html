@@ -367,24 +367,28 @@
     // 2. Define static commands dictionary (Animations handled below)
     const commands = {
       'help': `Available commands:
-  whoami          - Display profile information
-  show version    - View system uptime and certifications
-  show ip route   - View network architecture scope
-  show bgp sum    - View IT/Network engineering skills
-  show interface  - View projects
-  show cdp nei    - View languages and soft skills
-  show topology   - View interactive topology
-  ping            - Display contact details
-  traceroute      - Trace career path and job history
-  tcpdump         - Capture live traffic
-  wget resume     - Download my resume (PDF)
-  curl            - Display external IP address information
-  history         - Display command history
-  top             - Monitor active tasks and current focus
-  theme           - Change terminal color (default, amber, cyan, hacker, google, bmw)
-  nmap            - Scan active services and protocols
-  diagnostics     - Run diagnostics
-  clear           - Clear the terminal screen`,
+  whoami            - Display profile information
+  show architecture - View CI/CD automation & TIG observability stack
+  show version      - View system uptime and certifications
+  show ip route     - View network architecture scope
+  show bgp sum      - View IT/Network engineering skills
+  show interface    - View projects
+  show cdp nei      - View languages and soft skills
+  show topology     - View interactive topology
+  ping              - Display contact details
+  traceroute        - Trace career path and job history
+  tcpdump           - Capture live traffic
+  wget resume       - Download my resume (PDF)
+  curl              - Display external IP address information
+  history           - Display command history
+  top               - Monitor active tasks and current focus
+  theme             - Change terminal color (default, amber, cyan, hacker, google, bmw)
+  nmap              - Scan active services and protocols
+  diagnostics       - Run diagnostics
+  clear             - Clear the terminal screen`,
+
+'show arch': commands['show architecture'],
+'show automation': commands['show architecture'],
       
       'show bgp sum': `=== Routing, Switching & Optical ===
 Protocols              : BGP, OSPF, IS-IS, MPLS & Segment Routing, VXLAN, BFD
@@ -400,6 +404,55 @@ Architecture           : SASE, Zero Trust, IPSec/SSL VPN, DDoS Mitigation
 NetDevOps              : Python, Ansible, Terraform, Git
 Programmability        : NETCONF, RESTCONF, gNMI, Cisco NSO/NDFC
 Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
+      
+     
+      'show architecture': `<span style="color: var(--yellow)">=== NEXT-GEN NETWORK AUTOMATION & OBSERVABILITY ARCHITECTURE ===</span>
+
+ <span style="color: var(--dim)">[ SOURCE OF TRUTH ]</span>       <span style="color: var(--dim)">[ CI/CD PIPELINE ]</span>             <span style="color: var(--dim)">[ EXECUTION ]</span>
+ 
+   +------------+         +---------------+           +-------------+
+   |            | API     |               |  Trigger  |             |
+   |   NetBox   |-------->| GitLab CI/CD  |---------->|   Ansible   |
+   | (Inventory)|         | (Code/Review) |           | (Playbooks) |
+   +------------+         +---------------+           +-------------+
+         |                        |                          |
+         |         +--------------v--------------+           | Push Config
+         |         |           Batfish           |           | (NETCONF/SSH)
+         +-------->| (Pre-deployment Validation) |           |
+       Inventory   +-----------------------------+           |
+                                                             V
+                                                   +===================+
+                                                   |                   |
+                                                   |   CORE NETWORK    |
+                                                   |  (IOS-XR / EOS)   |
+                                                   |                   |
+                                                   +===================+
+                                                      |      |      |
+ <span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                              |      |      |
+                                        gNMI/NETCONF  |      |      | NetFlow/IPFIX
+   +--------------+      +--------------+             |      |      |
+   |              |      |              |<------------+      |      |
+   |   Grafana    |<-----|   InfluxDB   |                    |      |
+   | (Dashboards) |      | (Time-Series)|<-------+           |      v
+   |              |      |      DB)     |        |     +------------+
+   +--------------+      +--------------+        |     |   pmacct   |
+                                                 |     | (Flow Col) |
+      <span style="color: var(--green)">TIG Stack</span>                                  |     +------------+
+      <span style="color: var(--green)">Telegraf, InfluxDB, Grafana</span>                |
+                                                 |           | BMP
+                                                 |     +-----v------+
+                                                 |     |  OpenBMP   |
+                                                 +-----| (BGP Mon)  |
+                                                       +------------+
+
+<span style="color: var(--yellow)">System Overview:</span>
+- <span style="color: var(--green)">Automation:</span> Netbox acts as the declarative Source of Truth. Changes pushed via Git 
+  trigger GitLab CI/CD pipelines. Batfish validates the proposed configs against the 
+  intended state to prevent outages. Ansible executes the final playbook.
+- <span style="color: var(--green)">Observability:</span> Telegraf streams gNMI metrics. pmacct collects Netflow for traffic 
+  engineering. OpenBMP monitors BGP state and flapping. All data is ingested into 
+  InfluxDB and visualized on Grafana.`,
+
       
       'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
 
