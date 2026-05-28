@@ -403,55 +403,45 @@ Programmability        : NETCONF, RESTCONF, gNMI, Cisco NSO/NDFC
 Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
       
      
-      'show architecture': `<span style="color: var(--yellow)">=== NEXT-GEN NETWORK AUTOMATION & OBSERVABILITY ARCHITECTURE ===</span>
+'show architecture': `<span style="color: var(--yellow)">=== NEXT-GEN NETWORK AUTOMATION & OBSERVABILITY ARCHITECTURE ===</span>
 
- <span style="color: var(--dim)">[ SOURCE OF TRUTH ]</span>       <span style="color: var(--dim)">[ CI/CD PIPELINE ]</span>             <span style="color: var(--dim)">[ EXECUTION ]</span>
- 
+<span style="color: var(--dim)">[ SOURCE OF TRUTH ]</span>        <span style="color: var(--dim)">[ CI/CD PIPELINE ]</span>              <span style="color: var(--dim)">[ EXECUTION ]</span>
+
    +------------+         +---------------+           +-------------+
-   |            | API     |               |  Trigger  |             |
-   |   NetBox   |-------->| GitLab CI/CD  |---------->|   Ansible   |
-   | (Inventory)|         | (Code/Review) |           | (Playbooks) |
+   |   NetBox   | API     | GitLab CI/CD  | Trigger   |   Ansible   |
+   | (Inventory)|-------->| (Code/Review) |---------->| (Playbooks) |
    +------------+         +---------------+           +-------------+
          |                        |                          |
          |         +--------------v--------------+           | Push Config
          |         |           Batfish           |           | (API/SSH)
          +-------->| (Pre-deployment Validation) |           |
        Inventory   +-----------------------------+           |
-                                                             V
+                                                             v
                                                    +===================+
-                                                   |                   |
                                                    |   CORE NETWORK    |
                                                    |  (IOS-XR / NXOS)  |
-                                                   |                   |
                                                    +===================+
-                                                      |      |      |
- <span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                              |      |      |
-                                                 gNMI |      |      | NetFlow
-                                         +------------v+     |      |
-                                         |  Telegraf   |     |      |
-                                         | (Data Col)  |     |      |
-                                         +-------------+     |      |
-                                                |            |      |
-   +--------------+      +--------------+       |            |      |
-   |              |      |              |<------+            |      v
-   |   Grafana    |<-----|   InfluxDB   |              +------------+
-   | (Dashboards) |      | (Time-Series)|<-------------|   pmacct   |
-   |              |      |      DB)     |              | (Flow Col) |
-   +--------------+      +--------------+              +------------+
-                                 ^                           
-      <span style="color: var(--green)">TIG Stack</span>                  |                     | BMP
-      <span style="color: var(--green)">Telegraf, InfluxDB, Grafana</span>|               +-----v------+
-                                 |               |  OpenBMP   |
-                                 +---------------| (BGP Mon)  |
-                                                 +------------+
+                                                      |           |
+<span style="color: var(--dim)">[ TELEMETRY & METRICS ]</span>                     gNMI |           | NetFlow / BMP
+                                                      |           |
+                                         +------------v+    +-----v------+
+                                         |  Telegraf   |    |   pmacct   |
+                                         | (Data Col)  |    |(Flow/BMP)  |
+                                         +------------++    +-----+------+
+                                                      |           |
+                                                      +-----+-----+
+                                                            |
+   +--------------+      +--------------+                   |
+   |   Grafana    |<-----|   InfluxDB   |<------------------+
+   | (Dashboards) |      | (Time-Series)|
+   +--------------+      |      DB)     |
+                         +--------------+
+
+<span style="color: var(--green)">TIG Stack:</span> Telegraf, InfluxDB, Grafana
 
 <span style="color: var(--yellow)">System Overview:</span>
-- <span style="color: var(--green)">Automation:</span> Netbox acts as the declarative Source of Truth. Changes pushed via Git 
-  trigger GitLab CI/CD pipelines. Batfish validates the proposed configs against the 
-  intended state to prevent outages. Ansible executes the final playbook.
-- <span style="color: var(--green)">Observability:</span> Telegraf streams gNMI metrics. pmacct collects Netflow for traffic 
-  engineering. OpenBMP monitors BGP state and flapping. All data is ingested into 
-  InfluxDB and visualized on Grafana.`,
+- <span style="color: var(--green)">Automation:</span> NetBox acts as the source of truth, GitLab pipelines validate intent, Batfish checks changes before deployment, and Ansible pushes the approved configuration.
+- <span style="color: var(--green)">Observability:</span> Telegraf streams telemetry over gNMI, pmacct collects NetFlow and BMP data, InfluxDB stores the time-series data, and Grafana presents it visually.`,
 
       
       'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
