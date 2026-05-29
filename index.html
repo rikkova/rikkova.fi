@@ -446,32 +446,30 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 
 'show dwdm': `<span style="color: var(--yellow)">=== ACTIVE DWDM / ENCRYPTED 400G DCI ===</span>
 
-        <span style="color: var(--dim)">[ DC1 / WEST ]</span>                          <span style="color: var(--dim)">[ DC2 / WEST ]</span>
-        +----------------------+             +----------------------+
-        | Smartoptics DWDM 1   |=============| Smartoptics DWDM 1   |
-        +----------+-----------+   West Fib  +-----------+----------+
+             <span style="color: var(--dim)">[ DC1 / WEST ]</span>                         <span style="color: var(--dim)">[ DC2 / WEST ]</span>
+        +----------------------+               +----------------------+
+        |  Smartoptics DWDM 1  |===============|  Smartoptics DWDM 1  |
+        +----------+-----------+    West Fib   +-----------+----------+
                    |                                       |
-              +----+----+                             +----+----+
-              | EDFA/VOA|                             | EDFA/VOA|
-              +----+----+                             +----+----+
-                    \\\\                                 //
-                     \\\\                               //
-                      +-------------------------------+
-                      | MPLS | VXLAN | EDGE | STORAGE |
-                      +-------------------------------+
-                     //                               \\\\
-                    //                                 \\\\
-              +----+----+                             +----+----+
-              | EDFA/VOA|                             | EDFA/VOA|
-              +----+----+                             +----+----+
+              +----+-----+                           +-----+----+
+              | EDFA/VOA |                           | EDFA/VOA |
+              +----+-----+                           +-----+----+
                    |                                       |
-        +----------+-----------+   East Fib  +-----------+----------+
-        | Smartoptics DWDM 2   |=============| Smartoptics DWDM 2   |
-        +----------------------+             +----------------------+
-        <span style="color: var(--dim)">[ DC1 / EAST ]</span>                          <span style="color: var(--dim)">[ DC2 / EAST ]</span>
+   +-------------------------------+       +-------------------------------+
+   | MPLS | VXLAN | EDGE | STORAGE |       | MPLS | VXLAN | EDGE | STORAGE |
+   +-------------------------------+       +-------------------------------+
+                   |                                       |
+              +----+-----+                           +-----+----+
+              | EDFA/VOA |                           | EDFA/VOA |
+              +----+-----+                           +-----+----+
+                   |                                       |
+        +----------+-----------+    East Fib   +-----------+----------+
+        |  Smartoptics DWDM 2  |===============|  Smartoptics DWDM 2  |
+        +----------------------+               +----------------------+
+             <span style="color: var(--dim)">[ DC1 / EAST ]</span>                         <span style="color: var(--dim)">[ DC2 / EAST ]</span>
 
 <span style="color: var(--yellow)">Transport view:</span>
-- <span style="color: var(--green)">Shared services:</span> MPLS routing, VXLAN fabric, Internet edge, and storage replication are carried across both optical paths.
+- <span style="color: var(--green)">Shared services:</span> MPLS routing, VXLAN fabric, Internet edge, and storage replication are presented across both optical paths.
 - <span style="color: var(--green)">West/East paths:</span> Diverse encrypted 400G transport between the two data centers.
 - <span style="color: var(--green)">EDFA / VOA:</span> Optical gain and power balancing on each path.`,
       
