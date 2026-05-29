@@ -288,7 +288,7 @@
       for (const line of logoLines) {
         bootOutput.innerHTML += `<span style="color: var(--green);">${line}</span>\n`;
         terminalBody.scrollTop = terminalBody.scrollHeight;
-        await sleep(45); // 45ms delay per line for that classic modem draw effect
+        await sleep(120); // 45ms delay per line for that classic modem draw effect
       }
       
       // Print the copyright info line by line
