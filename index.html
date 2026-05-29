@@ -223,16 +223,34 @@
     let commandHistory = [];
     let historyIndex = -1;
 
+    let lastJokeIndex = -1;
+    let forcedJokeIndex = -1;
+    let forcedJokeRepeatsLeft = 0;
+    
+    const spanningTreeJokeIndex = networkJokes.findIndex(
+      joke => joke === "I would explain spanning tree, but I do not want to create a loop."
+    );    
     const networkJokes = [
+      "Network design is the art of choosing where future problems will happen.",
       "Why do network engineers love weekends? Fewer change windows, fewer surprises.",
       "I told the data center a joke. It needed a moment to process.",
       "My favorite routing protocol is coffee. It always finds the shortest path to productivity.",
       "There are only two hard things in networking: naming things, timing maintenance, and BGP.",
       "I would explain spanning tree, but I do not want to create a loop.",
+      "Somewhere out there, a forgotten static route is still making bold choices.",
+      "it's not dns, it can't be dns, it was dns",
+      "A data center without labeling is just an escape room for engineers.",
+      "The outage was not that bad. It only affected everyone.",
+      "The packet capture was clean, which was deeply unhelpful.",
+      "A single typo can turn infrastructure as code into infrastructure as folklore.",
+      "Ansible is great because it lets you break everything consistently at scale.",
+      "I named the backup link 'temporary' three years ago.",
+      "Nothing says confidence like pushing firewall policy with one eye on the rollback timer.",
+      "My favorite optical tool is optimism, followed closely by an actual power meter.",
+      "I asked the switch for emotional support. It said the port was administratively down.",
       "The firewall and I have something in common: we both drop things under pressure.",
       "Never trust a quiet rack. It is either perfect or plotting.",
       "Network engineering: turning blinking lights into business continuity.",
-      "I do not always fear change windows, but when I do, it is on Friday evening.",
       "Every packet has a dream. Some just get filtered before they make it."
     ];
 
@@ -1316,16 +1334,39 @@ Bio: I design and operate core network infrastructure at CGI across three domain
       }
 
         // 13. JOKE COMMAND
-        if (inputVal === 'joke') {
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          const randomJoke = networkJokes[Math.floor(Math.random() * networkJokes.length)];
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${randomJoke}`;
-          terminal.appendChild(outputDiv);
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
-        }
+if (inputVal === 'joke') {
+  const outputDiv = document.createElement('div');
+  outputDiv.className = 'output';
+
+  let jokeIndex;
+
+  if (forcedJokeRepeatsLeft > 0 && forcedJokeIndex !== -1) {
+    jokeIndex = forcedJokeIndex;
+    forcedJokeRepeatsLeft--;
+  } else {
+    const availableIndexes = networkJokes
+      .map((_, index) => index)
+      .filter(index => index !== lastJokeIndex);
+
+    jokeIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
+
+  if (jokeIndex === spanningTreeJokeIndex) {
+      forcedJokeIndex = jokeIndex;
+      forcedJokeRepeatsLeft = 2;
+    } else {
+      forcedJokeIndex = -1;
+      forcedJokeRepeatsLeft = 0;
+    }
+  }
+
+  lastJokeIndex = jokeIndex;
+
+  outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${networkJokes[jokeIndex]}`;
+  terminal.appendChild(outputDiv);
+  cmd.value = '';
+  terminalBody.scrollTop = terminalBody.scrollHeight;
+  return;
+}
 
         
         // 13. HISTORY COMMAND
