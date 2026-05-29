@@ -217,12 +217,59 @@
     const terminalBody = document.getElementById('terminal-body');
     const cmd = document.getElementById('cmd');
 
-    // Global Terminal State Variables
     let isRoot = false;
     let awaitingPassword = false;
     let currentPrompt = '<span class="prompt">guest@rikkova:~$ </span>';
     let commandHistory = [];
     let historyIndex = -1;
+
+    const networkJokes = [
+      "Why do network engineers love weekends? Fewer change windows, fewer surprises.",
+      "I told the data center a joke. It needed a moment to process.",
+      "My favorite routing protocol is coffee. It always finds the shortest path to productivity.",
+      "There are only two hard things in networking: naming things, timing maintenance, and BGP.",
+      "I would explain spanning tree, but I do not want to create a loop.",
+      "The firewall and I have something in common: we both drop things under pressure.",
+      "Never trust a quiet rack. It is either perfect or plotting.",
+      "Network engineering: turning blinking lights into business continuity.",
+      "I do not always fear change windows, but when I do, it is on Friday evening.",
+      "Every packet has a dream. Some just get filtered before they make it."
+    ];
+
+    function levenshtein(a, b) {
+      const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
+      for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          if (b.charAt(i - 1) === a.charAt(j - 1)) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+          }
+        }
+      }
+      return matrix[b.length][a.length];
+    }
+
+    function getClosestCommand(input, commandList) {
+      let bestMatch = null;
+      let bestScore = Infinity;
+
+      for (const command of commandList) {
+        const score = levenshtein(input, command);
+        if (score < bestScore) {
+          bestScore = score;
+          bestMatch = command;
+        }
+      }
+
+      return { bestMatch, bestScore };
+    }
     
     // 1. Calculate dynamic system uptime FIRST
     const dob = new Date(1997, 8, 17); // Month 8 is September
@@ -386,6 +433,7 @@
   theme             - Change terminal color (default, amber, cyan, hacker, google, bmw)
   nmap              - Scan active services and protocols
   diagnostics       - Run diagnostics
+  joke              - Display a random network/data center joke
   clear             - Clear the terminal screen`,
       
       'show bgp sum': `=== Routing, Switching & Optical ===
@@ -656,7 +704,7 @@ Active Licenses / Certifications:
       if (e.key === 'Tab') {
         e.preventDefault(); 
         const inputVal = cmd.value.toLowerCase();
-        const allCommands = Object.keys(commands).concat(['clear', 'sudo', 'history', 'whoami', 'ping', 'traceroute', 'wget resume', 'diagnostics']);
+        const allCommands = Object.keys(commands).concat(['clear', 'sudo', 'history', 'whoami', 'ping', 'traceroute', 'wget resume', 'diagnostics', 'joke']);
         const matches = allCommands.filter(c => c.startsWith(inputVal));
         
         if (matches.length === 1) {
@@ -687,11 +735,12 @@ Active Licenses / Certifications:
         
         // 1. Root level commands (Empty input)
         if (inputValLower === '' || inputValLower.trim() === '') {
-          helpText = `Exec commands:
-  clear        history      ping         tcpdump
-  curl         nmap         show         theme
-  diagnostics  sudo         traceroute   top
-  help         su           wget         whoami`;
+        helpText = `Exec commands:
+          clear        history      ping         tcpdump
+          curl         nmap         show         theme
+          diagnostics  joke         sudo         traceroute
+          help         su           top          wget
+          whoami`;
         
         // 2. Sub-commands for 'show '
         } else if (inputValLower === 'show' || inputValLower === 'show ') {
@@ -726,8 +775,7 @@ Active Licenses / Certifications:
           
         // 6. Partial matching (e.g. typing 'sh' and hitting '?')
         } else {
-          const allCommands = ['clear', 'curl', 'diagnostics', 'help', 'history', 'nmap', 'ping', 'show', 'su', 'sudo', 'tcpdump', 'theme', 'top', 'traceroute', 'wget', 'whoami'];
-          // Find commands that start with the currently typed string
+          const allCommands = ['clear', 'curl', 'diagnostics', 'help', 'history', 'joke', 'nmap', 'ping', 'show', 'su', 'sudo', 'tcpdump', 'theme', 'top', 'traceroute', 'wget', 'whoami'];          // Find commands that start with the currently typed string
           const matches = allCommands.filter(c => c.startsWith(inputValLower.trim()));
           
           if (matches.length > 0 && !inputValLower.endsWith(' ')) {
@@ -1266,6 +1314,19 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         cmd.value = '';
         return;
       }
+
+        // 13. JOKE COMMAND
+        if (inputVal === 'joke') {
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          const randomJoke = networkJokes[Math.floor(Math.random() * networkJokes.length)];
+          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${randomJoke}`;
+          terminal.appendChild(outputDiv);
+          cmd.value = '';
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          return;
+        }
+
         
         // 13. HISTORY COMMAND
         if (inputVal === 'history') {
@@ -1391,7 +1452,16 @@ Bio: I design and operate core network infrastructure at CGI across three domain
             response = 'guest is not in the sudoers file. This incident will be reported.';
           }
         } else if (!response) {
-          response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found`;
+          const commandList = [...Object.keys(commands), 'joke', 'su', 'su -', 'exit', 'cat /etc/shadow'];
+          const { bestMatch, bestScore } = getClosestCommand(inputVal, commandList);
+          const normalizedScore = bestMatch ? bestScore / Math.max(inputVal.length, bestMatch.length) : 1;
+          let suggestionLine = '';
+
+          if (bestMatch && (bestScore <= 3 || normalizedScore <= 0.35)) {
+            suggestionLine = `\nDid you mean: <span style="color: var(--green)">${bestMatch}</span>?`;
+          }
+
+          response = `% Invalid input detected at '^' marker.\n-bash: ${inputVal}: command not found${suggestionLine}`;
         }
 
         outputDiv.innerHTML = promptSpan + commandSpan + response;
