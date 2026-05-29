@@ -19,55 +19,6 @@
       --font-display: 'Orbitron', sans-serif;
     }
 
-    /* Ensure the splash screen is contained within the body */
-    .terminal-body {
-      position: relative; 
-    }
-
-    /* --- BIOS Splash Screen --- */
-    #boot-splash {
-      position: absolute;
-      inset: 0;
-      background: var(--surface);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
-      transition: opacity 1.2s ease-in-out;
-    }
-
-    .splash-logo {
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: clamp(1rem, 2vw, 1.5rem);
-      line-height: 1.2;
-      opacity: 0;
-      animation: 
-        splash-enter 2.5s ease-out forwards, 
-        splash-pulse 3s ease-in-out infinite alternate 2.5s;
-    }
-
-    .splash-text {
-      margin-top: 2rem;
-      color: var(--dim);
-      font-family: var(--font-display);
-      letter-spacing: 4px;
-      font-size: 0.9rem;
-      opacity: 0;
-      animation: splash-enter 2s ease-out 1s forwards;
-    }
-
-    @keyframes splash-enter {
-      from { opacity: 0; transform: scale(0.95); text-shadow: 0 0 0px var(--green); }
-      to   { opacity: 1; transform: scale(1); text-shadow: 0 0 15px var(--green); }
-    }
-
-    @keyframes splash-pulse {
-      from { text-shadow: 0 0 10px var(--green); }
-      to   { text-shadow: 0 0 25px var(--green); }
-    }
-    
     /* --- CRT Scanlines & Glow Overlay --- */
     .crt-overlay {
       position: fixed;
@@ -248,17 +199,6 @@
     </div>
     
     <div class="terminal-body" id="terminal-body">
-            <!-- Splash Screen Overlay -->
-      <div id="boot-splash">
-        <pre class="splash-logo">
- __     __      ____  _____ 
- \ \   / /     / __ \/ ____|
-  \ \_/ /_____| |  | \___ \ 
-   \   /______| |  | |___) |
-    \_/        \____/_____/ 
-        </pre>
-        <div class="splash-text">V-OS INITIALIZING...</div>
-      </div>
       <div id="terminal">
         <!-- Text will be injected here by JavaScript -->
         <div class="output" id="boot-output"></div>
@@ -309,21 +249,7 @@
       const bootOutput = document.getElementById('boot-output');
       const inputLine = document.getElementById('input-line');
       
-      // 1. SPLASH SCREEN LOGIC
-      // Let the user admire the slow-breathing logo for 3.5 seconds
-      await sleep(3500); 
-      
-      const splash = document.getElementById('boot-splash');
-      if (splash) {
-        splash.style.opacity = '0'; // Trigger the CSS fade out
-        await sleep(1200);          // Wait for the fade to finish
-        splash.remove();            // Delete it from the DOM
-      }
-
-      await sleep(500); // Brief pause in the empty terminal before logs start
-
       const typeText = async (text, delay = 25) => {
-        // ... (rest of your existing typeText and boot sequence logic continues here)
         for (let char of text) {
           bootOutput.innerHTML += char;
           terminalBody.scrollTop = terminalBody.scrollHeight;
