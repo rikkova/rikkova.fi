@@ -4,187 +4,153 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>V-OS Network Terminal v2.0</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #070b0d;
-      --bg-2: #0b1114;
-      --surface: rgba(15, 21, 24, 0.88);
-      --surface-solid: #111518;
-      --surface-2: rgba(23, 31, 35, 0.92);
-      --border: #203136;
-      --border-soft: rgba(141, 205, 184, 0.12);
+      --bg: #0a0e0f;
+      --surface: #111518;
+      --border: #1e2d2f;
       --green: #00ff88;
       --yellow: #f0c040;
       --red: #ff4455;
-      --text: #d4e1da;
-      --dim: #708089;
-      --dim-2: #4f5d65;
-      --white-soft: rgba(255,255,255,0.06);
+      --text: #c8d8d0;
+      --dim: #556677;
       --font-mono: 'Share Tech Mono', monospace;
       --font-display: 'Orbitron', sans-serif;
-      --shadow-lg:
-        0 20px 60px rgba(0,0,0,0.42),
-        0 6px 18px rgba(0,0,0,0.24);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* --- CRT Scanlines & Glow Overlay --- */
+    .crt-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 4px;
+      z-index: 999;
+      pointer-events: none; /* Let clicks pass through to terminal */
+      opacity: 0.15;
+    }
 
-    html {
-      scroll-behavior: smooth;
-      color-scheme: dark;
+    /* Add a subtle green glow to the text */
+    .terminal-box {
+      text-shadow: 0 0 2px rgba(0, 255, 136, 0.4);
+    }
+    
+    /* Screen flicker animation */
+    @keyframes flicker {
+      0% { opacity: 0.15; }
+      50% { opacity: 0.18; }
+      100% { opacity: 0.15; }
+    }
+    .crt-overlay {
+      animation: flicker 4s infinite;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* Automatically scale everything up by 120% on desktop */
+    @media screen and (min-width: 769px) {
+      .terminal-box { zoom: 1.2; }
     }
 
     body {
-      background:
-        radial-gradient(circle at top, rgba(0,255,136,0.05), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(240,192,64,0.035), transparent 22%),
-        linear-gradient(180deg, var(--bg-2) 0%, var(--bg) 100%);
+      background: var(--bg);
       color: var(--text);
       font-family: var(--font-mono);
       font-size: 15px;
-      line-height: 1.72;
+      line-height: 1.7;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       min-height: 100vh;
-      padding: 32px 20px;
-      display: grid;
-      place-items: center;
       cursor: text;
     }
 
+    /* Animated topology background */
     #topology-bg {
       position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: 0;
-      opacity: 0.14;
+      opacity: 0.18;
       pointer-events: none;
-      filter: saturate(0.95);
     }
 
+    /* TERMINAL BOX */
     .terminal-box {
       position: relative;
       z-index: 10;
-      width: min(960px, 100%);
-      min-height: min(82vh, 900px);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 8px;
       overflow: hidden;
-      background: linear-gradient(180deg, rgba(20, 26, 30, 0.88), rgba(14, 19, 22, 0.93));
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .terminal-box::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      border-radius: inherit;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.04),
-        inset 0 0 0 1px rgba(255,255,255,0.015);
+      background: var(--surface); /* Now it will follow the theme! */
+      backdrop-filter: blur(5px);
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .terminal-bar {
-      background:
-        linear-gradient(180deg, rgba(32, 40, 45, 0.95), rgba(25, 31, 35, 0.95));
-      padding: 0.9rem 1.15rem;
+      background: #1a2226;
+      padding: 0.5rem 1rem;
       display: flex;
       align-items: center;
-      gap: 0.55rem;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      position: relative;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      display: inline-block;
-      box-shadow: inset 0 1px 1px rgba(255,255,255,0.18);
-      opacity: 0.95;
-    }
-
+    .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
     .dot.red { background: var(--red); }
     .dot.yellow { background: var(--yellow); }
     .dot.green { background: var(--green); }
 
     .terminal-title {
       margin-left: auto;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       color: var(--dim);
       font-family: var(--font-display);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      opacity: 0.9;
+      letter-spacing: 1px;
     }
 
-    .terminal-body {
-      position: relative;
-      padding: 1.4rem 1.5rem 0;
-      height: min(72vh, 760px);
+    .terminal-body { 
+      padding: 1.5rem; 
+      max-height: 60vh;
       overflow-y: auto;
-      overscroll-behavior: contain;
     }
 
-    #terminal {
-      padding-bottom: 1rem;
-    }
-
-    .output {
-      margin-bottom: 1rem;
-      white-space: pre-wrap;
-      line-height: 1.58;
+    .output { 
+      margin-bottom: 15px; 
+      white-space: pre-wrap; 
+      line-height: 1.5; 
       color: var(--text);
-      animation: outputFade 150ms ease-out;
     }
-
-    @keyframes outputFade {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    
     .interactive-node {
       color: var(--yellow);
       cursor: pointer;
       text-decoration: none;
       font-weight: bold;
-      transition: color 160ms ease, text-shadow 160ms ease, opacity 160ms ease;
+      transition: all 0.2s ease;
     }
-
     .interactive-node:hover {
-      color: #fff7d6;
-      text-shadow: 0 0 10px rgba(240,192,64,0.35);
+      color: #ffffff;
+      text-shadow: 0 0 8px var(--yellow);
       text-decoration: underline;
     }
 
-    .prompt {
-      color: var(--green);
-      font-weight: bold;
-    }
+    .prompt { color: var(--green); font-weight: bold; }
+    .user-input { color: var(--yellow); }
 
-    .user-input {
-      color: var(--yellow);
-    }
-
-    .input-line {
-      position: sticky;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-top: 0.5rem;
-      padding: 0.95rem 0 1.1rem;
-      background:
-        linear-gradient(180deg, rgba(17,21,24,0) 0%, rgba(17,21,24,0.82) 22%, rgba(17,21,24,0.98) 100%);
-      border-top: 1px solid rgba(255,255,255,0.04);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-
+    .input-line { display: flex; align-items: center; margin-top: 10px; }
+    
     input {
       background: transparent;
       border: none;
@@ -193,92 +159,35 @@
       font-size: inherit;
       width: 100%;
       outline: none;
-      caret-color: var(--green);
-      padding-top: 1px;
     }
+    
+    /* Scrollbar styling for terminal body */
+    .terminal-body::-webkit-scrollbar { width: 8px; }
+    .terminal-body::-webkit-scrollbar-track { background: var(--bg); }
+    .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--dim); }
 
-    input::placeholder {
-      color: var(--dim-2);
-    }
-
-    a {
-      color: var(--green);
-      text-decoration-thickness: 1px;
-      text-underline-offset: 2px;
-    }
-
-    .terminal-body::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    .terminal-body::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.02);
-      border-left: 1px solid rgba(255,255,255,0.03);
-    }
-
-    .terminal-body::-webkit-scrollbar-thumb {
-      background: linear-gradient(180deg, rgba(92, 119, 128, 0.55), rgba(67, 88, 95, 0.7));
-      border-radius: 999px;
-      border: 2px solid rgba(0,0,0,0);
-      background-clip: padding-box;
-    }
-
-    .terminal-body::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(180deg, rgba(120, 152, 163, 0.7), rgba(80, 104, 112, 0.8));
-      background-clip: padding-box;
-    }
-
-    ::selection {
-      background: rgba(0,255,136,0.22);
-      color: var(--text);
-    }
-
+    /* Responsive Design for Mobile Devices */
     @media screen and (max-width: 768px) {
       body {
-        padding: 12px;
+        padding: 10px;
         font-size: 13px;
       }
-
       .terminal-box {
-        width: 100%;
-        min-height: 92vh;
-        border-radius: 10px;
+        max-width: 100%;
+        margin: 0;
+        border-radius: 4px;
       }
-
-      .terminal-bar {
-        padding: 0.8rem 0.9rem;
-      }
-
-      .terminal-title {
-        font-size: 0.68rem;
-        letter-spacing: 0.08em;
-      }
-
       .terminal-body {
-        height: 78vh;
-        padding: 1rem 1rem 0;
-      }
-
-      .input-line {
-        padding: 0.85rem 0 1rem;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .output,
-      .interactive-node,
-      .dot {
-        animation: none !important;
-        transition: none !important;
-      }
-      #topology-bg {
-        opacity: 0.08;
+        max-height: 70vh;
+        padding: 1rem;
       }
     }
   </style>
 </head>
 <body onclick="document.getElementById('cmd').focus()">
+  <div class="crt-overlay"></div>
+  <!-- Animated Background Canvas -->
   <canvas id="topology-bg"></canvas>
 
   <div class="terminal-box">
@@ -288,12 +197,14 @@
       <div class="dot green"></div>
       <div class="terminal-title">rikkova@core-router-01 ~</div>
     </div>
-
+    
     <div class="terminal-body" id="terminal-body">
       <div id="terminal">
+        <!-- Text will be injected here by JavaScript -->
         <div class="output" id="boot-output"></div>
       </div>
-
+      
+      <!-- Added id="input-line" and hidden it by default -->
       <div class="input-line" id="input-line" style="display: none;">
         <span class="prompt">guest@rikkova:~$ </span>
         <input type="text" id="cmd" autocomplete="off" spellcheck="false">
@@ -312,49 +223,79 @@
     let commandHistory = [];
     let historyIndex = -1;
     let lastJokeIndex = -1;
-    let forcedJokeIndex = -1;
-    let forcedJokeRepeatsLeft = 0;
+  
+const networkJokes = [
+  "Network design is the art of choosing where future problems will happen.",
+  "Why do network engineers love weekends? Fewer change windows, fewer surprises.",
+  "I told the data center a joke. It needed a moment to process.",
+  "My favorite routing protocol is coffee. It always finds the shortest path to productivity.",
+  "There are only two hard things in networking: naming things, timing maintenance, and BGP.",
+  "I would explain spanning tree, but I do not want to create a loop.",
+  "There is no greater optimism than writing no impact expected in a change plan.",
+  "Somewhere out there, a forgotten static route is still making bold choices.",
+  "It is not DNS, it cannot be DNS, it was DNS.",
+  "A data center without labeling is just an escape room for engineers.",
+  "The outage was not that bad. It only affected everyone.",
+  "The packet capture was clean, which was deeply unhelpful.",
+  "The route reflector reflected on its choices and still chose chaos.",
+  "High availability means having twice as many things to misunderstand.",
+  "The issue was resolved once we accepted that the diagram was fiction.",
+  "A single typo can turn infrastructure as code into infrastructure as folklore.",
+  "Ansible is great because it lets you break everything consistently at scale.",
+  "I named the backup link 'temporary' three years ago.",
+  "Nothing says confidence like pushing firewall policy with one eye on the rollback timer.",
+  "My favorite optical tool is optimism, followed closely by an actual power meter.",
+  "I asked the switch for emotional support. It said the port was administratively down.",
+  "The firewall and I have something in common: we both drop things under pressure.",
+  "Never trust a quiet rack. It is either perfect or plotting.",
+  "Network engineering: turning blinking lights into business continuity.",
+  "Nothing ages faster than a network diagram and a temporary workaround.",
+  "Every packet has a dream. Some just get filtered before they make it.",
+  "The hardware was end-of-life, but apparently not end-of-drama.",
+  "The bravest command in networking is reload in 10, and the scariest is forgetting to set it.",
+  "Troubleshooting starts with logic and ends with vibes and packet captures.",
+  "The maintenance was routine, which is how the interesting incidents always begin.",
+  "The final dependency in the migration plan was apparently a handsaw.",
+  "Nothing resets the mood on a sev-1 bridge like a client asking whether tonight feels more like wine or beer.",
+  "'Losing a few packets' means very different things depending on your profession."
+];
 
-    const networkJokes = [
-      "Network design is the art of choosing where future problems will happen.",
-      "Why do network engineers love weekends? Fewer change windows, fewer surprises.",
-      "I told the data center a joke. It needed a moment to process.",
-      "My favorite routing protocol is coffee. It always finds the shortest path to productivity.",
-      "There are only two hard things in networking: naming things, timing maintenance, and BGP.",
-      "I would explain spanning tree, but I do not want to create a loop.",
-      "There is no greater optimism than writing no impact expected in a change plan.",
-      "Somewhere out there, a forgotten static route is still making bold choices.",
-      "It is not DNS, it cannot be DNS, it was DNS.",
-      "A data center without labeling is just an escape room for engineers.",
-      "The outage was not that bad. It only affected everyone.",
-      "The packet capture was clean, which was deeply unhelpful.",
-      "The route reflector reflected on its choices and still chose chaos.",
-      "High availability means having twice as many things to misunderstand.",
-      "The issue was resolved once we accepted that the diagram was fiction.",
-      "A single typo can turn infrastructure as code into infrastructure as folklore.",
-      "Ansible is great because it lets you break everything consistently at scale.",
-      "I named the backup link 'temporary' three years ago.",
-      "Nothing says confidence like pushing firewall policy with one eye on the rollback timer.",
-      "My favorite optical tool is optimism, followed closely by an actual power meter.",
-      "I asked the switch for emotional support. It said the port was administratively down.",
-      "The firewall and I have something in common: we both drop things under pressure.",
-      "Never trust a quiet rack. It is either perfect or plotting.",
-      "Network engineering: turning blinking lights into business continuity.",
-      "Nothing ages faster than a network diagram and a temporary workaround.",
-      "Every packet has a dream. Some just get filtered before they make it.",
-      "The hardware was end-of-life, but apparently not end-of-drama.",
-      "The bravest command in networking is reload in 10, and the scariest is forgetting to set it.",
-      "Troubleshooting starts with logic and ends with vibes and packet captures.",
-      "The maintenance was routine, which is how the interesting incidents always begin.",
-      "The final dependency in the migration plan was apparently a handsaw.",
-      "Nothing resets the mood on a sev-1 bridge like a client asking whether tonight feels more like wine or beer.",
-      "'Losing a few packets' means very different things depending on your profession."
-    ];
-
-    const spanningTreeJokeIndex = networkJokes.findIndex(
-      joke => joke === "I would explain spanning tree, but I do not want to create a loop."
-    );
-
+const incidentDetails = {
+  'show incident 1': [
+    `<span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance`,
+    ``,
+    `  Impact: An engineer targeted a VRF change but deleted the parent router bgp hierarchy in candidate config`,
+    `  Effect: Potential loss of global and VRF-level BGP state if committed unchallenged`,
+    `  Root cause: Human error in hierarchical CLI editing with insufficient policy guardrails`,
+    `  Fix: Aborted change, restored intended subtree, and reviewed diff before retry`,
+    `  Prevention: Implemented pre-commit validation to reject destructive parent-level BGP removals`,
+    ``,
+    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
+  ],
+  'show incident 2': [
+    `<span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry`,
+    ``,
+    `  Impact: Expired certificate caused remote access VPN authentication failure for active users`,
+    `  Effect: Existing sessions dropped and new user connections were rejected until certificate renewal completed`,
+    `  Root cause: Certificate renewal was not completed before the service validity window ended`,
+    `  Fix: Renewed and deployed the certificate chain, then verified client connectivity and trust state`,
+    `  Prevention: Implemented automated certificate renewal and deployment for the remote access VPN`,
+    ``,
+    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
+  ],
+  'show incident 3': [
+    `<span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction`,
+    ``,
+    `  Impact: Third-party roadwork and piling activity damaged one of two inter-datacenter dark fiber paths`,
+    `  Effect: One transport path was lost, but services remained available on the surviving diverse fiber route`,
+    `  Root cause: Civil construction intersected the physical path of a leased dark fiber segment near a motorway corridor`,
+    `  Fix: Traffic continued over the secondary path while the damaged fiber provider path was repaired`,
+    `  Prevention: Designed inter-datacenter transport over two geographically diverse dark fiber paths`,
+    ``,
+    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
+  ]
+};
+    
     function levenshtein(a, b) {
       const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
       for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
@@ -389,14 +330,15 @@
 
       return { bestMatch, bestScore };
     }
-
-    const dob = new Date(1997, 8, 17);
+    
+    // 1. Calculate dynamic system uptime FIRST
+    const dob = new Date(1997, 8, 17); // Month 8 is September
     const now = new Date();
-
+    
     let years = now.getFullYear() - dob.getFullYear();
     let months = now.getMonth() - dob.getMonth();
     let days = now.getDate() - dob.getDate();
-
+    
     if (days < 0) {
       months--;
       days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
@@ -407,12 +349,13 @@
     }
     const uptimeString = `${years} years, ${months} months, ${days} days`;
 
+    // --- BOOT SEQUENCE LOGIC ---
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     async function runBootSequence() {
       const bootOutput = document.getElementById('boot-output');
       const inputLine = document.getElementById('input-line');
-
+      
       const typeText = async (text, delay = 25) => {
         for (let char of text) {
           bootOutput.innerHTML += char;
@@ -421,37 +364,50 @@
         }
       };
 
+      // 0. Generate realistic BGP table sizes dynamically.
+      // The global routing table grows predictably. We base the slight fluctuation on the 
+      // current hour of the day so it looks like a live pull if they refresh later!
       const currentHour = new Date().getHours();
-      const baseIPv4 = 964200;
+      
+      // Base approximate sizes for Q2 2026
+      const baseIPv4 = 964200; 
       const baseIPv6 = 217400;
+      
+      // Add slight jitter based on the time of day (mimicking route churn)
       const v4Jitter = Math.floor(Math.random() * 450) + (currentHour * 15);
       const v6Jitter = Math.floor(Math.random() * 80) + (currentHour * 5);
+      
       const v4Count = (baseIPv4 + v4Jitter).toLocaleString('en-US');
       const v6Count = (baseIPv6 + v6Jitter).toLocaleString('en-US');
 
+      // 1. Animate the ASCII OS Logo line by line
       const rawLogo = `
- __     __      ____  _____
- \\\\ \\\\   / /     / __ \\\\/ ____|
-  \\\\ \\\\_/ /_____| |  | \\\\___ \\\\
-   \\\\   /______| |  | |___) |
-    \\\\_/        \\\\____/_____/ `;
-
-      const logoLines = rawLogo.split('\\n');
-
+ __     __      ____  _____ 
+ \\ \\   / /     / __ \\/ ____|
+  \\ \\_/ /_____| |  | \\___ \\ 
+   \\   /______| |  | |___) |
+    \\_/        \\____/_____/ `;
+      
+      // Split the logo by line so we can animate it
+      const logoLines = rawLogo.split('\n');
+      
+      // Print the ASCII art line by line in green
       for (const line of logoLines) {
-        bootOutput.innerHTML += `<span style="color: var(--green);">${line}</span>\\n`;
+        bootOutput.innerHTML += `<span style="color: var(--green);">${line}</span>\n`;
         terminalBody.scrollTop = terminalBody.scrollHeight;
-        await sleep(40);
+        await sleep(45); // 45ms delay per line for that classic modem draw effect
       }
-
-      await sleep(140);
-      bootOutput.innerHTML += `V-OS Network Operating System v2.0\\n`;
+      
+      // Print the copyright info line by line
+      await sleep(150);
+      bootOutput.innerHTML += `V-OS Network Operating System v2.0\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
-      await sleep(130);
-      bootOutput.innerHTML += `Copyright (c) 1997-${new Date().getFullYear()} Väinö Rikkonen. All rights reserved.\\n\\n`;
+      await sleep(150);
+      bootOutput.innerHTML += `Copyright (c) 1997-${new Date().getFullYear()} Väinö Rikkonen. All rights reserved.\n\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
-      await sleep(320);
+      await sleep(400);
 
+      // 2. Hardware Boot Logs
       const hardwareLogs = [
         "Initializing hardware memory... 16384Mb OK",
         "Checking NVRAM consistency... OK",
@@ -459,89 +415,63 @@
         "Loading control plane OS... OK",
         "Initializing crypto engine... [FIPS 140-2 ACTIVE]"
       ];
-
+      
       for (const log of hardwareLogs) {
-        bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> ${log}\\n`;
+        bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> ${log}\n`;
         terminalBody.scrollTop = terminalBody.scrollHeight;
-        await sleep(Math.random() * 70 + 18);
+        await sleep(Math.random() * 80 + 20); 
       }
-
-      await sleep(260);
-      bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Loading IPv4 routing table... ${v4Count} prefixes\\n`;
+      
+      // 3. Inject the highly realistic BGP counts
+      await sleep(300); 
+      
+      bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Loading IPv4 routing table... ${v4Count} prefixes\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
-      await sleep(130);
-
-      bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Loading IPv6 routing table... ${v6Count} prefixes\\n`;
+      await sleep(150);
+      
+      bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Loading IPv6 routing table... ${v6Count} prefixes\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
-      await sleep(130);
-
-      bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Bringing up line protocols... UP\\n\\n`;
+      await sleep(150);
+      
+      bootOutput.innerHTML += `<span style="color: var(--dim);">[sys]</span> Bringing up line protocols... UP\n\n`;
       terminalBody.scrollTop = terminalBody.scrollHeight;
-      await sleep(260);
+      await sleep(300);
 
+      // 4. Encrypted session with blinking dots
       await typeText("Establishing SSH session");
       for (let i = 0; i < 3; i++) {
-        await sleep(320);
+        await sleep(350); 
         bootOutput.innerHTML += ".";
       }
-
-      await sleep(400);
-      bootOutput.innerHTML += ' <span style="color:var(--green)">[OK]</span>\\n\\n';
-
-      await typeText("User Access Verification\\n\\n");
-      await sleep(160);
+      
+      await sleep(600); 
+      bootOutput.innerHTML += ' <span style="color:var(--green)">[OK]</span>\n\n';
+      
+      // 5. Login Sequence
+      await typeText("User Access Verification\n\n");
+      await sleep(200);
+      
       await typeText("Login: ");
-      await sleep(260);
-      await typeText("guest\\n", 60);
-      await sleep(150);
-      await typeText("Access: Granted\\n");
-      await sleep(260);
-
-      bootOutput.innerHTML += `Type '<span style="color:var(--green)">help</span>' to see a list of available commands.\\n`;
-
+      await sleep(400);
+      await typeText("guest\n", 70);
+      await sleep(200);
+      
+      await typeText("Access: Granted\n");
+      await sleep(400);
+        
+      
+      await sleep(300);
+      bootOutput.innerHTML += "Type '<span style=\"color:var(--green)\">help</span>' to see a list of available commands.\n";
+      
+      // 6. Finish boot: Show input line and focus it
       inputLine.style.display = 'flex';
       cmd.focus();
       terminalBody.scrollTop = terminalBody.scrollHeight;
     }
 
     runBootSequence();
-
-    const incidentDetails = {
-      'show incident 1': [
-        `<span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance`,
-        ``,
-        `  Impact: An engineer targeted a VRF change but deleted the parent router bgp hierarchy in candidate config`,
-        `  Effect: Potential loss of global and VRF-level BGP state if committed unchallenged`,
-        `  Root cause: Human error in hierarchical CLI editing with insufficient policy guardrails`,
-        `  Fix: Aborted change, restored intended subtree, and reviewed diff before retry`,
-        `  Prevention: Implemented pre-commit validation to reject destructive parent-level BGP removals`,
-        ``,
-        `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
-      ],
-      'show incident 2': [
-        `<span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry`,
-        ``,
-        `  Impact: Expired certificate caused remote access VPN authentication failure for active users`,
-        `  Effect: Existing sessions dropped and new user connections were rejected until certificate renewal completed`,
-        `  Root cause: Certificate renewal was not completed before the service validity window ended`,
-        `  Fix: Renewed and deployed the certificate chain, then verified client connectivity and trust state`,
-        `  Prevention: Implemented automated certificate renewal and deployment for the remote access VPN`,
-        ``,
-        `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
-      ],
-      'show incident 3': [
-        `<span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction`,
-        ``,
-        `  Impact: Third-party roadwork and piling activity damaged one of two inter-datacenter dark fiber paths`,
-        `  Effect: One transport path was lost, but services remained available on the surviving diverse fiber route`,
-        `  Root cause: Civil construction intersected the physical path of a leased dark fiber segment near a motorway corridor`,
-        `  Fix: Traffic continued over the secondary path while the damaged fiber provider path was repaired`,
-        `  Prevention: Designed inter-datacenter transport over two geographically diverse dark fiber paths`,
-        ``,
-        `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
-      ]
-    };
-
+    
+    // 2. Define static commands dictionary (Animations handled below)
     const commands = {
       'help': `Available commands:
   whoami            - Display profile information
@@ -549,10 +479,7 @@
   show dwdm         - View active DWDM / 400G DCI transport
   show version      - View system uptime and certifications
   show ip route     - View network architecture scope
-  show incidents    - View incident summary list
-  show incident 1   - View postmortem #1
-  show incident 2   - View postmortem #2
-  show incident 3   - View postmortem #3
+  show incidents    - View short incident postmortems
   show bgp sum      - View IT/Network engineering skills
   show interface    - View projects
   show cdp nei      - View languages and soft skills
@@ -569,7 +496,7 @@
   diagnostics       - Run diagnostics
   joke              - Display a random network/data center joke
   clear             - Clear the terminal screen`,
-
+      
       'show bgp sum': `=== Routing, Switching & Optical ===
 Protocols              : BGP, OSPF, IS-IS, MPLS & Segment Routing, VXLAN, BFD
 Cisco OS & Hardware    : IOS-XR/XE, NX-OS, NCS, ASR, Nexus, Catalyst, ISE
@@ -585,7 +512,16 @@ NetDevOps              : Python, Ansible, Terraform, Git
 Programmability        : NETCONF, RESTCONF, gNMI, Cisco NSO/NDFC
 Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 
-      'show architecture': `<span style="color: var(--yellow)">=== NEXT-GEN NETWORK AUTOMATION & OBSERVABILITY ARCHITECTURE ===</span>
+'show incidents': `<span style="color: var(--yellow)">INCIDENT INDEX</span>
+
+1  <span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance
+2  <span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry
+3  <span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction
+
+<i style="color: var(--dim)">Tip: use show incident 1, show incident 2, or show incident 3</i>`,
+      
+     
+'show architecture': `<span style="color: var(--yellow)">=== NEXT-GEN NETWORK AUTOMATION & OBSERVABILITY ARCHITECTURE ===</span>
 
 <span style="color: var(--dim)">[ SOURCE OF TRUTH ]</span>        <span style="color: var(--dim)">[ CI/CD PIPELINE ]</span>              <span style="color: var(--dim)">[ EXECUTION ]</span>
 
@@ -625,7 +561,7 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 - <span style="color: var(--green)">Automation:</span> NetBox acts as the source of truth, GitLab pipelines validate intent, Batfish checks changes before deployment, and Ansible pushes the approved configuration.
 - <span style="color: var(--green)">Observability:</span> Telegraf streams telemetry over gNMI, pmacct collects NetFlow and BMP data, InfluxDB stores the time-series data, and Grafana presents it visually.`,
 
-      'show dwdm': `<span style="color: var(--yellow)">=== ACTIVE DWDM / ENCRYPTED 400G DCI ===</span>
+'show dwdm': `<span style="color: var(--yellow)">=== ACTIVE DWDM / ENCRYPTED 400G DCI ===</span>
 
              <span style="color: var(--dim)">[ DC1 / WEST ]</span>                         <span style="color: var(--dim)">[ DC2 / WEST ]</span>
         +----------------------+               +----------------------+
@@ -653,7 +589,7 @@ Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
 - <span style="color: var(--green)">Shared services:</span> MPLS routing, VXLAN fabric, Internet edge, and storage replication are presented across both optical paths.
 - <span style="color: var(--green)">West/East paths:</span> Diverse encrypted 400G transport between the two data centers.
 - <span style="color: var(--green)">EDFA / VOA:</span> Optical gain and power balancing on each path.`,
-
+      
       'show ip route': `Codes: L - local, C - connected, S - static, B - BGP, O - OSPF
 
 Gateway of last resort is 0.0.0.0 to network 0.0.0.0
@@ -695,7 +631,7 @@ router bgp 24713
  description "CGI Internet Edge"
  neighbor TIER-1-ISP route-map PREFER-IN in
 !
-! Focus: Implemented BFD for sub-second failover and strict route-maps
+! Focus: Implemented BFD for sub-second failover and strict route-maps 
 ! to control inbound transit traffic, guaranteeing high availability SLAs.`,
 
       'show run core': `Building configuration...
@@ -717,7 +653,7 @@ interface nve1
   host-reachability protocol bgp
   member vni 10000 mcast-group 239.1.1.1
 !
-! Focus: Lead the transition of DC fabrics to EVPN/VXLAN. Reduced OpEx
+! Focus: Lead the transition of DC fabrics to EVPN/VXLAN. Reduced OpEx 
 ! and hardware footprint while supporting massive multi-tenant scale.`,
 
       'show run fw1': `Firewall Policy - Primary Perimeter
@@ -756,14 +692,7 @@ Headers           : {[Connection, keep-alive], [Vary, Origin], [cf-cache-status,
 Wait... that Content IP is a Cloudflare proxy.
 Are you sitting behind a WAF? Me too.`,
 
-      'show incidents': `<span style="color: var(--yellow)">INCIDENT INDEX</span>
-
-1  INC-2024-09  BGP hierarchy deletion during maintenance
-2  INC-2024-02  Remote access VPN certificate expiry
-3  INC-2023-08  Dark fiber path lost during external construction
-
-<i style="color: var(--dim)">Tip: use show incident 1, show incident 2, or show incident 3</i>`,
-
+     
       'show interface': `Interface: Security (ASA to FortiGate Migration)
  Status: UP (Hardened)
  Description: Migrated EOL Cisco ASAs to Fortinet NGFWs. Executed a complete policy audit and redesign to eliminate technical debt and broad permit-any rules, resulting in a fully hardened, application-aware perimeter.
@@ -798,7 +727,7 @@ PORT      STATE SERVICE      VERSION
 6653/tcp  open  openflow     SDN & VXLAN Fabric Management
 
 Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds`,
-
+    
       'show cdp nei': `Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
                   S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone
 
@@ -807,7 +736,7 @@ Finnish          Eth 0/0           120        H R         Native    Bilingual
 English          Eth 0/1           120        H R         Fluent    Professional
 Team-Lead        Mgmt 0/0          120        S R         Human     Mentorship
 Architecture     Po1               120        S R         Design    Big-Picture
-Problem-Solve    Lo0               120        R           Logic     RCA`,
+Problem-Solve    Lo0               120        R           Logic     RCA`,  
 
       'show version': `V-OS (tm) Network Operating System Software
 Software Version 2026.05
@@ -820,9 +749,10 @@ Active Licenses / Certifications:
  - <span style="color: var(--yellow);">Cisco CCNP Service Provider</span> <span style="color: var(--dim);">[In Progress]</span>`
     };
 
+    // 3. Listen for commands
     cmd.addEventListener('keydown', function(e) {
       if (e.key === 'ArrowUp') {
-        e.preventDefault();
+        e.preventDefault(); 
         if (historyIndex < commandHistory.length - 1) {
           historyIndex++;
           cmd.value = commandHistory[commandHistory.length - 1 - historyIndex];
@@ -840,9 +770,10 @@ Active Licenses / Certifications:
         return;
       }
 
+      // --- TAB COMPLETION LOGIC ---
       if (e.key === 'Tab') {
         e.preventDefault();
-
+      
         const inputVal = cmd.value.toLowerCase();
         const allCommands = Object.keys(commands).concat(
           'clear',
@@ -855,13 +786,13 @@ Active Licenses / Certifications:
           'diagnostics',
           'joke'
         );
-
+      
         const incidentCommands = [
           'show incident 1',
           'show incident 2',
           'show incident 3'
         ];
-
+      
         if (inputVal === 'show incident' || inputVal === 'show incident ') {
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
@@ -872,10 +803,10 @@ Active Licenses / Certifications:
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return;
         }
-
+      
         if (inputVal.startsWith('show incident ')) {
           const matches = incidentCommands.filter(c => c.startsWith(inputVal));
-
+      
           if (matches.length === 1) {
             cmd.value = matches[0];
           } else if (matches.length > 1) {
@@ -889,9 +820,9 @@ Active Licenses / Certifications:
           }
           return;
         }
-
+      
         const matches = allCommands.filter(c => c.startsWith(inputVal));
-
+      
         if (matches.length === 1) {
           cmd.value = matches[0];
         } else if (matches.length > 1) {
@@ -899,52 +830,57 @@ Active Licenses / Certifications:
           outputDiv.className = 'output';
           outputDiv.innerHTML =
             `${currentPrompt}<span class="user-input">${cmd.value}</span>\n` +
-            matches.join('  ');
+            matches.join('\n');
           terminal.appendChild(outputDiv);
           terminalBody.scrollTop = terminalBody.scrollHeight;
         }
-
+      
         return;
       }
 
+      // --- CISCO-STYLE CONTEXTUAL HELP (?) LOGIC ---
       if (e.key === '?' && !awaitingPassword) {
-        e.preventDefault();
-
+        e.preventDefault(); // Stop the '?' from actually being typed into the input field
+        
         const inputValLower = cmd.value.toLowerCase();
-
+        
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
+        
+        // Print the prompt with what they have typed so far, plus the '?'
         outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}?</span>\n`;
-
+        
         let helpText = '';
-
+        
+        // 1. Root level commands (Empty input)
         if (inputValLower === '' || inputValLower.trim() === '') {
-          helpText = `Exec commands:
+        helpText = `Exec commands:
           clear        history      ping         tcpdump
           curl         nmap         show         theme
           diagnostics  joke         sudo         traceroute
           help         su           top          wget
           whoami`;
+        
+        // 2. Sub-commands for 'show '
         } else if (inputValLower === 'show' || inputValLower === 'show ') {
           helpText = `  bgp        View IT/Network engineering skills
   cdp        View languages and soft skills
-  incident   View a specific incident postmortem
-  incidents  View incident summary list
+  incidents  View short incident postmortems
   interface  View projects
   ip         View network architecture scope
   run        View configuration
   topology   View interactive topology
   version    View system uptime and certifications`;
-        } else if (inputValLower === 'show incident' || inputValLower === 'show incident ') {
-          helpText = `  1         BGP hierarchy deletion during maintenance
-  2         Remote access VPN certificate expiry
-  3         Dark fiber path lost during external construction`;
+        
+        // 3. Deep sub-commands (e.g. 'show ip ', 'show bgp ')
         } else if (inputValLower === 'show ip' || inputValLower === 'show ip ') {
           helpText = `  route      View network architecture scope`;
         } else if (inputValLower === 'show cdp' || inputValLower === 'show cdp ') {
           helpText = `  nei        View languages and soft skills`;
         } else if (inputValLower === 'show bgp' || inputValLower === 'show bgp ') {
           helpText = `  sum        View IT/Network engineering skills`;
+        
+        // 4. Sub-commands for 'theme '
         } else if (inputValLower === 'theme' || inputValLower === 'theme ') {
           helpText = `  amber      Classic mainframe phosphor
   bmw        E-series dashboard lights
@@ -952,125 +888,117 @@ Active Licenses / Certifications:
   default    Modern hacker terminal
   google     Material Light Mode
   hacker     Matrix green`;
+        
+        // 5. Sub-commands for 'wget '
         } else if (inputValLower === 'wget' || inputValLower === 'wget ') {
           helpText = `  resume     Download my resume PDF`;
+          
+        // 6. Partial matching (e.g. typing 'sh' and hitting '?')
         } else {
-          const allCommands = ['clear', 'curl', 'diagnostics', 'help', 'history', 'joke', 'nmap', 'ping', 'show', 'su', 'sudo', 'tcpdump', 'theme', 'top', 'traceroute', 'wget', 'whoami'];
+          const allCommands = ['clear', 'curl', 'diagnostics', 'help', 'history', 'joke', 'nmap', 'ping', 'show', 'su', 'sudo', 'tcpdump', 'theme', 'top', 'traceroute', 'wget', 'whoami'];          // Find commands that start with the currently typed string
           const matches = allCommands.filter(c => c.startsWith(inputValLower.trim()));
-
+          
           if (matches.length > 0 && !inputValLower.endsWith(' ')) {
             helpText = matches.join('  ');
           } else {
-            helpText = `  <cr>`;
+            helpText = `  <cr>`; // Cisco style for "Carriage Return expected" (Command is complete)
           }
         }
-
+        
         outputDiv.innerHTML += helpText + '\n';
         terminal.appendChild(outputDiv);
         terminalBody.scrollTop = terminalBody.scrollHeight;
+        
+        // Notice we do NOT clear cmd.value. The user keeps typing right where they left off!
         return;
       }
-
+      
+      // --- CTRL+C (SIGINT) LOGIC ---
       if (e.ctrlKey && e.key === 'c') {
         e.preventDefault();
         if (awaitingPassword) {
           awaitingPassword = false;
-          cmd.type = 'text';
+          cmd.type = 'text'; 
+          // Reset the prompt UI if they abort password entry
           document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
         }
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
         outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>^C`;
         terminal.appendChild(outputDiv);
-        cmd.value = '';
+        cmd.value = ''; 
         historyIndex = -1;
         terminalBody.scrollTop = terminalBody.scrollHeight;
         return;
       }
-
+      
+      // ========================================================
+      // --- ENTER KEY LOGIC (ALL CUSTOM COMMANDS GO HERE) ---
+      // ========================================================
       if (e.key === 'Enter') {
         const inputVal = cmd.value.trim().toLowerCase();
-
-        if (inputVal === 'show incident 1' || inputVal === 'show incident 2' || inputVal === 'show incident 3') {
-          cmd.disabled = true;
-
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          terminal.appendChild(outputDiv);
-
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
-
-          const lines = incidentDetails[inputVal];
-          let lineIndex = 0;
-
-          const drawInterval = setInterval(() => {
-            if (lineIndex < lines.length) {
-              outputDiv.innerHTML += lines[lineIndex] + '\n';
-              terminalBody.scrollTop = terminalBody.scrollHeight;
-              lineIndex++;
-            } else {
-              clearInterval(drawInterval);
-              cmd.disabled = false;
-              cmd.focus();
-              terminalBody.scrollTop = terminalBody.scrollHeight;
-            }
-          }, 40);
-
-          cmd.value = '';
-          return;
-        }
-
+        
+        // 1. Push to history
         if (inputVal !== '' && commandHistory[commandHistory.length - 1] !== inputVal) {
           commandHistory.push(inputVal);
         }
         historyIndex = -1;
 
+        // 2. CLEAR COMMAND
         if (inputVal === 'clear') {
           terminal.innerHTML = '';
           cmd.value = '';
           return;
         }
-
+       
+        // 3. PASSWORD ENTRY LOGIC
         if (awaitingPassword) {
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
-
+          
           if (inputVal === 'cisco') {
             isRoot = true;
             awaitingPassword = false;
             currentPrompt = '<span class="prompt" style="color: var(--red);">root@rikkova:~# </span>';
+            
+            // Set the active input prompt to the new root prompt
             document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
             outputDiv.innerHTML = `Password: \nAuthentication successful. Root privileges granted.\nType 'help' to view elevated commands.`;
             cmd.style.color = 'var(--red)';
           } else {
             awaitingPassword = false;
+            // Set the active input prompt back to guest
             document.querySelector('.input-line .prompt').innerHTML = currentPrompt;
             outputDiv.innerHTML = `Password: \nsu: Authentication failure`;
           }
-
+          
           terminal.appendChild(outputDiv);
           cmd.value = '';
-          cmd.type = 'text';
+          cmd.type = 'text'; // Restore normal typing
           terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
+          return; 
         }
 
+        // 4. INITIATE ROOT LOGIN (su -)
         if (inputVal === 'su' || inputVal === 'su -') {
           awaitingPassword = true;
-          cmd.type = 'password';
-
+          cmd.type = 'password'; 
+          
+          // Print the command to history
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
           outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>`;
           terminal.appendChild(outputDiv);
-
+          
+          // Change the actual input prompt to "Password: "
           document.querySelector('.input-line .prompt').innerText = 'Password: ';
-
+          
           cmd.value = '';
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return;
         }
 
+        // 5. ROOT ONLY COMMANDS
         if (inputVal === 'cat /etc/shadow') {
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
@@ -1084,7 +1012,8 @@ Active Licenses / Certifications:
           terminalBody.scrollTop = terminalBody.scrollHeight;
           return;
         }
-
+        
+        // 6. EXIT ROOT MODE
         if (inputVal === 'exit' && isRoot) {
           isRoot = false;
           currentPrompt = '<span class="prompt">guest@rikkova:~$ </span>';
@@ -1099,137 +1028,111 @@ Active Licenses / Certifications:
           return;
         }
 
-        if (inputVal.startsWith('theme')) {
-          const parts = inputVal.split(' ');
-          const requestedTheme = parts.length > 1 ? parts[1].trim().toLowerCase() : '';
+      // --- THEME SWITCHER LOGIC ---
+      if (inputVal.startsWith('theme')) {
+        const parts = inputVal.split(' ');
+        const requestedTheme = parts.length > 1 ? parts[1].trim().toLowerCase() : '';
+        
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        terminal.appendChild(outputDiv);
+        
+        // Print the prompt
+        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        
+        const root = document.documentElement; // Selects the :root CSS pseudoclass
+        
+        if (requestedTheme === 'amber') {
+          root.style.setProperty('--green', '#ffb000');
+          root.style.setProperty('--yellow', '#ffb000');
+          root.style.setProperty('--red', '#ff6600');
+          root.style.setProperty('--text', '#ffb000');
+          root.style.setProperty('--bg', '#1a0f00');
+          root.style.setProperty('--surface', '#261600');
+          root.style.setProperty('--border', '#402600');
+          outputDiv.innerHTML += `Applying 'amber' theme... Phosphor matrices engaged.\n`;
+          
+        } else if (requestedTheme === 'cyan') {
+          root.style.setProperty('--green', '#00e5ff');
+          root.style.setProperty('--yellow', '#00b8ff');
+          root.style.setProperty('--red', '#ff0055');
+          root.style.setProperty('--text', '#b3f0ff');
+          root.style.setProperty('--bg', '#00111a');
+          root.style.setProperty('--surface', '#001a26');
+          root.style.setProperty('--border', '#00334d');
+          outputDiv.innerHTML += `Applying 'cyan' theme... Glaciers frozen.\n`;
+          
+        } else if (requestedTheme === 'hacker') {
+          root.style.setProperty('--green', '#00ff00');
+          root.style.setProperty('--yellow', '#00ff00');
+          root.style.setProperty('--red', '#00ff00');
+          root.style.setProperty('--text', '#00ff00');
+          root.style.setProperty('--bg', '#000000');
+          root.style.setProperty('--surface', '#050505');
+          root.style.setProperty('--border', '#003300');
+          outputDiv.innerHTML += `Applying 'hacker' theme... I'm in.\n`;
+          
+        } else if (requestedTheme === 'google') {
+          // Google's official brand colors + Light Mode!
+          root.style.setProperty('--green', '#34A853'); // Google Green
+          root.style.setProperty('--yellow', '#4285F4'); // Google Blue (used for inputs/highlights)
+          root.style.setProperty('--red', '#EA4335'); // Google Red
+          root.style.setProperty('--text', '#202124'); // Dark gray text for readability
+          root.style.setProperty('--bg', '#ffffff'); // Pure white background
+          root.style.setProperty('--surface', '#f1f3f4'); // Google Light Gray surface
+          root.style.setProperty('--border', '#dadce0'); 
+          outputDiv.innerHTML += `Applying 'google' theme... <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span> Material Design engaged.\n`;
 
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          terminal.appendChild(outputDiv);
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        } else if (requestedTheme === 'bmw') {
+          // Classic BMW E-series dashboard cluster
+          root.style.setProperty('--green', '#FF7F00'); // Classic BMW Amber
+          root.style.setProperty('--yellow', '#FF8C00'); // Slightly lighter amber for inputs
+          root.style.setProperty('--red', '#FF0000'); // Dashboard warning red
+          root.style.setProperty('--text', '#FF7F00'); // Amber text
+          root.style.setProperty('--bg', '#000000'); // Pitch black dashboard
+          root.style.setProperty('--surface', '#0a0a0a'); // Dark plastic
+          root.style.setProperty('--border', '#1a1a1a');
+          outputDiv.innerHTML += `Applying 'bmw' theme... Instrument cluster illuminated.\n`;
 
-          const root = document.documentElement;
-
-          if (requestedTheme === 'amber') {
-            root.style.setProperty('--green', '#ffb000');
-            root.style.setProperty('--yellow', '#ffb000');
-            root.style.setProperty('--red', '#ff6600');
-            root.style.setProperty('--text', '#ffd089');
-            root.style.setProperty('--dim', '#9a7646');
-            root.style.setProperty('--dim-2', '#6d5332');
-            root.style.setProperty('--bg', '#140d05');
-            root.style.setProperty('--bg-2', '#1a1006');
-            root.style.setProperty('--surface', 'rgba(38, 22, 0, 0.88)');
-            root.style.setProperty('--surface-solid', '#261600');
-            root.style.setProperty('--surface-2', 'rgba(52, 31, 5, 0.92)');
-            root.style.setProperty('--border', '#4c2e0d');
-            outputDiv.innerHTML += `Applying 'amber' theme... Phosphor matrices engaged.\n`;
-
-          } else if (requestedTheme === 'cyan') {
-            root.style.setProperty('--green', '#00e5ff');
-            root.style.setProperty('--yellow', '#00b8ff');
-            root.style.setProperty('--red', '#ff0055');
-            root.style.setProperty('--text', '#c8f6ff');
-            root.style.setProperty('--dim', '#6a8f98');
-            root.style.setProperty('--dim-2', '#4a6971');
-            root.style.setProperty('--bg', '#061017');
-            root.style.setProperty('--bg-2', '#081721');
-            root.style.setProperty('--surface', 'rgba(0, 26, 38, 0.88)');
-            root.style.setProperty('--surface-solid', '#001a26');
-            root.style.setProperty('--surface-2', 'rgba(4, 35, 50, 0.92)');
-            root.style.setProperty('--border', '#0c4156');
-            outputDiv.innerHTML += `Applying 'cyan' theme... Glaciers frozen.\n`;
-
-          } else if (requestedTheme === 'hacker') {
-            root.style.setProperty('--green', '#00ff00');
-            root.style.setProperty('--yellow', '#00ff00');
-            root.style.setProperty('--red', '#00ff00');
-            root.style.setProperty('--text', '#9fff9f');
-            root.style.setProperty('--dim', '#4e814e');
-            root.style.setProperty('--dim-2', '#355c35');
-            root.style.setProperty('--bg', '#000000');
-            root.style.setProperty('--bg-2', '#020402');
-            root.style.setProperty('--surface', 'rgba(5, 5, 5, 0.9)');
-            root.style.setProperty('--surface-solid', '#050505');
-            root.style.setProperty('--surface-2', 'rgba(8, 12, 8, 0.94)');
-            root.style.setProperty('--border', '#073b07');
-            outputDiv.innerHTML += `Applying 'hacker' theme... I'm in.\n`;
-
-          } else if (requestedTheme === 'google') {
-            root.style.setProperty('--green', '#34A853');
-            root.style.setProperty('--yellow', '#4285F4');
-            root.style.setProperty('--red', '#EA4335');
-            root.style.setProperty('--text', '#202124');
-            root.style.setProperty('--dim', '#5f6368');
-            root.style.setProperty('--dim-2', '#80868b');
-            root.style.setProperty('--bg', '#f8f9fa');
-            root.style.setProperty('--bg-2', '#eef2f5');
-            root.style.setProperty('--surface', 'rgba(255,255,255,0.9)');
-            root.style.setProperty('--surface-solid', '#f1f3f4');
-            root.style.setProperty('--surface-2', 'rgba(241,243,244,0.96)');
-            root.style.setProperty('--border', '#dadce0');
-            outputDiv.innerHTML += `Applying 'google' theme... <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span> Material Design engaged.\n`;
-
-          } else if (requestedTheme === 'bmw') {
-            root.style.setProperty('--green', '#FF7F00');
-            root.style.setProperty('--yellow', '#FF8C00');
-            root.style.setProperty('--red', '#FF0000');
-            root.style.setProperty('--text', '#ffbf73');
-            root.style.setProperty('--dim', '#8b6b4c');
-            root.style.setProperty('--dim-2', '#604b35');
-            root.style.setProperty('--bg', '#020202');
-            root.style.setProperty('--bg-2', '#070707');
-            root.style.setProperty('--surface', 'rgba(12, 12, 12, 0.9)');
-            root.style.setProperty('--surface-solid', '#0a0a0a');
-            root.style.setProperty('--surface-2', 'rgba(18, 18, 18, 0.94)');
-            root.style.setProperty('--border', '#222222');
-            outputDiv.innerHTML += `Applying 'bmw' theme... Instrument cluster illuminated.\n`;
-
-          } else if (requestedTheme === 'default' || requestedTheme === '') {
-            root.style.setProperty('--green', '#00ff88');
-            root.style.setProperty('--yellow', '#f0c040');
-            root.style.setProperty('--red', '#ff4455');
-            root.style.setProperty('--text', '#d4e1da');
-            root.style.setProperty('--dim', '#708089');
-            root.style.setProperty('--dim-2', '#4f5d65');
-            root.style.setProperty('--bg', '#070b0d');
-            root.style.setProperty('--bg-2', '#0b1114');
-            root.style.setProperty('--surface', 'rgba(15, 21, 24, 0.88)');
-            root.style.setProperty('--surface-solid', '#111518');
-            root.style.setProperty('--surface-2', 'rgba(23, 31, 35, 0.92)');
-            root.style.setProperty('--border', '#203136');
-
-            if (requestedTheme === '') {
-              outputDiv.innerHTML += `Usage: theme <name>\nAvailable themes: default, amber, cyan, hacker, google, bmw\n`;
-            } else {
-              outputDiv.innerHTML += `Applying 'default' theme... Modern terminal restored.\n`;
-            }
+        } else if (requestedTheme === 'default' || requestedTheme === '') {
+          // Reset to your original values from the CSS file
+          root.style.setProperty('--green', '#00ff88');
+          root.style.setProperty('--yellow', '#f0c040');
+          root.style.setProperty('--red', '#ff4455');
+          root.style.setProperty('--text', '#c8d8d0');
+          root.style.setProperty('--bg', '#0a0e0f');
+          root.style.setProperty('--surface', '#111518');
+          root.style.setProperty('--border', '#1e2d2f');
+          
+          if (requestedTheme === '') {
+            outputDiv.innerHTML += `Usage: theme <name>\nAvailable themes: default, amber, cyan, hacker, google, bmw\n`;
           } else {
-            outputDiv.innerHTML += `Theme '${requestedTheme}' not found.\nAvailable themes: default, amber, cyan, hacker, google, bmw\n`;
+            outputDiv.innerHTML += `Applying 'default' theme... Modern terminal restored.\n`;
           }
-
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
+        } else {
+          outputDiv.innerHTML += `Theme '${requestedTheme}' not found.\nAvailable themes: default, amber, cyan, hacker, google, bmw\n`;
         }
+        
+        cmd.value = '';
+        terminalBody.scrollTop = terminalBody.scrollHeight;
+        return;
+      }
 
-        if (inputVal === 'show architecture' || inputVal === 'show arch' || inputVal === 'show automation') {
+        if (inputVal === 'show incident 1' || inputVal === 'show incident 2' || inputVal === 'show incident 3') {
           cmd.disabled = true;
-
+        
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
           terminal.appendChild(outputDiv);
-
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n\n`;
-
-          const archText = commands['show architecture'];
-          const archLines = archText.split('\n');
-
+        
+          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        
+          const lines = incidentDetails[inputVal];
           let lineIndex = 0;
-
+        
           const drawInterval = setInterval(() => {
-            if (lineIndex < archLines.length) {
-              outputDiv.innerHTML += archLines[lineIndex] + '\n';
+            if (lineIndex < lines.length) {
+              outputDiv.innerHTML += lines[lineIndex] + '\n';
               terminalBody.scrollTop = terminalBody.scrollHeight;
               lineIndex++;
             } else {
@@ -1238,19 +1141,56 @@ Active Licenses / Certifications:
               cmd.focus();
               terminalBody.scrollTop = terminalBody.scrollHeight;
             }
-          }, 32);
-
+          }, 40);
+        
           cmd.value = '';
           return;
         }
-
+        
+      // --- ANIMATED SHOW ARCHITECTURE LOGIC ---
+      if (inputVal === 'show architecture' || inputVal === 'show arch' || inputVal === 'show automation') {
+        cmd.disabled = true; // Prevent typing while the diagram is drawing
+        
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        terminal.appendChild(outputDiv);
+        
+        // Print the prompt and the command the user typed
+        outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n\n`;
+        
+        // Grab the architecture text from your dictionary and split it by line
+        const archText = commands['show architecture'];
+        const archLines = archText.split('\n');
+        
+        let lineIndex = 0;
+        
+        // Print one line every 35 milliseconds
+        const drawInterval = setInterval(() => {
+          if (lineIndex < archLines.length) {
+            outputDiv.innerHTML += archLines[lineIndex] + '\n';
+            terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll with the drawing
+            lineIndex++;
+          } else {
+            // Finished drawing
+            clearInterval(drawInterval);
+            cmd.disabled = false;
+            cmd.focus();
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+          }
+        }, 35); // Adjust this number (e.g., 20 for faster, 60 for slower)
+        
+        cmd.value = '';
+        return; // Exit here so the default instant-printer doesn't run!
+      }
+        
+        // 7. ANIMATED TRACEROUTE
         if (inputVal === 'traceroute' || inputVal.startsWith('traceroute ')) {
-          cmd.disabled = true;
+          cmd.disabled = true; 
           const traceDiv = document.createElement('div');
           traceDiv.className = 'output';
           terminal.appendChild(traceDiv);
           traceDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\ntraceroute to career.rikkova.fi (192.168.100.1), 30 hops max, 60 byte packets\n`;
-
+          
           const hops = [
             ` 1  IT-Technician.cgi.com (10.0.1.1)  1.234 ms  1.456 ms  1.678 ms`,
             ` 2  Network-Specialist.cgi.com (10.0.2.1)  2.345 ms  2.567 ms  2.890 ms`,
@@ -1263,9 +1203,9 @@ Active Licenses / Certifications:
           let currentHop = 0;
           const traceInterval = setInterval(() => {
             traceDiv.innerHTML += hops[currentHop] + '\n';
-            terminalBody.scrollTop = terminalBody.scrollHeight;
+            terminalBody.scrollTop = terminalBody.scrollHeight; 
             currentHop++;
-
+            
             if (currentHop >= hops.length) {
               clearInterval(traceInterval);
               setTimeout(() => {
@@ -1273,32 +1213,33 @@ Active Licenses / Certifications:
                 cmd.disabled = false;
                 cmd.focus();
                 terminalBody.scrollTop = terminalBody.scrollHeight;
-              }, 420);
+              }, 500);
             }
-          }, 520);
+          }, 600); 
           cmd.value = '';
-          return;
+          return; 
         }
 
+        // 8. PING COMMAND
         if (inputVal === 'ping') {
           cmd.disabled = true;
           const pingDiv = document.createElement('div');
           pingDiv.className = 'output';
           terminal.appendChild(pingDiv);
-
+          
           let pings = 0;
           pingDiv.innerHTML = `${currentPrompt}<span class="user-input">ping</span>\nPinging contact.rikkova.fi [2606:4700:3031::ac43:cd56] with 56 bytes of data:\n`;
-
+          
           const interval = setInterval(() => {
             pings++;
             let contact = '';
-            if (pings === 1) contact = '<a href="mailto:vaino.rikkonen@gmail.com" style="color: var(--green); text-decoration:underline;">vaino.rikkonen@gmail.com</a>';
-            if (pings === 2) contact = '<a href="https://linkedin.com/in/rikkova" target="_blank" rel="noopener noreferrer" style="color: var(--green); text-decoration:underline;">linkedin.com/in/rikkova</a>';
-            if (pings === 3) contact = '<a href="https://github.com/rikkova" target="_blank" rel="noopener noreferrer" style="color: var(--green); text-decoration:underline;">github.com/rikkova</a>';
-
+            if(pings === 1) contact = '<a href="mailto:vaino.rikkonen@gmail.com" style="color: var(--green); text-decoration:underline;">vaino.rikkonen@gmail.com</a>';
+            if(pings === 2) contact = '<a href="https://linkedin.com/in/rikkova" style="color: var(--green); text-decoration:underline;">linkedin.com/in/rikkova</a>';
+            if(pings === 3) contact = '<a href="https://github.com/rikkova" style="color: var(--green); text-decoration:underline;">github.com/rikkova</a>';
+            
             pingDiv.innerHTML += `64 bytes from ${contact}: icmp_seq=${pings} ttl=64 time<1ms\n`;
             terminalBody.scrollTop = terminalBody.scrollHeight;
-
+            
             if (pings >= 3) {
               clearInterval(interval);
               pingDiv.innerHTML += `\n--- contact statistics ---\n3 packets transmitted, 3 received, 0% packet loss`;
@@ -1306,13 +1247,14 @@ Active Licenses / Certifications:
               cmd.focus();
               terminalBody.scrollTop = terminalBody.scrollHeight;
             }
-          }, 900);
+          }, 1000); 
           cmd.value = '';
           return;
         }
 
+        // 9. DIAGNOSTICS COMMAND
         if (inputVal === 'diagnostics') {
-          cmd.disabled = true;
+          cmd.disabled = true; 
           let progress = 0;
           const diagDiv = document.createElement('div');
           diagDiv.className = 'output';
@@ -1320,9 +1262,9 @@ Active Licenses / Certifications:
 
           const interval = setInterval(() => {
             progress += 5;
-            const bar = '█'.repeat(progress / 5) + '░'.repeat(20 - (progress / 5));
+            const bar = 'â–ˆ'.repeat(progress / 5) + 'â–‘'.repeat(20 - (progress / 5));
             diagDiv.innerHTML = `${currentPrompt}<span class="user-input">diagnostics</span>\nRunning system diagnostics...\n[${bar}] ${progress}%`;
-
+            
             if (progress >= 100) {
               clearInterval(interval);
               diagDiv.innerHTML += '\n\nCPU: OK\nRAM: OK\nRouting Table: OPTIMAL\nCandidate Status: HIRE IMMEDIATELY';
@@ -1330,72 +1272,74 @@ Active Licenses / Certifications:
               cmd.focus();
               terminalBody.scrollTop = terminalBody.scrollHeight;
             }
-          }, 90);
+          }, 100);
           cmd.value = '';
-          return;
+          return; 
         }
 
+        // 10. DOWNLOAD RESUME COMMAND (wget)
         if (inputVal === 'wget resume' || inputVal === 'wget resume.pdf') {
           cmd.disabled = true;
           const wgetDiv = document.createElement('div');
           wgetDiv.className = 'output';
           terminal.appendChild(wgetDiv);
-          const githubRawUrl = "https://raw.githubusercontent.com/rikkova/rikkova.fi/main/resume_vaino_rikkonen.pdf";
-
+          const githubRawUrl = "https://raw.githubusercontent.com/rikkova/rikkova.fi/main/resume_vaino_rikkonen.pdf"; 
+          
           wgetDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\nResolving github.com (github.com)... 140.82.113.3\n`;
-
+          
           setTimeout(() => {
             wgetDiv.innerHTML += `Connecting to github.com|140.82.113.3|:443... connected.\n`;
             terminalBody.scrollTop = terminalBody.scrollHeight;
-          }, 550);
+          }, 600);
 
           setTimeout(() => {
-            wgetDiv.innerHTML += `HTTP request sent, awaiting response... 200 OK\nLength: 1048576 (1.0M) [application/pdf]\nSaving to: ‘resume_vaino_rikkonen.pdf’\n\n`;
+            wgetDiv.innerHTML += `HTTP request sent, awaiting response... 200 OK\nLength: 1048576 (1.0M) [application/pdf]\nSaving to: â€˜resume_vaino_rikkonen.pdfâ€™\n\n`;
             terminalBody.scrollTop = terminalBody.scrollHeight;
-
+            
             let progress = 0;
             const progressSpan = document.createElement('span');
             wgetDiv.appendChild(progressSpan);
-
+            
             const interval = setInterval(() => {
               progress += 20;
               const bar = '='.repeat(progress / 5) + '>'.repeat(progress < 100 ? 1 : 0) + ' '.repeat(20 - (progress / 5));
-              progressSpan.innerText = `resume_vaino_rikkonen.pdf    ${progress}% [${bar}]   1.00M  --.-KB/s    in 0.${Math.floor(Math.random()*9)}s`;
-
+              progressSpan.innerText = `resume_vaino_rikkonen.pdf    ${progress}%[${bar}]   1.00M  --.-KB/s    in 0.${Math.floor(Math.random()*9)}s`;
+              
               if (progress >= 100) {
                 clearInterval(interval);
                 const currentD = new Date();
                 const timeString = `${currentD.getFullYear()}-${String(currentD.getMonth()+1).padStart(2, '0')}-${String(currentD.getDate()).padStart(2, '0')} ${String(currentD.getHours()).padStart(2, '0')}:${String(currentD.getMinutes()).padStart(2, '0')}`;
-
-                wgetDiv.innerHTML += `\n\n${timeString} (12.4 MB/s) - ‘resume_vaino_rikkonen.pdf’ saved [1048576/1048576]`;
-
+                
+                wgetDiv.innerHTML += `\n\n${timeString} (12.4 MB/s) - â€˜resume_vaino_rikkonen.pdfâ€™ saved [1048576/1048576]`;
+                
                 const link = document.createElement('a');
                 link.href = githubRawUrl;
                 link.download = 'resume_vaino_rikkonen.pdf';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-
+                
                 cmd.disabled = false;
                 cmd.focus();
                 terminalBody.scrollTop = terminalBody.scrollHeight;
               }
-            }, 140);
-          }, 1100);
+            }, 150);
+          }, 1200);
           cmd.value = '';
           return;
         }
 
+        // 11. EASTER EGG (Cats)
         if (inputVal === 'soffumaikku') {
           terminal.innerHTML = '';
           cmd.value = '';
           const catDiv = document.createElement('div');
-          catDiv.className = 'output';
+          catDiv.className = 'output'; 
           catDiv.style.marginTop = '20px';
           terminal.appendChild(catDiv);
 
           const cats = `<pre style="font-family: var(--font-mono); margin: 15px 0;">
-   /\\\\_/\\\\      /\\\\_/\\\\
+   /\\_/\\      /\\_/\\
   ( o.o ) <span style="color: var(--red);">♥</span> ( =^.^= )
    > ^ <     ( m m )
 </pre>`;
@@ -1404,17 +1348,18 @@ Active Licenses / Certifications:
           return;
         }
 
+        // 12. DECRYPTION EFFECT (whoami)
         if (inputVal === 'whoami') {
           cmd.disabled = true;
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
           terminal.appendChild(outputDiv);
           outputDiv.innerHTML = `${currentPrompt}<span class="user-input">whoami</span>\n<span style="color: var(--dim);">Decrypting user profile...</span>\n\n`;
-
-          const targetText = `Name: Väinö Rikkonen
+          
+          const targetText = `Name: VÃ¤inÃ¶ Rikkonen
 Role: Infrastructure Architect
-Location: Vantaa, Finland · AS65001
-Status: Open to new opportunities · Established
+Location: Vantaa, Finland Â· AS65001
+Status: Open to new opportunities â€” Established
 
 Bio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.`;
 
@@ -1422,7 +1367,7 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           outputDiv.appendChild(textSpan);
           const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
           let iterations = 0;
-
+          
           const interval = setInterval(() => {
             textSpan.innerText = targetText.split('')
               .map((letter, index) => {
@@ -1430,119 +1375,115 @@ Bio: I design and operate core network infrastructure at CGI across three domain
                 if (index < iterations) return letter;
                 return letters[Math.floor(Math.random() * letters.length)];
               }).join('');
-
+            
             terminalBody.scrollTop = terminalBody.scrollHeight;
-            iterations += 1.5;
-
+            iterations += 1.5; 
+            
             if (iterations >= targetText.length) {
               clearInterval(interval);
-              textSpan.innerText = targetText;
+              textSpan.innerText = targetText; 
               cmd.disabled = false;
               cmd.focus();
               terminalBody.scrollTop = terminalBody.scrollHeight;
             }
-          }, 28);
+          }, 30); 
           cmd.value = '';
           return;
         }
 
-        if (inputVal === 'tcpdump' || inputVal.startsWith('tcpdump')) {
-          cmd.disabled = true;
-
-          const dumpDiv = document.createElement('div');
-          dumpDiv.className = 'output';
-          terminal.appendChild(dumpDiv);
-
-          dumpDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
-          dumpDiv.innerHTML += `tcpdump: verbose output suppressed, use -v or -vv for full protocol decode\n`;
-          dumpDiv.innerHTML += `listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes\n\n`;
-
-          const packetsSpan = document.createElement('span');
-          dumpDiv.appendChild(packetsSpan);
-
-          let packetCount = 0;
-          const maxPackets = Math.floor(Math.random() * 25) + 35;
-          const ips = ["192.168.100.45", "10.0.1.1", "10.0.2.1", "8.8.8.8", "1.1.1.1", "172.16.0.5", "140.82.113.3"];
-
-          const generatePacket = () => {
-            const src = ips[Math.floor(Math.random() * ips.length)];
-            let dst = ips[Math.floor(Math.random() * ips.length)];
-            while (dst === src) dst = ips[Math.floor(Math.random() * ips.length)];
-
-            const srcPort = Math.floor(Math.random() * 50000) + 1024;
-            const now = new Date();
-            const ts = `<span style="color: var(--dim)">${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(Math.floor(Math.random()*999999)).padStart(6,'0')}</span>`;
-
-            const types = [
-              `IP ${src}.${srcPort} > ${dst}.443: Flags [S], seq ${Math.floor(Math.random()*1000000000)}, win 65535, length 0`,
-              `IP ${dst}.443 > ${src}.${srcPort}: Flags [S.], seq ${Math.floor(Math.random()*1000000000)}, ack ${Math.floor(Math.random()*1000000000)}, win 65535, length 0`,
-              `IP ${src}.${srcPort} > ${dst}.443: Flags [.], ack 1, win 256, length 0`,
-              `IP ${src}.179 > ${dst}.${srcPort}: <span style="color: var(--green); font-weight: bold;">BGP</span>, length: 19 (Keepalive Message)`,
-              `IP ${dst}.${srcPort} > ${src}.179: <span style="color: var(--green); font-weight: bold;">BGP</span>, length: 65 (Update Message)`,
-              `IP ${src}.${srcPort} > ${dst}.443: Flags [P.], seq 1:517, ack 1, win 256, length 516: <span style="color: var(--yellow);">HTTP</span>`,
-              `IP ${src} > ${dst}: ICMP echo request, id ${Math.floor(Math.random()*5000)}, seq 1, length 64`,
-              `IP ${dst} > ${src}: ICMP echo reply, id ${Math.floor(Math.random()*5000)}, seq 1, length 64`
-            ];
-
-            const packet = types[Math.floor(Math.random() * types.length)];
-            return `${ts} ${packet}\n`;
-          };
-
-          const interval = setInterval(() => {
-            packetsSpan.innerHTML += generatePacket();
+      // --- TCPDUMP / PACKET CAPTURE LOGIC ---
+      if (inputVal === 'tcpdump' || inputVal.startsWith('tcpdump')) {
+        cmd.disabled = true; // Prevent typing while capture runs
+        
+        const dumpDiv = document.createElement('div');
+        dumpDiv.className = 'output';
+        terminal.appendChild(dumpDiv);
+        
+        // Print the initial tcpdump header
+        dumpDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        dumpDiv.innerHTML += `tcpdump: verbose output suppressed, use -v or -vv for full protocol decode\n`;
+        dumpDiv.innerHTML += `listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes\n\n`;
+        
+        const packetsSpan = document.createElement('span');
+        dumpDiv.appendChild(packetsSpan);
+        
+        let packetCount = 0;
+        const maxPackets = Math.floor(Math.random() * 25) + 35; // Generate 35-60 packets total
+        
+        // Pool of realistic IP addresses (Internal, CGI, Google, Cloudflare)
+        const ips = ["192.168.100.45", "10.0.1.1", "10.0.2.1", "8.8.8.8", "1.1.1.1", "172.16.0.5", "140.82.113.3"];
+        
+        const generatePacket = () => {
+          const src = ips[Math.floor(Math.random() * ips.length)];
+          let dst = ips[Math.floor(Math.random() * ips.length)];
+          while(dst === src) dst = ips[Math.floor(Math.random() * ips.length)]; // Ensure src != dst
+          
+          const srcPort = Math.floor(Math.random() * 50000) + 1024;
+          
+          // Generate realistic microsecond timestamp
+          const now = new Date();
+          const ts = `<span style="color: var(--dim)">${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}.${String(Math.floor(Math.random()*999999)).padStart(6,'0')}</span>`;
+          
+          const types = [
+            `IP ${src}.${srcPort} > ${dst}.443: Flags [S], seq ${Math.floor(Math.random()*1000000000)}, win 65535, length 0`,
+            `IP ${dst}.443 > ${src}.${srcPort}: Flags [S.], seq ${Math.floor(Math.random()*1000000000)}, ack ${Math.floor(Math.random()*1000000000)}, win 65535, length 0`,
+            `IP ${src}.${srcPort} > ${dst}.443: Flags [.], ack 1, win 256, length 0`,
+            `IP ${src}.179 > ${dst}.${srcPort}: <span style="color: var(--green); font-weight: bold;">BGP</span>, length: 19 (Keepalive Message)`,
+            `IP ${dst}.${srcPort} > ${src}.179: <span style="color: var(--green); font-weight: bold;">BGP</span>, length: 65 (Update Message)`,
+            `IP ${src}.${srcPort} > ${dst}.443: Flags [P.], seq 1:517, ack 1, win 256, length 516: <span style="color: var(--yellow);">HTTP</span>`,
+            `IP ${src} > ${dst}: ICMP echo request, id ${Math.floor(Math.random()*5000)}, seq 1, length 64`,
+            `IP ${dst} > ${src}: ICMP echo reply, id ${Math.floor(Math.random()*5000)}, seq 1, length 64`
+          ];
+          
+          const packet = types[Math.floor(Math.random() * types.length)];
+          return `${ts} ${packet}\n`;
+        };
+        
+        // Print packets rapidly using an interval
+        const interval = setInterval(() => {
+          packetsSpan.innerHTML += generatePacket();
+          terminalBody.scrollTop = terminalBody.scrollHeight; // Auto-scroll down
+          packetCount++;
+          
+          if (packetCount >= maxPackets) {
+            clearInterval(interval); // Stop the capture
+            
+            // Print the capture summary
+            const summarySpan = document.createElement('span');
+            summarySpan.innerHTML = `\n${packetCount} packets captured\n${packetCount + Math.floor(Math.random() * 3)} packets received by filter\n0 packets dropped by kernel\n`;
+            dumpDiv.appendChild(summarySpan);
+            
+            // Re-enable user input
+            cmd.disabled = false;
+            cmd.focus();
             terminalBody.scrollTop = terminalBody.scrollHeight;
-            packetCount++;
-
-            if (packetCount >= maxPackets) {
-              clearInterval(interval);
-              const summarySpan = document.createElement('span');
-              summarySpan.innerHTML = `\n${packetCount} packets captured\n${packetCount + Math.floor(Math.random() * 3)} packets received by filter\n0 packets dropped by kernel\n`;
-              dumpDiv.appendChild(summarySpan);
-
-              cmd.disabled = false;
-              cmd.focus();
-              terminalBody.scrollTop = terminalBody.scrollHeight;
-            }
-          }, 60);
-
-          cmd.value = '';
-          return;
-        }
-
-        if (inputVal === 'joke') {
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-
-          let jokeIndex;
-
-          if (forcedJokeRepeatsLeft > 0 && forcedJokeIndex !== -1) {
-            jokeIndex = forcedJokeIndex;
-            forcedJokeRepeatsLeft--;
-          } else {
-            const availableIndexes = networkJokes
-              .map((_, index) => index)
-              .filter(index => index !== lastJokeIndex);
-
-            jokeIndex = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
-
-            if (jokeIndex === spanningTreeJokeIndex) {
-              forcedJokeIndex = jokeIndex;
-              forcedJokeRepeatsLeft = 2;
-            } else {
-              forcedJokeIndex = -1;
-              forcedJokeRepeatsLeft = 0;
-            }
           }
+        }, 60); // 60ms delay creates a fast, hacker-movie style scroll
+        
+        cmd.value = '';
+        return;
+      }
 
-          lastJokeIndex = jokeIndex;
+        // 13. JOKE COMMAND
+if (inputVal === 'joke') {
+  const outputDiv = document.createElement('div');
+  outputDiv.className = 'output';
 
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${networkJokes[jokeIndex]}`;
-          terminal.appendChild(outputDiv);
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
-        }
+  let jokeIndex = Math.floor(Math.random() * networkJokes.length);
+  if (networkJokes.length > 1 && jokeIndex === lastJokeIndex) {
+    jokeIndex = (jokeIndex + 1) % networkJokes.length;
+  }
+  lastJokeIndex = jokeIndex;
 
+  outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${networkJokes[jokeIndex]}`;
+  terminal.appendChild(outputDiv);
+  cmd.value = '';
+  terminalBody.scrollTop = terminalBody.scrollHeight;
+  return;
+}
+
+        
+        // 13. HISTORY COMMAND
         if (inputVal === 'history') {
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
@@ -1560,13 +1501,14 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           return;
         }
 
+        // 14. EASTER EGG (linda)
         if (inputVal === 'linda') {
           terminal.innerHTML = '';
           cmd.value = '';
-          cmd.disabled = true;
+          cmd.disabled = true; 
           const heartDiv = document.createElement('div');
-          heartDiv.style.color = '#E31937';
-          heartDiv.style.whiteSpace = 'pre';
+          heartDiv.style.color = '#E31937'; 
+          heartDiv.style.whiteSpace = 'pre'; 
           heartDiv.style.textAlign = 'center';
           heartDiv.style.marginTop = '20px';
           heartDiv.style.lineHeight = '1.2';
@@ -1602,10 +1544,13 @@ Bio: I design and operate core network infrastructure at CGI across three domain
               cmd.focus();
               terminalBody.scrollTop = terminalBody.scrollHeight;
             }
-          }, 200);
+          }, 200); 
           return;
         }
 
+        // ========================================================
+        // --- FINAL FALLBACK: STANDARD COMMANDS & GREP LOGIC ---
+        // ========================================================
         const outputDiv = document.createElement('div');
         outputDiv.className = 'output';
 
@@ -1630,14 +1575,14 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         if (response && grepTerm) {
           const lines = response.split('\n');
           const matchedLines = lines.filter(line => line.toLowerCase().includes(grepTerm));
-
+          
           if (matchedLines.length > 0) {
             const regex = new RegExp(grepTerm, 'gi');
-            response = matchedLines.map(line =>
+            response = matchedLines.map(line => 
               line.replace(regex, match => `<span style="color: var(--red);">${match}</span>`)
             ).join('\n');
           } else {
-            response = '';
+            response = ''; 
           }
         }
 
@@ -1652,6 +1597,7 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           response = response.replace(/{{CURRENT_TIME}}/g, formattedTime);
         }
 
+        // --- HANDLE EMPTY INPUTS, SUDO, ERRORS ---
         if (inputVal === '') {
           response = '';
         } else if (inputVal === 'sudo' || inputVal.startsWith('sudo ')) {
@@ -1675,18 +1621,20 @@ Bio: I design and operate core network infrastructure at CGI across three domain
 
         outputDiv.innerHTML = promptSpan + commandSpan + response;
         terminal.appendChild(outputDiv);
-
+        
         cmd.value = '';
         terminalBody.scrollTop = terminalBody.scrollHeight;
       }
     });
 
+    // --- ANIMATED NETWORK BACKGROUND LOGIC ---
     const canvas = document.getElementById('topology-bg');
     const ctx = canvas.getContext('2d');
 
     let nodes = [];
     let packets = [];
-    const NODE_COUNT = 24;
+    const NODE_COUNT = 25; 
+    const MAX_DIST = 200;  
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -1701,8 +1649,8 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           id: i,
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.1,
-          vy: (Math.random() - 0.5) * 0.1,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.15,
           r: Math.random() * 2 + 3,
         });
       }
@@ -1711,38 +1659,39 @@ Bio: I design and operate core network infrastructure at CGI across three domain
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // --- DYNAMIC THEME COLORS FOR CANVAS ---
+      // Get the current computed colors from the CSS :root variables
       const rootStyles = getComputedStyle(document.documentElement);
       const hexGreen = rootStyles.getPropertyValue('--green').trim() || '#00ff88';
-      const hexYellow = rootStyles.getPropertyValue('--yellow').trim() || '#f0c040';
-      const hexRed = rootStyles.getPropertyValue('--red').trim() || '#ff4455';
-      const hexBg = rootStyles.getPropertyValue('--bg').trim() || '#070b0d';
-
+      const hexBg = rootStyles.getPropertyValue('--bg').trim() || '#0a0e0f';
+      
+      // Helper function to convert Hex to RGB for the alpha transparency calculations
       const hexToRgb = (hex) => {
         let c;
-        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-          c = hex.substring(1).split('');
-          if (c.length === 3) {
-            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-          }
-          c = '0x' + c.join('');
-          return [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+        if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+            c= hex.substring(1).split('');
+            if(c.length== 3){
+                c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+            }
+            c= '0x'+c.join('');
+            return [(c>>16)&255, (c>>8)&255, c&255];
         }
-        return [0, 255, 136];
+        return [0, 255, 136]; // Fallback to default green
       };
-
+      
       const rgbGreen = hexToRgb(hexGreen);
 
+      // 1. Draw Links (Full Mesh, Highly Interlinked)
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
           const dy = nodes[i].y - nodes[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist > 260) continue;
-
-          let alpha = 0.18 - (dist / 2200);
-          if (alpha < 0.03) alpha = 0.03;
-
+          
+          let alpha = 0.25 - (dist / (canvas.width * 0.8));
+          if (alpha < 0.02) alpha = 0.02;
+          
+          // Use the dynamic theme color!
           ctx.strokeStyle = `rgba(${rgbGreen[0]}, ${rgbGreen[1]}, ${rgbGreen[2]}, ${alpha})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -1752,17 +1701,18 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         }
       }
 
-      if (Math.random() < 0.012) {
+      // 2. Generate Network Traffic (Same as before)
+      if (Math.random() < 0.015) {
         const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
         let routingTable = [];
         let totalWeight = 0;
-
+        
         for (let i = 0; i < nodes.length; i++) {
           if (nodes[i] === sourceNode) continue;
           const dx = sourceNode.x - nodes[i].x;
           const dy = sourceNode.y - nodes[i].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const weight = 1 / (dist * dist);
+          const weight = 1 / (dist * dist); 
           routingTable.push({ target: nodes[i], weight: weight, dist: dist });
           totalWeight += weight;
         }
@@ -1770,7 +1720,7 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         let randomChoice = Math.random() * totalWeight;
         let selectedTarget = routingTable[0].target;
         let selectedDist = routingTable[0].dist;
-
+        
         for (let i = 0; i < routingTable.length; i++) {
           randomChoice -= routingTable[i].weight;
           if (randomChoice <= 0) {
@@ -1780,19 +1730,24 @@ Bio: I design and operate core network infrastructure at CGI across three domain
           }
         }
 
-        const dynamicSpeed = 1.8 + (selectedDist / 130);
+        const dynamicSpeed = 2 + (selectedDist / 100);
+        
+        // Let's also grab the yellow and red variables for the packets!
+        const hexYellow = rootStyles.getPropertyValue('--yellow').trim() || '#f0c040';
         packets.push({ source: sourceNode, target: selectedTarget, progress: 0, speed: dynamicSpeed, type: 'SYN', color: hexYellow });
       }
 
+      // 3. Draw and Update Packets (Same as before)
       for (let i = packets.length - 1; i >= 0; i--) {
         let p = packets[i];
         p.progress += p.speed / 1000;
 
         if (p.progress >= 1) {
           if (p.type === 'SYN') {
+            const hexRed = rootStyles.getPropertyValue('--red').trim() || '#ff4455';
             packets.push({ source: p.target, target: p.source, progress: 0, speed: p.speed, type: 'SYN-ACK', color: hexRed });
           } else if (p.type === 'SYN-ACK') {
-            packets.push({ source: p.target, target: p.source, progress: 0, speed: p.speed, type: 'ACK', color: hexGreen });
+             packets.push({ source: p.target, target: p.source, progress: 0, speed: p.speed, type: 'ACK', color: hexGreen }); // Final ACK uses main theme color
           }
           packets.splice(i, 1);
           continue;
@@ -1802,21 +1757,23 @@ Bio: I design and operate core network infrastructure at CGI across three domain
         const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
 
         ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 14;
+        ctx.shadowBlur = 18;
         ctx.shadowColor = p.color;
-
+        
         ctx.beginPath();
-        ctx.arc(currX, currY, 2.4, 0, Math.PI * 2);
+        ctx.arc(currX, currY, 3, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 0;
       }
 
+      // 4. Draw and Update Nodes (Hexagon Routers)
       nodes.forEach(n => {
-        const hexRadius = n.r + 1.1;
-        ctx.fillStyle = hexBg;
+        const hexRadius = n.r + 1;
+        // Use the dynamic theme background and border colors!
+        ctx.fillStyle = hexBg; 
         ctx.strokeStyle = hexGreen;
-        ctx.lineWidth = 1.2;
-
+        ctx.lineWidth = 1.5;
+        
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
           const angle = Math.PI / 3 * i + Math.PI / 6;
@@ -1831,11 +1788,8 @@ Bio: I design and operate core network infrastructure at CGI across three domain
 
         n.x += n.vx;
         n.y += n.vy;
-
-        if (n.x < -20) n.x = canvas.width + 20;
-        if (n.x > canvas.width + 20) n.x = -20;
-        if (n.y < -20) n.y = canvas.height + 20;
-        if (n.y > canvas.height + 20) n.y = -20;
+        if (n.x < 0) { n.x = canvas.width; n.vx *= -1; }
+        if (n.y < 0) { n.y = canvas.height; n.vy *= -1; }
       });
 
       requestAnimationFrame(draw);
@@ -1844,10 +1798,7 @@ Bio: I design and operate core network infrastructure at CGI across three domain
     resize();
     initNodes();
     draw();
-    window.addEventListener('resize', () => {
-      resize();
-      initNodes();
-    });
+    window.addEventListener('resize', () => { resize(); initNodes(); });
   </script>
 </body>
 </html>
