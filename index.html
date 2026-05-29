@@ -479,7 +479,7 @@ const incidentDetails = {
   show dwdm         - View active DWDM / 400G DCI transport
   show version      - View system uptime and certifications
   show ip route     - View network architecture scope
-  show incidents - View short incident postmortems
+  show incidents    - View short incident postmortems
   show bgp sum      - View IT/Network engineering skills
   show interface    - View projects
   show cdp nei      - View languages and soft skills
@@ -772,20 +772,69 @@ Active Licenses / Certifications:
 
       // --- TAB COMPLETION LOGIC ---
       if (e.key === 'Tab') {
-        e.preventDefault(); 
+        e.preventDefault();
+      
         const inputVal = cmd.value.toLowerCase();
-        const allCommands = Object.keys(commands).concat(['clear', 'sudo', 'history', 'whoami', 'ping', 'traceroute', 'wget resume', 'diagnostics', 'joke']);
+        const allCommands = Object.keys(commands).concat(
+          'clear',
+          'sudo',
+          'history',
+          'whoami',
+          'ping',
+          'traceroute',
+          'wget resume',
+          'diagnostics',
+          'joke'
+        );
+      
+        const incidentCommands = [
+          'show incident 1',
+          'show incident 2',
+          'show incident 3'
+        ];
+      
+        if (inputVal === 'show incident' || inputVal === 'show incident ') {
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          outputDiv.innerHTML =
+            `${currentPrompt}<span class="user-input">${cmd.value}</span>\n` +
+            incidentCommands.join('\n');
+          terminal.appendChild(outputDiv);
+          terminalBody.scrollTop = terminalBody.scrollHeight;
+          return;
+        }
+      
+        if (inputVal.startsWith('show incident ')) {
+          const matches = incidentCommands.filter(c => c.startsWith(inputVal));
+      
+          if (matches.length === 1) {
+            cmd.value = matches[0];
+          } else if (matches.length > 1) {
+            const outputDiv = document.createElement('div');
+            outputDiv.className = 'output';
+            outputDiv.innerHTML =
+              `${currentPrompt}<span class="user-input">${cmd.value}</span>\n` +
+              matches.join('\n');
+            terminal.appendChild(outputDiv);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+          }
+          return;
+        }
+      
         const matches = allCommands.filter(c => c.startsWith(inputVal));
-        
+      
         if (matches.length === 1) {
           cmd.value = matches[0];
         } else if (matches.length > 1) {
           const outputDiv = document.createElement('div');
           outputDiv.className = 'output';
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n${matches.join('  ')}`;
+          outputDiv.innerHTML =
+            `${currentPrompt}<span class="user-input">${cmd.value}</span>\n` +
+            matches.join('\n');
           terminal.appendChild(outputDiv);
           terminalBody.scrollTop = terminalBody.scrollHeight;
         }
+      
         return;
       }
 
