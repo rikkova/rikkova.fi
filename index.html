@@ -222,7 +222,8 @@
     let currentPrompt = '<span class="prompt">guest@rikkova:~$ </span>';
     let commandHistory = [];
     let historyIndex = -1;
-
+    let lastJokeIndex = -1;
+  
     const networkJokes = [
       "Why do network engineers love weekends? Fewer change windows, fewer surprises.",
       "I told the data center a joke. It needed a moment to process.",
@@ -1316,16 +1317,22 @@ Bio: I design and operate core network infrastructure at CGI across three domain
       }
 
         // 13. JOKE COMMAND
-        if (inputVal === 'joke') {
-          const outputDiv = document.createElement('div');
-          outputDiv.className = 'output';
-          const randomJoke = networkJokes[Math.floor(Math.random() * networkJokes.length)];
-          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${randomJoke}`;
-          terminal.appendChild(outputDiv);
-          cmd.value = '';
-          terminalBody.scrollTop = terminalBody.scrollHeight;
-          return;
-        }
+if (inputVal === 'joke') {
+  const outputDiv = document.createElement('div');
+  outputDiv.className = 'output';
+
+  let jokeIndex = Math.floor(Math.random() * networkJokes.length);
+  if (networkJokes.length > 1 && jokeIndex === lastJokeIndex) {
+    jokeIndex = (jokeIndex + 1) % networkJokes.length;
+  }
+  lastJokeIndex = jokeIndex;
+
+  outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n<span style="color: var(--dim)">[humor]</span> ${networkJokes[jokeIndex]}`;
+  terminal.appendChild(outputDiv);
+  cmd.value = '';
+  terminalBody.scrollTop = terminalBody.scrollHeight;
+  return;
+}
 
         
         // 13. HISTORY COMMAND
