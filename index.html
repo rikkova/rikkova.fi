@@ -443,6 +443,7 @@ const networkJokes = [
   show dwdm         - View active DWDM / 400G DCI transport
   show version      - View system uptime and certifications
   show ip route     - View network architecture scope
+  show incidents - View short incident postmortems
   show bgp sum      - View IT/Network engineering skills
   show interface    - View projects
   show cdp nei      - View languages and soft skills
@@ -646,6 +647,33 @@ Headers           : {[Connection, keep-alive], [Vary, Origin], [cf-cache-status,
 
 Wait... that Content IP is a Cloudflare proxy.
 Are you sitting behind a WAF? Me too.`,
+
+'show incidents': `<span style="color: var(--yellow)">SHORT INCIDENT POSTMORTEMS</span>
+
+<span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance
+  Impact: An engineer targeted a VRF change but deleted the parent router bgp hierarchy in candidate config
+  Effect: Potential loss of global and VRF-level BGP state if committed unchallenged
+  Root cause: Human error in hierarchical CLI editing with insufficient policy guardrails
+  Fix: Aborted change, restored intended subtree, and reviewed diff before retry
+  Prevention: Implemented pre-commit validation to reject destructive parent-level BGP removals
+
+
+<span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry
+  Impact: Expired certificate caused remote access VPN authentication failure for active users
+  Effect: Existing sessions dropped and new user connections were rejected until certificate renewal completed
+  Root cause: Certificate renewal was not completed before the service validity window ended
+  Fix: Renewed and deployed the certificate chain, then verified client connectivity and trust state
+  Prevention: Implemented automated certificate renewal and deployment for the remote access VPN
+
+<span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction
+  Impact: Third-party roadwork and piling activity damaged one of two inter-datacenter dark fiber paths
+  Effect: One transport path was lost, but services remained available on the surviving diverse fiber route
+  Root cause: Civil construction intersected the physical path of a leased dark fiber segment near a motorway corridor
+  Fix: Traffic continued over the secondary path while the damaged fiber provider path was repaired
+  Prevention: Designed inter-datacenter transport over two geographically diverse dark fiber paths
+
+<i style="color: var(--dim)">Note: Summaries sanitized for public display. Focus is on engineering response and prevention.</i>`,
+
       
       'show interface': `Interface: Security (ASA to FortiGate Migration)
  Status: UP (Hardened)
@@ -770,6 +798,7 @@ Active Licenses / Certifications:
         } else if (inputValLower === 'show' || inputValLower === 'show ') {
           helpText = `  bgp        View IT/Network engineering skills
   cdp        View languages and soft skills
+  incidents  View short incident postmortems
   interface  View projects
   ip         View network architecture scope
   run        View configuration
