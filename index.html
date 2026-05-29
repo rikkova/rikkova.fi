@@ -260,42 +260,6 @@ const networkJokes = [
   "'Losing a few packets' means very different things depending on your profession."
 ];
 
-const incidentDetails = {
-  'show incident 1': [
-    `<span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance`,
-    ``,
-    `  Impact: An engineer targeted a VRF change but deleted the parent router bgp hierarchy in candidate config`,
-    `  Effect: Potential loss of global and VRF-level BGP state if committed unchallenged`,
-    `  Root cause: Human error in hierarchical CLI editing with insufficient policy guardrails`,
-    `  Fix: Aborted change, restored intended subtree, and reviewed diff before retry`,
-    `  Prevention: Implemented pre-commit validation to reject destructive parent-level BGP removals`,
-    ``,
-    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
-  ],
-  'show incident 2': [
-    `<span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry`,
-    ``,
-    `  Impact: Expired certificate caused remote access VPN authentication failure for active users`,
-    `  Effect: Existing sessions dropped and new user connections were rejected until certificate renewal completed`,
-    `  Root cause: Certificate renewal was not completed before the service validity window ended`,
-    `  Fix: Renewed and deployed the certificate chain, then verified client connectivity and trust state`,
-    `  Prevention: Implemented automated certificate renewal and deployment for the remote access VPN`,
-    ``,
-    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
-  ],
-  'show incident 3': [
-    `<span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction`,
-    ``,
-    `  Impact: Third-party roadwork and piling activity damaged one of two inter-datacenter dark fiber paths`,
-    `  Effect: One transport path was lost, but services remained available on the surviving diverse fiber route`,
-    `  Root cause: Civil construction intersected the physical path of a leased dark fiber segment near a motorway corridor`,
-    `  Fix: Traffic continued over the secondary path while the damaged fiber provider path was repaired`,
-    `  Prevention: Designed inter-datacenter transport over two geographically diverse dark fiber paths`,
-    ``,
-    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
-  ]
-};
-    
     function levenshtein(a, b) {
       const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
       for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
@@ -479,10 +443,7 @@ const incidentDetails = {
   show dwdm         - View active DWDM / 400G DCI transport
   show version      - View system uptime and certifications
   show ip route     - View network architecture scope
-  show incidents    - View incident summary list
-  show incident 1   - View postmortem #1
-  show incident 2   - View postmortem #2
-  show incident 3   - View postmortem #3
+  show incidents - View short incident postmortems
   show bgp sum      - View IT/Network engineering skills
   show interface    - View projects
   show cdp nei      - View languages and soft skills
@@ -687,13 +648,31 @@ Headers           : {[Connection, keep-alive], [Vary, Origin], [cf-cache-status,
 Wait... that Content IP is a Cloudflare proxy.
 Are you sitting behind a WAF? Me too.`,
 
-'show incidents': `<span style="color: var(--yellow)">INCIDENT INDEX</span>
+'show incidents': `<span style="color: var(--yellow)">SHORT INCIDENT POSTMORTEMS</span>
 
-1  INC-2024-09  BGP hierarchy deletion during maintenance
-2  INC-2024-02  Remote access VPN certificate expiry
-3  INC-2023-08  Dark fiber path lost during external construction
+<span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance
+  Impact: An engineer targeted a VRF change but deleted the parent router bgp hierarchy in candidate config
+  Effect: Potential loss of global and VRF-level BGP state if committed unchallenged
+  Root cause: Human error in hierarchical CLI editing with insufficient policy guardrails
+  Fix: Aborted change, restored intended subtree, and reviewed diff before retry
+  Prevention: Implemented pre-commit validation to reject destructive parent-level BGP removals
 
-<i style="color: var(--dim)">Tip: use show incident 1, show incident 2, or show incident 3</i>`,
+
+<span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry
+  Impact: Expired certificate caused remote access VPN authentication failure for active users
+  Effect: Existing sessions dropped and new user connections were rejected until certificate renewal completed
+  Root cause: Certificate renewal was not completed before the service validity window ended
+  Fix: Renewed and deployed the certificate chain, then verified client connectivity and trust state
+  Prevention: Implemented automated certificate renewal and deployment for the remote access VPN
+
+<span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction
+  Impact: Third-party roadwork and piling activity damaged one of two inter-datacenter dark fiber paths
+  Effect: One transport path was lost, but services remained available on the surviving diverse fiber route
+  Root cause: Civil construction intersected the physical path of a leased dark fiber segment near a motorway corridor
+  Fix: Traffic continued over the secondary path while the damaged fiber provider path was repaired
+  Prevention: Designed inter-datacenter transport over two geographically diverse dark fiber paths
+
+<i style="color: var(--dim)">Note: Summaries sanitized for public display. Focus is on engineering response and prevention.</i>`,
 
       
       'show interface': `Interface: Security (ASA to FortiGate Migration)
@@ -819,28 +798,21 @@ Active Licenses / Certifications:
         } else if (inputValLower === 'show' || inputValLower === 'show ') {
           helpText = `  bgp        View IT/Network engineering skills
   cdp        View languages and soft skills
-  incident   View a specific incident postmortem
-  incidents  View incident summary list
+  incidents  View short incident postmortems
   interface  View projects
   ip         View network architecture scope
   run        View configuration
   topology   View interactive topology
   version    View system uptime and certifications`;
-
+        
         // 3. Deep sub-commands (e.g. 'show ip ', 'show bgp ')
-          else if (inputValLower === 'show incident' || inputValLower === 'show incident ') {
-            helpText = `  1         BGP hierarchy deletion during maintenance
-            2         Remote access VPN certificate expiry
-            3         Dark fiber path lost during external construction`;
-          }
         } else if (inputValLower === 'show ip' || inputValLower === 'show ip ') {
           helpText = `  route      View network architecture scope`;
         } else if (inputValLower === 'show cdp' || inputValLower === 'show cdp ') {
           helpText = `  nei        View languages and soft skills`;
         } else if (inputValLower === 'show bgp' || inputValLower === 'show bgp ') {
           helpText = `  sum        View IT/Network engineering skills`;
-
-          
+        
         // 4. Sub-commands for 'theme '
         } else if (inputValLower === 'theme' || inputValLower === 'theme ') {
           helpText = `  amber      Classic mainframe phosphor
@@ -1114,36 +1086,6 @@ Active Licenses / Certifications:
         cmd.value = '';
         return; // Exit here so the default instant-printer doesn't run!
       }
-
-        if (inputVal === 'show incident 1' || inputVal === 'show incident 2' || inputVal === 'show incident 3') {
-  cmd.disabled = true;
-
-  const outputDiv = document.createElement('div');
-  outputDiv.className = 'output';
-  terminal.appendChild(outputDiv);
-
-  outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
-
-  const lines = incidentDetails[inputVal];
-  let lineIndex = 0;
-
-  const drawInterval = setInterval(() => {
-    if (lineIndex < lines.length) {
-      outputDiv.innerHTML += lines[lineIndex] + '\n';
-      terminalBody.scrollTop = terminalBody.scrollHeight;
-      lineIndex++;
-    } else {
-      clearInterval(drawInterval);
-      cmd.disabled = false;
-      cmd.focus();
-      terminalBody.scrollTop = terminalBody.scrollHeight;
-    }
-  }, 40);
-
-  cmd.value = '';
-  return;
-}
-
         
         // 7. ANIMATED TRACEROUTE
         if (inputVal === 'traceroute' || inputVal.startsWith('traceroute ')) {
@@ -1318,10 +1260,10 @@ Active Licenses / Certifications:
           terminal.appendChild(outputDiv);
           outputDiv.innerHTML = `${currentPrompt}<span class="user-input">whoami</span>\n<span style="color: var(--dim);">Decrypting user profile...</span>\n\n`;
           
-          const targetText = `Name: Väinö Rikkonen
+          const targetText = `Name: VÃ¤inÃ¶ Rikkonen
 Role: Infrastructure Architect
-Location: Vantaa, Finland · AS65001
-Status: Open to new opportunities · Established
+Location: Vantaa, Finland Â· AS65001
+Status: Open to new opportunities â€” Established
 
 Bio: I design and operate core network infrastructure at CGI across three domains: an MPLS/Segment Routing backbone (AS1854), VXLAN-based fabrics supporting CGI's hosting and cloud services, and an Internet edge (AS24713) handling external connectivity, BGP peering, and routing policy.`;
 
