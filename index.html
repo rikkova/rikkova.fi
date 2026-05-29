@@ -260,6 +260,42 @@ const networkJokes = [
   "'Losing a few packets' means very different things depending on your profession."
 ];
 
+const incidentDetails = {
+  'show incident 1': [
+    `<span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance`,
+    ``,
+    `  Impact: An engineer targeted a VRF change but deleted the parent router bgp hierarchy in candidate config`,
+    `  Effect: Potential loss of global and VRF-level BGP state if committed unchallenged`,
+    `  Root cause: Human error in hierarchical CLI editing with insufficient policy guardrails`,
+    `  Fix: Aborted change, restored intended subtree, and reviewed diff before retry`,
+    `  Prevention: Implemented pre-commit validation to reject destructive parent-level BGP removals`,
+    ``,
+    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
+  ],
+  'show incident 2': [
+    `<span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry`,
+    ``,
+    `  Impact: Expired certificate caused remote access VPN authentication failure for active users`,
+    `  Effect: Existing sessions dropped and new user connections were rejected until certificate renewal completed`,
+    `  Root cause: Certificate renewal was not completed before the service validity window ended`,
+    `  Fix: Renewed and deployed the certificate chain, then verified client connectivity and trust state`,
+    `  Prevention: Implemented automated certificate renewal and deployment for the remote access VPN`,
+    ``,
+    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
+  ],
+  'show incident 3': [
+    `<span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction`,
+    ``,
+    `  Impact: Third-party roadwork and piling activity damaged one of two inter-datacenter dark fiber paths`,
+    `  Effect: One transport path was lost, but services remained available on the surviving diverse fiber route`,
+    `  Root cause: Civil construction intersected the physical path of a leased dark fiber segment near a motorway corridor`,
+    `  Fix: Traffic continued over the secondary path while the damaged fiber provider path was repaired`,
+    `  Prevention: Designed inter-datacenter transport over two geographically diverse dark fiber paths`,
+    ``,
+    `<i style="color: var(--dim)">Summary sanitized for public display.</i>`
+  ]
+};
+    
     function levenshtein(a, b) {
       const matrix = Array.from({ length: b.length + 1 }, (_, i) => [i]);
       for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
@@ -475,6 +511,14 @@ Architecture           : SASE, Zero Trust, IPSec/SSL VPN, DDoS Mitigation
 NetDevOps              : Python, Ansible, Terraform, Git
 Programmability        : NETCONF, RESTCONF, gNMI, Cisco NSO/NDFC
 Observability          : SNMP, NetFlow, Telegraf, InfluxDB, Grafana`,
+
+'show incidents': `<span style="color: var(--yellow)">INCIDENT INDEX</span>
+
+1  <span style="color: var(--red)">INC-2024-09</span>  BGP hierarchy deletion during maintenance
+2  <span style="color: var(--red)">INC-2024-02</span>  Remote access VPN certificate expiry
+3  <span style="color: var(--yellow)">INC-2023-08</span>  Dark fiber path lost during external construction
+
+<i style="color: var(--dim)">Tip: use show incident 1, show incident 2, or show incident 3</i>`,
       
      
 'show architecture': `<span style="color: var(--yellow)">=== NEXT-GEN NETWORK AUTOMATION & OBSERVABILITY ARCHITECTURE ===</span>
@@ -1051,6 +1095,35 @@ Active Licenses / Certifications:
         return;
       }
 
+        if (inputVal === 'show incident 1' || inputVal === 'show incident 2' || inputVal === 'show incident 3') {
+          cmd.disabled = true;
+        
+          const outputDiv = document.createElement('div');
+          outputDiv.className = 'output';
+          terminal.appendChild(outputDiv);
+        
+          outputDiv.innerHTML = `${currentPrompt}<span class="user-input">${cmd.value}</span>\n`;
+        
+          const lines = incidentDetails[inputVal];
+          let lineIndex = 0;
+        
+          const drawInterval = setInterval(() => {
+            if (lineIndex < lines.length) {
+              outputDiv.innerHTML += lines[lineIndex] + '\n';
+              terminalBody.scrollTop = terminalBody.scrollHeight;
+              lineIndex++;
+            } else {
+              clearInterval(drawInterval);
+              cmd.disabled = false;
+              cmd.focus();
+              terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+          }, 40);
+        
+          cmd.value = '';
+          return;
+        }
+        
       // --- ANIMATED SHOW ARCHITECTURE LOGIC ---
       if (inputVal === 'show architecture' || inputVal === 'show arch' || inputVal === 'show automation') {
         cmd.disabled = true; // Prevent typing while the diagram is drawing
