@@ -19,6 +19,19 @@
       --font-display: 'Orbitron', sans-serif;
     }
 
+    .retro-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(0, 255, 136, 0.08), transparent 24%),
+        radial-gradient(circle at 82% 28%, rgba(240, 192, 64, 0.06), transparent 20%),
+        radial-gradient(circle at 50% 86%, rgba(0, 255, 136, 0.05), transparent 28%),
+        linear-gradient(180deg, #0a0e0f 0%, #090c0d 100%);
+      opacity: 1;
+    }
+
     .crt-overlay {
       position: fixed;
       inset: 0;
@@ -29,20 +42,13 @@
       z-index: 999;
       pointer-events: none;
       opacity: 0.13;
-      animation: flicker 4s infinite;
     }
 
     .terminal-box {
       text-shadow: 0 0 2px rgba(0, 255, 136, 0.35);
     }
 
-    @keyframes flicker {
-      0% { opacity: 0.13; }
-      50% { opacity: 0.17; }
-      100% { opacity: 0.13; }
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     body {
@@ -209,8 +215,6 @@
 </head>
 <body onclick="document.getElementById('cmd').focus()">
   <div class="crt-overlay"></div>
-  <canvas id="topology-bg"></canvas>
-
   <div class="terminal-box">
     <div class="terminal-bar">
       <div class="dot red"></div>
@@ -1057,135 +1061,8 @@
         terminalBody.scrollTop = terminalBody.scrollHeight;
       }
     });
+    const bg = document.querySelector('.retro-bg');
 
-    const canvas = document.getElementById('topology-bg');
-    const ctx = canvas.getContext('2d');
-    let nodes = [];
-    let packets = [];
-    const NODE_COUNT = 25;
-
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-
-    function initNodes() {
-      nodes = [];
-      packets = [];
-      for (let i = 0; i < NODE_COUNT; i++) {
-        nodes.push({ id: i, x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15, r: Math.random() * 2 + 3 });
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const rootStyles = getComputedStyle(document.documentElement);
-      const hexGreen = rootStyles.getPropertyValue('--green').trim() || '#00ff88';
-      const hexBg = rootStyles.getPropertyValue('--bg').trim() || '#0a0e0f';
-      const hexToRgb = (hex) => {
-        let c;
-        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-          c = hex.substring(1).split('');
-          if (c.length === 3) c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-          c = '0x' + c.join('');
-          return [(c>>16)&255, (c>>8)&255, c&255];
-        }
-        return [0, 255, 136];
-      };
-      const rgbGreen = hexToRgb(hexGreen);
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          let alpha = 0.25 - (dist / (canvas.width * 0.8));
-          if (alpha < 0.02) alpha = 0.02;
-          ctx.strokeStyle = `rgba(${rgbGreen[0]}, ${rgbGreen[1]}, ${rgbGreen[2]}, ${alpha})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(nodes[i].x, nodes[i].y);
-          ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.stroke();
-        }
-      }
-      if (Math.random() < 0.015) {
-        const sourceNode = nodes[Math.floor(Math.random() * nodes.length)];
-        let routingTable = [];
-        let totalWeight = 0;
-        for (let i = 0; i < nodes.length; i++) {
-          if (nodes[i] === sourceNode) continue;
-          const dx = sourceNode.x - nodes[i].x;
-          const dy = sourceNode.y - nodes[i].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const weight = 1 / (dist * dist);
-          routingTable.push({ target: nodes[i], weight, dist });
-          totalWeight += weight;
-        }
-        let randomChoice = Math.random() * totalWeight;
-        let selectedTarget = routingTable[0].target;
-        let selectedDist = routingTable[0].dist;
-        for (let i = 0; i < routingTable.length; i++) {
-          randomChoice -= routingTable[i].weight;
-          if (randomChoice <= 0) {
-            selectedTarget = routingTable[i].target;
-            selectedDist = routingTable[i].dist;
-            break;
-          }
-        }
-        const dynamicSpeed = 2 + (selectedDist / 100);
-        const hexYellow = rootStyles.getPropertyValue('--yellow').trim() || '#f0c040';
-        packets.push({ source: sourceNode, target: selectedTarget, progress: 0, speed: dynamicSpeed, type: 'SYN', color: hexYellow });
-      }
-      for (let i = packets.length - 1; i >= 0; i--) {
-        let p = packets[i];
-        p.progress += p.speed / 1000;
-        if (p.progress >= 1) {
-          if (p.type === 'SYN') {
-            const hexRed = rootStyles.getPropertyValue('--red').trim() || '#ff4455';
-            packets.push({ source: p.target, target: p.source, progress: 0, speed: p.speed, type: 'SYN-ACK', color: hexRed });
-          } else if (p.type === 'SYN-ACK') {
-            packets.push({ source: p.target, target: p.source, progress: 0, speed: p.speed, type: 'ACK', color: hexGreen });
-          }
-          packets.splice(i, 1);
-          continue;
-        }
-        const currX = p.source.x + (p.target.x - p.source.x) * p.progress;
-        const currY = p.source.y + (p.target.y - p.source.y) * p.progress;
-        ctx.fillStyle = '#ffffff';
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = p.color;
-        ctx.beginPath();
-        ctx.arc(currX, currY, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-      nodes.forEach(n => {
-        const hexRadius = n.r + 1;
-        ctx.fillStyle = hexBg;
-        ctx.strokeStyle = hexGreen;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const angle = Math.PI / 3 * i + Math.PI / 6;
-          const hx = n.x + hexRadius * Math.cos(angle);
-          const hy = n.y + hexRadius * Math.sin(angle);
-          if (i === 0) ctx.moveTo(hx, hy);
-          else ctx.lineTo(hx, hy);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0) { n.x = canvas.width; n.vx *= -1; }
-        if (n.x > canvas.width) { n.x = 0; n.vx *= -1; }
-        if (n.y < 0) { n.y = canvas.height; n.vy *= -1; }
-        if (n.y > canvas.height) { n.y = 0; n.vy *= -1; }
-      });
-      requestAnimationFrame(draw);
-    }
-
-    resize();
-    initNodes();
-    draw();
-    window.addEventListener('resize', () => { resize(); initNodes(); });
   </script>
 </body>
 </html>
