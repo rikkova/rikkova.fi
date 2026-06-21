@@ -1,0 +1,272 @@
+/* ============================================
+   V-OS Network Terminal v2.0 - Stylesheet
+   Author: Väinö Rikkonen
+   Theme: Retro terminal with CRT effects
+============================================ */
+
+/* CSS Custom Properties (Design Tokens) */
+:root {
+  --bg: #0a0e0f;
+  --surface: #111518;
+  --border: #1e2d2f;
+  --green: #00ff88;
+  --yellow: #f0c040;
+  --red: #ff4455;
+  --text: #c8d8d0;
+  --dim: #556677;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-display: 'Orbitron', sans-serif;
+}
+
+/* Global Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 17px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 18px;
+  cursor: text;
+}
+
+/* CRT Scanline Overlay */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.22) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.13;
+}
+
+/* Retro Background Gradients */
+.retro-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 20% 18%, rgba(0, 255, 136, 0.08), transparent 24%),
+    radial-gradient(circle at 82% 28%, rgba(240, 192, 64, 0.06), transparent 20%),
+    radial-gradient(circle at 50% 86%, rgba(0, 255, 136, 0.05), transparent 28%),
+    linear-gradient(180deg, #0a0e0f 0%, #090c0d 100%);
+  opacity: 1;
+}
+
+/* Terminal Container */
+.terminal-box {
+  position: relative;
+  z-index: 10;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+  backdrop-filter: blur(5px);
+  width: min(1180px, calc(100vw - 36px));
+  min-height: 180px;
+  max-height: min(88vh, 920px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Terminal Window Bar */
+.terminal-bar {
+  background: #1a2226;
+  padding: 0.55rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+
+/* Window Control Dots */
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.red { background: var(--red); }
+.dot.yellow { background: var(--yellow); }
+.dot.green { background: var(--green); }
+
+/* Terminal Title */
+.terminal-title {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: var(--dim);
+  font-family: var(--font-display);
+  letter-spacing: 1px;
+}
+
+/* Terminal Body (Scrollable Area) */
+.terminal-body {
+  padding: 1.25rem 1.4rem 0;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#terminal {
+  padding-bottom: 0.3rem;
+}
+
+/* Output Text */
+.output {
+  margin-bottom: 15px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+#boot-output {
+  white-space: pre-wrap;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.45;
+}
+
+/* Interactive Elements */
+.interactive-node {
+  color: var(--yellow);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.interactive-node:hover {
+  color: #ffffff;
+  text-shadow: 0 0 8px var(--yellow);
+  text-decoration: underline;
+}
+
+/* Terminal Prompt & Input */
+.prompt {
+  color: var(--green);
+  font-weight: bold;
+}
+
+.user-input {
+  color: var(--yellow);
+}
+
+.input-line {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-top: 0.2rem;
+  padding: 0.3rem 0 0.42rem;
+  background: linear-gradient(
+    rgba(17, 21, 24, 0) 0%, 
+    rgba(17, 21, 24, 0.82) 35%, 
+    rgba(17, 21, 24, 1) 100%
+  );
+  border-top: 1px solid rgba(30, 45, 47, 0.85);
+}
+
+input {
+  background: transparent;
+  border: none;
+  color: var(--yellow);
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+  outline: none;
+  caret-color: var(--green);
+}
+
+/* Custom Scrollbar */
+.terminal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.terminal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--dim);
+}
+
+/* Terminal Box Glow Effect */
+.terminal-box {
+  text-shadow: 0 0 2px rgba(0, 255, 136, 0.35);
+}
+
+/* ============================================
+   Responsive Design (Mobile)
+============================================ */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .terminal-box {
+    width: 100%;
+    min-height: 160px;
+    max-height: calc(100vh - 20px);
+    border-radius: 4px;
+  }
+
+  .terminal-body {
+    padding: 1rem 1rem 0;
+  }
+
+  .input-line {
+    padding: 0.25rem 0 0.36rem;
+  }
+
+  .terminal-title {
+    font-size: 0.72rem;
+  }
+}
+
+/* ============================================
+   Accessibility - Reduced Motion
+============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
