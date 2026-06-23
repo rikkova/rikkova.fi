@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infrastructure Architect Portfolio Hybrid</title>
+  <meta name="description" content="Portfolio landing page for Väinö Rikkonen, an IT infrastructure architect, using the first layout with a modern 2026 dark color theme." />
+  <meta property="og:title" content="Infrastructure Architect Portfolio Hybrid" />
+  <meta property="og:description" content="A structured, modern portfolio landing page with a dark 2026 color direction." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Go to top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 34L24 10L38 34" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 34L24 24L30 34" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M24 10V40" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Väinö Rikkonen</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-links">
+          <a href="#services">Services</a>
+          <a href="#work">Work</a>
+          <a href="#how-i-work">Approach</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section" id="top">
+      <div class="wide hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">IT Infrastructure Architect</span>
+          <h1>Designing reliable systems people can trust.</h1>
+          <p>
+            I shape cloud, network, platform, and operational foundations that stay resilient under pressure, stay understandable for teams, and stay aligned with business change.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Start a conversation</a>
+            <a class="btn btn-secondary" href="#work">View selected work</a>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal" aria-label="Illustrated infrastructure overview">
+          <div class="panel-stack">
+            <div class="hero-aside">
+              <div class="stat-card">
+                <div class="kpi">99.95%</div>
+                <div class="label">Target platform availability</div>
+              </div>
+              <div class="stat-card">
+                <div class="kpi">Zero-drift</div>
+                <div class="label">Infrastructure as code mindset</div>
+              </div>
+            </div>
+            <div class="signal-card">
+              <div class="label">Architecture priorities</div>
+              <ul>
+                <li><span>Resilience</span><span>Built in</span></li>
+                <li><span>Security</span><span>Layered</span></li>
+                <li><span>Operations</span><span>Observable</span></li>
+              </ul>
+            </div>
+            <div class="terminal">
+              <div class="terminal-top">
+                <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+                <span class="label">Foundation blueprint</span>
+              </div>
+              <code>
+                <span><strong>edge</strong>, Dynamic Routing & Switching Architectures, WAN Transport Design</span>
+                <span><strong>platform</strong>, Virtualization & Cloud Foundation, Orchestration Frameworks</span>
+                <span><strong>operations</strong>, Telemetry, Automation, Recovery</span>
+              </code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Impact metrics">
+      <div class="container metrics reveal">
+        <div class="metric"><strong>Hybrid</strong><span>Unified cloud and on-prem environments with seamless integration</span></div>
+        <div class="metric"><strong>Secure</strong><span>Zero-trust architecture protecting business-critical systems</span></div>
+        <div class="metric"><strong>Operable</strong><span>Self-healing infrastructure with automated monitoring and recovery</span></div>
+        <div class="metric"><strong>Scalable</strong><span>Elastic capacity that adapts to demand without operational debt</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>What I build</h2>
+          <p>My work sits at the layer where infrastructure decisions shape delivery speed, risk posture, and day-two operations.</p>
+        </div>
+        <div class="services-grid">
+          <article class="card reveal">
+            <h3>Platform Architecture</h3>
+            <p>Designing network infrastructure that handles massive traffic volumes reliably. I build systems with automatic failover so they stay available even when hardware breaks or networks go down.</p>
+          </article>
+          <article class="card reveal">
+            <h3>Operational Resilience</h3>
+            <p>Building systems that stay reliable under pressure. This means designing hardware layouts to maximize efficiency while maintaining uptime guarantees, and creating virtual networks that automatically recover from failures.</p>
+          </article>
+          <article class="card reveal">
+            <h3>Infrastructure Automation</h3>
+            <p>Automating infrastructure management so humans don't have to manually configure every device. I've built frameworks that cut manual work by 50% across large device fleets, turning high-risk change processes into repeatable operations anyone can run safely.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <div class="container work-grid">
+        <div>
+          <div class="section-head reveal">
+            <h2>Featured Projects</h2>
+            <p>Featured projects showcasing expertise in infrastructure architecture and network modernization</p>
+          </div>
+          <div class="projects-grid">
+            <article class="project-card reveal">
+              <h3>Nutanix HCI Migration</h3>
+              <p>Led the transformation of legacy Cisco UCS infrastructure to a modern Nutanix HCI platform, covering architecture planning, network design, service transition, and implementation strategy for over 1000 virtual machines.</p>
+              <div class="project-tags">
+                <span>HCI Migration</span>
+              </div>
+            </article>
+            <article class="project-card reveal">
+              <h3>Datacenter Migration</h3>
+              <p>Served as technical lead for major datacenter decommissioning and migration projects, orchestrating end-to-end strategy for migrating critical infrastructure to new facilities while maintaining service continuity across complex multi-vendor environments.</p>
+              <div class="project-tags">
+                <span>Datacenter Migration</span>
+              </div>
+            </article>
+            <article class="project-card reveal">
+              <h3>VXLAN-EVPN Migration</h3>
+              <p>Led the migration from spanning-tree switching networks (STP) to an EVPN-VXLAN-based fabric network — one of the most technically demanding networking projects I've undertaken, requiring deep understanding of routing convergence, MPLS integration, and operational risk management.</p>
+              <div class="project-tags">
+                <span>Network Architecture</span>
+                <span>Protocol Migration</span>
+              </div>
+            </article>
+            <article class="project-card reveal">
+              <h3>Network Automation Framework</h3>
+              <p>Built Ansible and Python frameworks that reduced manual touchpoints by 50% across device fleets, transforming high-risk change processes into repeatable workflows anyone can execute safely. These same automation tools were heavily deployed during the VXLAN-EVPN migration to manage complex protocol changes at scale.</p>
+              <div class="project-tags">
+                <span>Network Automation</span>
+                <span>Ansible/Python</span>
+              </div>
+            </article>
+            <article class="project-card reveal">
+              <h3>Cisco ASA to Fortigate Migration</h3>
+              <p>Led migration of services from 10+ end-of-life Cisco ASA firewalls to Fortigate platforms under critical timeline constraints. Documented undocumented environments and navigated complex firewall rule discrepancies during hardening, delivering a hardened, secure infrastructure.</p>
+              <div class="project-tags">
+                <span>Firewall Migration</span>
+                <span>Critical Infrastructure</span>
+              </div>
+            </article>
+            <article class="project-card reveal">
+              <h3>Zscaler SASE Remote Access Modernization</h3>
+              <p>Migrated 4000+ users from full-tunnel VPN to split-tunnel architecture with Zscaler Zero Trust Exchange, eliminating local firewall dependencies and enabling secure internet access while maintaining strict admin network segmentation.</p>
+              <div class="project-tags">
+                <span>Zero Trust</span>
+                <span>Cloud Security</span>
+              </div>
+            </article>
+        </div>
+      </div>
+
+      <aside class="quote reveal" id="approach">
+          <p>Good infrastructure is quiet: it absorbs complexity before the business feels it.</p>
+          <span>Approach — clear standards, low-friction operations, resilient foundations.</span>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head reveal" id="how-i-work">
+          <h2>How I work</h2>
+          <p>I prefer architecture that is explainable, measurable, and practical to operate after the design workshop ends.</p>
+        </div>
+        <div class="services-grid">
+          <article class="card reveal">
+            <h3>Assess</h3>
+            <p>Before any project starts, I assess the existing environment to understand what's working, what isn't, and where the real risks are. This means looking at performance data, failure patterns, and team habits — not just the surface-level requirements.</p>
+          </article>
+          <article class="card reveal">
+            <h3>Design</h3>
+            <p>I design systems with clear goals from day one. Every component has a purpose, every decision is documented, and nothing gets built without first understanding why it matters. The result is infrastructure that's easier to maintain than the original.</p>
+          </article>
+          <article class="card reveal">
+            <h3>Enable</h3>
+            <p>Good infrastructure doesn't just work — it's something people can use confidently. I build systems that are self-documenting, have clear failure modes, and let teams move fast without fear. The best infrastructure is the one nobody notices because it works exactly as expected.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact-box reveal">
+          <div class="section-head" style="margin-bottom:0;">
+            <h2>Contact</h2>
+            <p>I'm available for infrastructure design consulting, technical leadership on complex projects, and deep networking work. Let me know if you're interested in collaborating.</p>
+          </div>
+          <div class="contact-links">
+            <a href="mailto:vaino.rikkonen@gmail.com" target="_blank" rel="noopener noreferrer">Email</a>
+            <a href="https://www.linkedin.com/in/rikkova" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://github.com/rikkova" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="#top">Back to top</a>
+          </div>
+
+          <!-- Optional: Add client/company logos here -->
+          <!-- Example usage (uncomment and customize): -->
+          <!-- 
+          <div class="client-logos reveal" style="margin-top: var(--space-5); text-align: center;">
+            <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-3);">Trusted by</p>
+            <div class="logo-grid">
+              <!-- Add your logo images here -->
+              <!-- <img src="./images/client-logo-1.svg" alt="Client 1 Logo" style="height: 2.5rem; opacity: 0.7;"> -->
+            </div>
+
+            </div>
+            </div>
+            </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+  </footer>
+
+  <script src="./js/main.js"></script>
+</body>
+</html>
