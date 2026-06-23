@@ -135,9 +135,88 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   background: color-mix(in oklab, var(--color-primary) 10%, var(--color-surface));
 }
 
+/* Mobile Hamburger Navigation */
+.mobile-menu-toggle {
+  display: none;
+  width: 3rem; height: 3rem; flex-direction: column; justify-content: space-between;
+  align-items: center; padding: 0.5rem; border-radius: var(--radius-full);
+  background: transparent; border: 1px solid color-mix(in oklab, var(--color-text) 12%, transparent);
+  cursor: pointer; transition: all var(--transition-interactive); z-index: 60;
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--color-surface-offset);
+}
+
+.hamburger-line {
+  width: 1.5rem; height: 2px; background-color: var(--color-text); border-radius: 2px;
+  transition: all var(--transition-interactive); transform-origin: center;
+}
+
+/* Mobile nav overlay */
+.mobile-nav-overlay {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: 0; visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-nav-overlay.active {
+  opacity: 1; visibility: visible; pointer-events: auto;
+}
+
+.mobile-nav-content {
+  position: absolute; inset: 0; background: color-mix(in oklab, var(--color-bg) 95%, transparent);
+  backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; gap: var(--space-8);
+}
+
+.mobile-nav-link {
+  font-family: var(--font-display); font-size: clamp(1.75rem, 3vw + 1rem, 3rem);
+  font-weight: 700; color: var(--color-text); text-decoration: none; padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-xl); transition: all var(--transition-interactive);
+}
+
+.mobile-nav-link:hover, .mobile-nav-link:focus {
+/* Section divider - subtle visual separation between major sections */
+.section:not(:first-of-type)::before {
+  content: '';
+  position: absolute;
+  top: 0; left: var(--space-4); right: var(--space-4);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-text) 20%, transparent), transparent);
+  pointer-events: none;
+}
+
+@media (max-width: 759px) {
+  .section:not(:first-of-type)::before {
+    left: var(--space-3); right: var(--space-3);
+  }
+}
+
+
+  background: var(--color-surface-offset); transform: scale(1.02);
+}
+
+/* Responsive breakpoints */
+@media (max-width: 759px) {
+  .nav-links.desktop-only { display: none !important; }
+  
+  .mobile-menu-toggle { display: flex; }
+  
+  /* Hide desktop nav links in mobile view */
+  .nav-links.mobile-only { display: none !important; }
+}
+
+@media (min-width: 760px) {
+  .mobile-menu-toggle { display: none !important; }
+  .mobile-nav-overlay { display: none !important; }
+}
 .hero { padding-top: clamp(var(--space-10), 8vw, var(--space-20)); }
 .hero-grid {
-  display: grid; gap: var(--space-8); align-items: end;
+  display: grid; gap: var(--space-8); align-items: start; /* Changed from 'end' for better visual flow */
+}
+
+/* Remove will-change after animation completes to free GPU resources */
+.reveal.is-visible {
+  will-change: auto;
 }
 .eyebrow {
   display: inline-flex; align-items: center; gap: var(--space-2); width: fit-content; padding: var(--space-2) var(--space-3);
@@ -162,12 +241,13 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 .btn-secondary {
   border: 1px solid color-mix(in oklab, var(--color-text) 12%, transparent); background: var(--color-surface);
 }
-
 .hero-panel {
   position: relative; overflow: hidden; padding: var(--space-6); border-radius: 1.75rem; background: linear-gradient(180deg, var(--color-surface), var(--color-surface-2));
   border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-lg);
   min-height: 28rem;
 }
+
+/* Infrastructure Visual Metaphors - Network Nodes & Circuit Patterns */
 .hero-panel::before {
   content: ""; position: absolute; inset: 0; background:
   linear-gradient(130deg, transparent 0 52%, color-mix(in oklab, var(--color-primary) 8%, transparent) 52% 56%, transparent 56% 100%),
@@ -175,6 +255,83 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   linear-gradient(0deg, color-mix(in oklab, var(--color-text) 4%, transparent) 1px, transparent 1px);
   background-size: auto, 3rem 3rem, 3rem 3rem;
   opacity: 0.9;
+}
+
+/* Animated Network Nodes */
+.network-nodes {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1;
+}
+
+.node {
+  position: absolute; width: 8px; height: 8px; border-radius: 50%;
+  background: color-mix(in oklab, var(--color-primary) 40%, transparent);
+  box-shadow: 0 0 20px color-mix(in oklab, var(--color-primary) 60%, transparent);
+  opacity: 0.6;
+}
+
+.node::after {
+  content: ""; position: absolute; top: -15px; left: -15px; right: -15px; bottom: -15px;
+  border-radius: 50%; border: 1px solid color-mix(in oklab, var(--color-primary) 20%, transparent);
+  animation: pulse-ring 3s ease-out infinite;
+}
+
+.node:nth-child(1) { top: 20%; left: 25%; animation-delay: 0s; }
+.node:nth-child(2) { top: 60%; left: 70%; animation-delay: 1.5s; }
+.node:nth-child(3) { top: 40%; left: 80%; animation-delay: 0.5s; }
+.node:nth-child(4) { top: 75%; left: 20%; animation-delay: 1s; }
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.5); opacity: 1; border-color: color-mix(in oklab, var(--color-primary) 40%, transparent); }
+  100% { transform: scale(2); opacity: 0; border-color: transparent; }
+}
+
+/* Circuit Pattern Overlay */
+.circuit-overlay {
+  position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background-image: 
+    linear-gradient(45deg, color-mix(in oklab, var(--color-text) 1%, transparent) 1px, transparent 1px),
+    linear-gradient(-45deg, color-mix(in oklab, var(--color-text) 1%, transparent) 1px, transparent 1px);
+  background-size: 2rem 2rem;
+  opacity: 0.03;
+}
+
+/* Data Flow Animation Lines */
+.data-flow {
+  position: absolute; top: 50%; left: 0; right: 0; height: 1px; z-index: 3;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-primary) 80%, transparent), transparent);
+  opacity: 0.4;
+}
+
+.data-particle {
+  position: absolute; top: -10px; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--color-primary); box-shadow: 0 0 15px var(--color-primary);
+  animation: flow-right 4s linear infinite;
+}
+
+@keyframes flow-right {
+  0% { transform: translateX(-100%) translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(calc(100vw + 100px)) translateY(var(--random-y, 0)); opacity: 0; }
+}
+
+/* Terminal accent line animation */
+.terminal-accent {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  animation: scanline 3s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes scanline {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(100%); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 759px) {
+  .network-nodes, .circuit-overlay, .data-flow { display: none; }
+}
   pointer-events: none;
 }
 .panel-stack { position: relative; display: grid; gap: var(--space-4); }
@@ -198,27 +355,54 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 
 .section-head { display: grid; gap: var(--space-3); margin-bottom: var(--space-8); }
 .section-head h2 { font-family: var(--font-display); font-size: var(--text-2xl); letter-spacing: -0.03em; max-width: 15ch; }
-.section-head p { color: var(--color-text-muted); }
+.section-head p { 
+  color: var(--color-text-muted);
+  max-width: none; /* Override global paragraph width constraint */
+  width: 100%; /* Ensure text fills full section width */
+}
 
 .metrics {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);
 }
-.metric {
-  padding: var(--space-5); border-radius: var(--radius-xl); background: var(--color-surface);
+.metric-card {
+  padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
   border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  transition: transform var(--transition-interactive), box-shadow var(--transition-interactive);
 }
-.metric strong { display: block; font-family: var(--font-display); font-size: var(--text-xl); letter-spacing: -0.03em; }
-.metric span { color: var(--color-text-muted); font-size: var(--text-sm); }
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.counter-wrapper {
+  display: flex; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-3);
+}
+.counter {
+  font-family: var(--font-display); font-size: clamp(2.5rem, 1.5rem + 4vw, 4rem);
+  line-height: 1; font-weight: 700; color: var(--color-primary);
+  display: inline-block; min-width: fit-content;
+}
+.counter-label {
+  font-size: var(--text-sm); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+}
+.metric-card p {
+  margin: 0; padding-top: var(--space-3); border-top: 1px solid color-mix(in oklab, var(--color-divider) 50%, transparent);
+  font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-muted);
+}
 
-.services-grid, .work-grid {
-  display: grid; gap: var(--space-4);
+@media (min-width: 760px) {
+  .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 .card {
   padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
   border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-sm);
 }
 .card h3 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
-.card p { color: var(--color-text-muted); font-size: var(--text-base); }
+.card p { 
+  color: var(--color-text-muted); 
+  font-size: var(--text-base);
+  max-width: none; /* Override global paragraph width constraint */
+  width: 100%; /* Ensure text fills full card width */
+}
 .card ul { list-style: none; display: grid; gap: var(--space-2); margin-top: var(--space-4); color: var(--color-text-muted); font-size: var(--text-sm); }
 .card li::before { content: "— "; color: var(--color-primary); }
 
@@ -241,7 +425,13 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   display: flex; flex-direction: column; justify-content: space-between; min-height: 14rem;
 }
 .project-card h3 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
-.project-card p { color: var(--color-text-muted); font-size: var(--text-base); flex-grow: 1; }
+.project-card p { 
+  color: var(--color-text-muted); 
+  font-size: var(--text-base); 
+  flex-grow: 1;
+  max-width: none; /* Override global paragraph width constraint */
+  width: 100%; /* Ensure text fills full card width */
+}
 .project-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent); }
 .project-tags span { font-size: var(--text-xs); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-surface-offset); color: var(--color-text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
 
@@ -288,8 +478,12 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 
 @media (max-width: 759px) {
   .hero-panel { min-height: auto; }
-  .hero h1 { max-width: 12ch; }
+  .hero h1 { max-width: 14ch; font-size: clamp(2rem, 5vw + 1rem, 3.5rem); } /* Fixed from 12ch */
   .hero-aside { grid-template-columns: 1fr; }
+  
+  /* Increase touch targets for better accessibility */
+  .btn, .contact-item { min-height: 48px; }
+}
   .projects-grid { 
     grid-template-columns: 1fr; 
     gap: var(--space-3);
@@ -301,4 +495,105 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* GSAP Animation Utilities */
+.animate-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.animate-in-scale {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.animate-in-fade {
+  opacity: 0;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced card hover effects for professional feel */
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-interactive);
+}
+
+.project-card:hover .project-tags span {
+  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-interactive);
+}
+
+/* Hero section subtle floating animation */
+/* Hero typography - optimized for readability */
+@media (max-width: 759px) {
+  .hero h1 { 
+    max-width: 14ch; 
+    font-size: clamp(2rem, 5vw + 1rem, 3.5rem);
+  }
+}
+
+.hero p {
+  max-width: 50ch; /* Increased from 38ch for better desktop readability */
+}
+
+/* Hero section - reduced animation intensity */
+@media (max-width: 759px) {
+  .hero h1 { 
+    opacity: 1 !important; /* Ensure full opacity on mobile */
+  }
+}
+
+.hero h1, .hero p, .hero-actions {
+  opacity: 1 !important; /* Full opacity - no fade-in animation */
+}
+
+/* Section heading entrance animations */
+.section-head h2 {
+  font-feature-settings: "ss01", "cv03", "cv04";
+}
+
+/* Navigation smooth reveal on scroll */
+.nav-links a {
+  transition: color var(--transition-interactive), transform var(--transition-interactive);
+}
+
+.nav-links a:hover {
+  transform: translateY(-2px);
+}
+
+/* Focus states for accessibility */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+
+/* Loading state utilities */
+.loading-skeleton {
+  background: linear-gradient(90deg, var(--color-surface-2) 25%, var(--color-surface) 50%, var(--color-surface-2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Performance optimizations */
+.hero h1, .hero p, .hero-actions {
+  contain: layout style paint;
+}
+
+.card, .project-card {
+  will-change: transform, opacity;
+}
+
 /* Client/Company Logo Grid */.client-logos {  display: flex;  flex-direction: column;  align-items: center;}.logo-grid {  display: grid;  grid-template-columns: repeat(4, 1fr);  gap: var(--space-4);  margin-top: var(--space-3);}.logo-grid img {  height: 2.5rem;  opacity: 0.7;  transition: opacity var(--transition-interactive), transform var(--transition-interactive);  object-fit: contain;}.logo-grid img:hover {  opacity: 1;  transform: scale(1.05);}/* Mobile: Stack logos */@media (max-width: 759px) {  .logo-grid {    grid-template-columns: repeat(2, 1fr);    gap: var(--space-3);  }}
