@@ -256,11 +256,12 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   display: grid; gap: var(--space-5); padding: var(--space-6); border-radius: 1.75rem; background: var(--color-surface);
   border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-md);
 }
-.contact-links { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-.contact-links a {
-  min-height: 3rem; padding: 0 var(--space-4); display: inline-flex; align-items: center; border-radius: var(--radius-full);
-  background: var(--color-surface-2); border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); font-size: var(--text-sm); font-weight: 600;
+.contact-links { display: flex; flex-direction: column; gap: var(--space-4); }
+.contact-links a, .contact-item {
+  min-height: auto; padding: var(--space-3) var(--space-4); display: inline-flex; align-items: center; justify-content: flex-start; gap: var(--space-2);
+  border-radius: var(--radius-lg); background: transparent; border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); font-size: var(--text-sm); font-weight: 600; text-decoration: none; transition: all var(--transition-interactive);
 }
+.contact-links a:hover, .contact-item:hover { background: var(--color-surface-2); border-color: color-mix(in oklab, var(--color-text) 15%, transparent); transform: translateY(-2px); }
 
 .footer {
   padding-block: var(--space-8); border-top: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); color: var(--color-text-muted); font-size: var(--text-sm);
