@@ -5,6 +5,7 @@
   let current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 
   function renderIcon(theme) {
+    if (!toggle) return;
     toggle.innerHTML = theme === 'dark'
       ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>'
       : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 21 12.79z"></path></svg>';
@@ -14,11 +15,13 @@
   root.setAttribute('data-theme', current);
   renderIcon(current);
 
-  toggle.addEventListener('click', () => {
-    current = current === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', current);
-    renderIcon(current);
-  });
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      current = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', current);
+      renderIcon(current);
+    });
+  }
 
   // GSAP animations
   if (typeof gsap !== 'undefined') {
@@ -104,7 +107,7 @@
       gsap.set(navLinks, { opacity: 1, y: 0 });
     }
 
-    // Counters
+    // Counters (Fixed logic: checks if elements exist before running)
     const counters = document.querySelectorAll('.counter');
     if (counters.length > 0) {
       counters.forEach(counter => {
@@ -126,8 +129,6 @@
           }
         );
       });
-    } else {
-      console.warn('No .counter elements found for metrics animation');
     }
   }
 
@@ -149,7 +150,6 @@
         document.getElementById('topoCardD'),
       ];
 
-      // Satellite positions as fraction of wrapper width/height - centered symmetrically around VR label at center (x=0.5)
       var positions = [
         { x: 0.49, y: 0.18 },   /* Top-left quadrant */
         { x: 0.51, y: 0.18 },   /* Top-right quadrant */
@@ -157,11 +157,9 @@
         { x: 0.51, y: 0.62 }    /* Bottom-right quadrant */
       ];
 
-
       var w = wRect.width;
       var h = wrapper.offsetHeight;
 
-      // Central node in SVG coords (200/400 × w, 170/340 × h)
       var cx = (200 / 400) * w;
       var cy = (170 / 340) * h;
 

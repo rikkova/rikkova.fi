@@ -605,6 +605,13 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
   border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-sm);
   display: flex; flex-direction: column; justify-content: space-between; min-height: 14rem;
+  transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive), transform var(--transition-interactive);
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
 }
 .project-card h3 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
 .project-card p { 
@@ -615,7 +622,15 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   width: 100%; /* Ensure text fills full card width */
 }
 .project-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent); }
-.project-tags span { font-size: var(--text-xs); padding: var(--space-1) var(--space-3); border-radius: var(--radius-full); background: var(--color-surface-offset); color: var(--color-text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.project-tags span { 
+  font-size: var(--text-xs); 
+  padding: var(--space-1) var(--space-3); 
+  border-radius: var(--radius-full); 
+  background: var(--color-surface-offset); 
+  color: var(--color-text-muted); 
+  letter-spacing: 0.04em; 
+  text-transform: uppercase; 
+}
 
 /* ─── PROJECT CARD — redesigned anatomy ─────────────────────────────────────
    Each card answers 4 scan-layer questions without requiring a paragraph read:
@@ -1045,10 +1060,9 @@ html {
 }
 
 .project-card:hover .project-tags span {
-  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-md);
-  transition: all var(--transition-interactive);
+  background: var(--color-surface-offset);
+  padding: var(--space-1) var(--space-3);
+  color: var(--color-text-muted);
 }
 
 /* Hero section subtle floating animation */
@@ -1241,13 +1255,16 @@ a:focus-visible, button:focus-visible {
 
 /* ZONE 2: CURRENT FOCUS — matches hero .stat-card styling */
 .manifest-focus {
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  background: color-mix(in oklab, var(--color-surface) 78%, var(--color-surface-2));
-  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  border-radius: 0.5rem; /* Subtle curve for an architectural feel */
+  background: color-mix(in oklab, var(--color-primary) 3%, var(--color-surface));
+  border-left: 4px solid var(--color-primary);
+  border-top: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  border-right: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08);
   position: relative;
-  overflow: hidden;
+  max-width: 70ch; /* Balanced width for the focus statement */
 }
 
 .manifest-focus-content { display: grid; gap: var(--space-2); }
@@ -1257,7 +1274,7 @@ a:focus-visible, button:focus-visible {
   font-size: var(--text-base);
   font-weight: 500;
   line-height: 1.55;
-  max-width: 44ch;
+  max-width: 90%; /* Match Operating Principle text width */
 }
 
 /* ZONE 4: PHILOSOPHY — italic, muted, left vertical rule */
@@ -1268,7 +1285,7 @@ a:focus-visible, button:focus-visible {
   font-size: var(--text-base);
   font-style: italic;
   line-height: 1.65;
-  max-width: 46ch;
+  max-width: 90%; /* Increased from 46ch to allow more horizontal spread */
   position: relative;
   padding-left: var(--space-5);
 }
