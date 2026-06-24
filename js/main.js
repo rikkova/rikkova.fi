@@ -209,4 +209,37 @@
     }
     window.addEventListener('resize', buildTopology);
   })();
+
+  // Copy-to-clipboard — contact section email
+  document.querySelectorAll('#contact .ctc-copy').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var text = btn.dataset.copy;
+      var label = btn.querySelector('.ctc-copy-text');
+      function confirm() {
+        label.textContent = 'copied';
+        btn.classList.add('is-copied');
+        setTimeout(function() {
+          label.textContent = 'copy';
+          btn.classList.remove('is-copied');
+        }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(confirm).catch(function() {
+          fallbackCopy(text); confirm();
+        });
+      } else {
+        fallbackCopy(text); confirm();
+      }
+    });
+  });
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* silent */ }
+    document.body.removeChild(ta);
+  }
 })();

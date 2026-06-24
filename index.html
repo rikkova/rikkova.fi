@@ -80,62 +80,12 @@
             <a class="btn btn-secondary" href="#work">View selected work</a>
           </div>
         </div>
-
-        <div class="hero-panel reveal" aria-label="Illustrated infrastructure overview">
-          <!-- Infrastructure Visual Metaphors -->
-          <div class="network-nodes">
-            <span class="node"></span><span class="node"></span><span class="node"></span><span class="node"></span>
-          </div>
-          <div class="circuit-overlay"></div>
-          <div class="data-flow"><span class="data-particle" style="--random-y: 2px;"></span><span class="data-particle" style="--random-y: -3px;" style="animation-delay: 2s;"></span></div>
-          <div class="terminal-accent"></div>
-          
-          <div class="panel-stack">
-            <div class="hero-aside">
-              <div class="stat-card">
-                <div class="kpi">99.95%</div>
-                <div class="label">Target platform availability</div>
-              </div>
-              <div class="stat-card">
-                <div class="kpi">Zero-drift</div>
-                <div class="label">Infrastructure as code mindset</div>
-              </div>
-            </div>
-            <div class="signal-card">
-              <div class="label">Architecture priorities</div>
-              <ul>
-                <li><span>Resilience</span><span>Built in</span></li>
-                <li><span>Security</span><span>Layered</span></li>
-                <li><span>Operations</span><span>Observable</span></li>
-              </ul>
-            </div>
-            <div class="terminal">
-              <div class="terminal-top">
-                <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
-                <span class="label">Foundation blueprint</span>
-              </div>
-              <code>
-                <span><strong>edge</strong>, Dynamic Routing & Switching Architectures, WAN Transport Design</span>
-                <span><strong>platform</strong>, Virtualization & Cloud Foundation, Orchestration Frameworks</span>
-                <span><strong>operations</strong>, Telemetry, Automation, Recovery</span>
-              </code>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         SYSTEM MANIFEST — Who I Am (redesigned)
-         Concept: the person as a living config record.
-         Visual language derived directly from the hero:
-         terminal surfaces, signal-card rows, node topology,
-         eyebrow chip, scanline sweep, field-label system.
-    ════════════════════════════════════════════ -->
     <section class="section" id="who-am-i">
-      <div class="container">
+      <div class="wide">
 
-        <!-- Manifest header: eyebrow chip + version stamp (mirrors .terminal-top) -->
         <div class="manifest-header reveal">
           <span class="manifest-label">
             <span class="label-dot" aria-hidden="true"></span>
@@ -144,20 +94,17 @@
           <span class="manifest-version">v2026.6 — active</span>
         </div>
 
-        <!-- Asymmetric two-column grid -->
         <div class="manifest-grid">
 
-          <!-- LEFT COLUMN: Identity · Focus · Philosophy -->
+          <!-- LEFT: Identity · Current Focus · Operating Principle + availability -->
           <div class="manifest-left">
 
-            <!-- ZONE 1: IDENTITY -->
             <div class="manifest-identity reveal">
               <span class="field-label">Identity</span>
               <h2 class="manifest-name">Väinö Rikkonen</h2>
               <p class="manifest-role">IT Infrastructure Architect · Helsinki, FI</p>
             </div>
 
-            <!-- ZONE 2: CURRENT FOCUS -->
             <div class="manifest-focus reveal">
               <div class="manifest-focus-content">
                 <span class="field-label">Current Focus</span>
@@ -167,75 +114,75 @@
               </div>
             </div>
 
-            <!-- ZONE 4: PHILOSOPHY -->
             <div class="manifest-philosophy reveal">
               <span class="field-label">Operating Principle</span>
               <p class="philosophy-text">
                 Great infrastructure is invisible to the teams running it. I design for the day-two operator, not the design review — building systems that stay understandable, recoverable, and honest about their failure modes.
               </p>
+              <span class="availability-status">
+                <span class="avail-dot" aria-hidden="true"></span>
+                Open to new engagements
+              </span>
             </div>
 
           </div><!-- .manifest-left -->
 
-          <!-- RIGHT COLUMN: Core Expertise + Signal Strip -->
-          <div class="manifest-right">
-
-            <!-- ZONE 3: CORE EXPERTISE -->
-            <div class="reveal">
-              <span class="field-label manifest-expertise-label">Core Expertise</span>
-
-              <!-- 2x2 Grid layout (desktop ≥860px) -->
-              <div class="expertise-grid">
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Network Architecture</div>
-                  <div class="expertise-card-desc">BGP · OSPF · VXLAN-EVPN · MPLS · DWDM</div>
-                </div>
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Platform &amp; DC</div>
-                  <div class="expertise-card-desc">HCI · Virtualisation · Capacity Planning</div>
-                </div>
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Automation</div>
-                  <div class="expertise-card-desc">Ansible · Python · IaC · Zero-drift ops</div>
-                </div>
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Security &amp; Access</div>
-                  <div class="expertise-card-desc">Zero Trust · SASE · Firewall Arch.</div>
-                </div>
-              </div>
-
-              <!-- Mobile fallback grid -->
-              <div class="expertise-grid-fallback">
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Network Architecture</div>
-                  <div class="expertise-card-desc">BGP · OSPF · VXLAN-EVPN · MPLS · DWDM</div>
-                </div>
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Platform &amp; DC</div>
-                  <div class="expertise-card-desc">HCI · Virtualisation · Capacity Planning</div>
-                </div>
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Automation</div>
-                  <div class="expertise-card-desc">Ansible · Python · IaC · Zero-drift ops</div>
-                </div>
-                <div class="expertise-card">
-                  <div class="expertise-card-label">Security &amp; Access</div>
-                  <div class="expertise-card-desc">Zero Trust · SASE · Firewall Architecture</div>
-                </div>
-              </div>
-            </div><!-- expertise reveal -->
-
-            <!-- Signal strip — mirrors hero .signal-card key/value rows -->
-            <div class="manifest-signal-strip reveal">
-              <span class="field-label" style="display:block; margin-bottom: var(--space-3);">Record</span>
-              <ul class="signal-strip-list">
-                <li><span>Experience</span>   <span>9 years</span></li>
-                <li><span>Background</span>   <span>Google · CGI · Accenture</span></li>
-                <li><span>Approach</span>     <span>Design · Automate · Enable</span></li>
-              </ul>
+          <!-- RIGHT: Architecture Record panel — hero-panel surface -->
+          <div class="manifest-panel reveal" aria-label="Architecture record">
+            <div class="network-nodes" aria-hidden="true">
+              <span class="node"></span><span class="node"></span>
+              <span class="node"></span><span class="node"></span>
             </div>
+            <div class="terminal-accent" aria-hidden="true"></div>
 
-          </div><!-- .manifest-right -->
+            <div class="manifest-panel-inner">
+
+              <!-- Panel header — mirrors .terminal-top -->
+              <div class="manifest-panel-top">
+                <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+                <span class="label">Architecture Record</span>
+              </div>
+
+              <!-- Impact KPIs: 3 numbers that signal scale and seniority -->
+              <div class="manifest-kpi-row">
+                <div class="manifest-kpi">
+                  <div class="kpi-number">9</div>
+                  <div class="kpi-unit">years</div>
+                  <div class="kpi-context">Enterprise infrastructure</div>
+                </div>
+                <div class="manifest-kpi">
+                  <div class="kpi-number">4,000<span class="kpi-sup">+</span></div>
+                  <div class="kpi-unit">users</div>
+                  <div class="kpi-context">Migrated to Zero Trust</div>
+                </div>
+                <div class="manifest-kpi">
+                  <div class="kpi-number">50<span class="kpi-sup">%</span></div>
+                  <div class="kpi-unit">ops reduced</div>
+                  <div class="kpi-context">Via automation frameworks</div>
+                </div>
+              </div>
+
+              <!-- Signal strip — mirrors hero .signal-card -->
+              <div class="manifest-signal-strip">
+                <span class="field-label" style="display:block; margin-bottom: var(--space-3);">Signal</span>
+                <ul class="signal-strip-list">
+                  <li><span>Core Skill</span><span>Network Architecture</span></li>
+                  <li><span>Background</span><span>Google · CGI · Accenture</span></li>
+                  <li><span>Approach</span><span>Design · Automate · Enable</span></li>
+                </ul>
+              </div>
+
+              <!-- Domain tags — compact expertise signal, not a skill dump -->
+              <div class="manifest-domains">
+                <span class="domain-tag">Network Architecture</span>
+                <span class="domain-tag">Platform &amp; DC</span>
+                <span class="domain-tag">Automation</span>
+                <span class="domain-tag">Security &amp; Access</span>
+              </div>
+
+            </div><!-- .manifest-panel-inner -->
+          </div><!-- .manifest-panel -->
+
         </div><!-- .manifest-grid -->
       </div>
     </section>
@@ -244,80 +191,171 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>What I build</h2>
-          <p>My work sits at the layer where infrastructure decisions shape delivery speed, risk posture, and day-two operations.</p>
+          <p>Network, platform, and security infrastructure — designed to stay understandable, recoverable, and honest about failure modes.</p>
         </div>
-        <div class="services-grid">
-          <article class="card reveal">
-            <h3>Platform Architecture</h3>
-            <p>Designing network infrastructure that handles massive traffic volumes reliably. I build systems with automatic failover so they stay available even when hardware breaks or networks go down.</p>
+        <div class="services-list">
+
+          <article class="service-item reveal">
+            <div class="service-item-meta">
+              <span class="service-number">01</span>
+              <h3 class="service-name">Network Architecture</h3>
+            </div>
+            <div class="service-item-content">
+              <p class="service-statement">From BGP topology decisions to VXLAN-EVPN fabric deployment — production-grade network design that accounts for failure modes before the first packet flows.</p>
+              <ul class="service-delivers">
+                <li>Routing &amp; switching architecture — BGP, OSPF, VXLAN-EVPN, MPLS</li>
+                <li>Edge, WAN, and datacenter fabric design</li>
+                <li>Protocol migrations with zero-downtime execution strategy</li>
+              </ul>
+            </div>
           </article>
-          <article class="card reveal">
-            <h3>Operational Resilience</h3>
-            <p>Building systems that stay reliable under pressure. This means designing hardware layouts to maximize efficiency while maintaining uptime guarantees, and creating virtual networks that automatically recover from failures.</p>
+
+          <article class="service-item reveal">
+            <div class="service-item-meta">
+              <span class="service-number">02</span>
+              <h3 class="service-name">Platform &amp; Compute</h3>
+            </div>
+            <div class="service-item-content">
+              <p class="service-statement">Compute and virtualisation infrastructure built for the team who inherits it — HCI platforms, datacenter migrations, and capacity models that age gracefully.</p>
+              <ul class="service-delivers">
+                <li>HCI platform design and migration (Nutanix, VMware)</li>
+                <li>Datacenter decommission and consolidation strategy</li>
+                <li>Virtualisation architecture and capacity planning</li>
+              </ul>
+            </div>
           </article>
-          <article class="card reveal">
-            <h3>Infrastructure Automation</h3>
-            <p>Automating infrastructure management so humans don't have to manually configure every device. I've built frameworks that cut manual work by 50% across large device fleets, turning high-risk change processes into repeatable operations anyone can run safely.</p>
+
+          <article class="service-item reveal">
+            <div class="service-item-meta">
+              <span class="service-number">03</span>
+              <h3 class="service-name">Automation &amp; Zero Trust</h3>
+            </div>
+            <div class="service-item-content">
+              <p class="service-statement">Removing humans from routine operations and implicit trust from the security model — at the same time, because they're the same problem.</p>
+              <ul class="service-delivers">
+                <li>Infrastructure automation frameworks — Ansible, Python, IaC</li>
+                <li>Zero Trust access architecture — SASE, Zscaler ZTE</li>
+                <li>Zero-drift operational model: version-controlled, auditable, repeatable</li>
+              </ul>
+            </div>
           </article>
+
         </div>
       </div>
     </section>
 
     <section class="section" id="work">
-      <div class="container work-grid">
-        <div>
-          <div class="section-head reveal">
-            <h2>Featured Projects</h2>
-            <p>Featured projects showcasing expertise in infrastructure architecture and network modernization</p>
-          </div>
-          <div class="projects-grid">
-            <article class="project-card reveal">
-              <h3>Nutanix HCI Migration</h3>
-              <p>Led the transformation of legacy Cisco UCS infrastructure to a modern Nutanix HCI platform, covering architecture planning, network design, service transition, and implementation strategy for over 1000 virtual machines.</p>
-              <div class="project-tags">
-                <span>HCI Migration</span>
-              </div>
-            </article>
-            <article class="project-card reveal">
-              <h3>Datacenter Migration</h3>
-              <p>Served as technical lead for major datacenter decommissioning and migration projects, orchestrating end-to-end strategy for migrating critical infrastructure to new facilities while maintaining service continuity across complex multi-vendor environments.</p>
-              <div class="project-tags">
-                <span>Datacenter Migration</span>
-              </div>
-            </article>
-            <article class="project-card reveal">
-              <h3>VXLAN-EVPN Migration</h3>
-              <p>Led the migration from spanning-tree switching networks (STP) to an EVPN-VXLAN-based fabric network — one of the most technically demanding networking projects I've undertaken, requiring deep understanding of routing convergence, MPLS integration, and operational risk management.</p>
-              <div class="project-tags">
-                <span>Network Architecture</span>
-                <span>Protocol Migration</span>
-              </div>
-            </article>
-            <article class="project-card reveal">
-              <h3>Network Automation Framework</h3>
-              <p>Built Ansible and Python frameworks that reduced manual touchpoints by 50% across device fleets, transforming high-risk change processes into repeatable workflows anyone can execute safely. These same automation tools were heavily deployed during the VXLAN-EVPN migration to manage complex protocol changes at scale.</p>
-              <div class="project-tags">
-                <span>Network Automation</span>
-                <span>Ansible/Python</span>
-              </div>
-            </article>
-            <article class="project-card reveal">
-              <h3>Cisco ASA to Fortigate Migration</h3>
-              <p>Led migration of services from 10+ end-of-life Cisco ASA firewalls to Fortigate platforms under critical timeline constraints. Documented undocumented environments and navigated complex firewall rule discrepancies during hardening, delivering a hardened, secure infrastructure.</p>
-              <div class="project-tags">
-                <span>Firewall Migration</span>
-                <span>Critical Infrastructure</span>
-              </div>
-            </article>
-            <article class="project-card reveal">
-              <h3>Zscaler SASE Remote Access Modernization</h3>
-              <p>Migrated 4000+ users from full-tunnel VPN to split-tunnel architecture with Zscaler Zero Trust Exchange, eliminating local firewall dependencies and enabling secure internet access while maintaining strict admin network segmentation.</p>
-              <div class="project-tags">
-                <span>Zero Trust</span>
-                <span>Cloud Security</span>
-              </div>
-            </article>
-          </div>
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>Selected Work</h2>
+          <p>Six engagements — each led from architecture through production.</p>
+        </div>
+        <div class="projects-grid">
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Lead Architect</span>
+              <span class="project-domain">Network</span>
+            </div>
+            <h3>VXLAN-EVPN Fabric Migration</h3>
+            <div class="project-impact">
+              <span class="project-transform">STP → EVPN-VXLAN</span>
+            </div>
+            <p class="project-outcome">Production fabric migrated from spanning-tree to BGP-EVPN overlay. MPLS integration sustained throughout with zero service interruption.</p>
+            <div class="project-tags">
+              <span>VXLAN-EVPN</span>
+              <span>BGP · MPLS</span>
+              <span>Protocol Migration</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Lead Architect</span>
+              <span class="project-domain">Security</span>
+            </div>
+            <h3>Zscaler SASE Modernisation</h3>
+            <div class="project-impact">
+              <span class="project-stat">4,000<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">users migrated</span>
+            </div>
+            <p class="project-outcome">Full-tunnel VPN eliminated. Zero Trust access deployed at enterprise scale while maintaining strict admin network segmentation.</p>
+            <div class="project-tags">
+              <span>Zero Trust</span>
+              <span>SASE</span>
+              <span>Cloud Security</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Technical Lead</span>
+              <span class="project-domain">Platform</span>
+            </div>
+            <h3>Nutanix HCI Migration</h3>
+            <div class="project-impact">
+              <span class="project-stat">1,000<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">VMs migrated</span>
+            </div>
+            <p class="project-outcome">Legacy Cisco UCS transformed to modern HCI platform covering architecture planning, network design, and full service transition.</p>
+            <div class="project-tags">
+              <span>HCI Migration</span>
+              <span>Virtualisation</span>
+              <span>Nutanix</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Lead Engineer</span>
+              <span class="project-domain">Automation</span>
+            </div>
+            <h3>Network Automation Framework</h3>
+            <div class="project-impact">
+              <span class="project-stat">50<span class="project-stat-sup">%</span></span>
+              <span class="project-stat-label">ops reduction</span>
+            </div>
+            <p class="project-outcome">Ansible and Python frameworks eliminated half of all manual touchpoints. High-risk changes became repeatable, zero-drift workflows.</p>
+            <div class="project-tags">
+              <span>Ansible · Python</span>
+              <span>IaC</span>
+              <span>Zero-drift</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Migration Lead</span>
+              <span class="project-domain">Security</span>
+            </div>
+            <h3>Cisco ASA → Fortigate</h3>
+            <div class="project-impact">
+              <span class="project-stat">10<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">EOL firewalls replaced</span>
+            </div>
+            <p class="project-outcome">Undocumented environment mapped, hardened, and migrated under critical timeline pressure. Security posture improved on delivery.</p>
+            <div class="project-tags">
+              <span>Firewall Migration</span>
+              <span>Security Hardening</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Technical Lead</span>
+              <span class="project-domain">Infrastructure</span>
+            </div>
+            <h3>Datacenter Migration</h3>
+            <div class="project-impact">
+              <span class="project-transform">Multi-site · Multi-vendor</span>
+            </div>
+            <p class="project-outcome">End-to-end DC decommission strategy executed across complex multi-vendor environments. Critical infrastructure moved with zero service interruption.</p>
+            <div class="project-tags">
+              <span>DC Migration</span>
+              <span>Critical Infrastructure</span>
+            </div>
+          </article>
+
         </div>
       </div>
     </section>
@@ -326,46 +364,128 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>How I work</h2>
-          <p>I prefer architecture that is explainable, measurable, and practical to operate after the design workshop ends.</p>
+          <p>Architecture that's explainable, measurable, and operable once the workshop ends — not just during the design review.</p>
         </div>
-        <div class="services-grid">
-          <article class="card reveal">
-            <h3>Assess</h3>
-            <p>Before any project starts, I assess the existing environment to understand what's working, what isn't, and where the real risks are. This means looking at performance data, failure patterns, and team habits — not just the surface-level requirements.</p>
+        <div class="approach-grid">
+
+          <article class="approach-card reveal">
+            <div class="approach-card-top">
+              <span class="approach-step" aria-hidden="true">01</span>
+              <span class="field-label">Assess</span>
+            </div>
+            <p class="approach-statement">
+              Audit failure modes before design begins. Every bad design is a misread constraint in disguise.
+            </p>
+            <div class="approach-detail">
+              <div class="approach-examines">
+                <span class="approach-detail-label">Examines</span>
+                <ul>
+                  <li>Performance data &amp; failure patterns</li>
+                  <li>Team habits &amp; operational load</li>
+                  <li>Latent technical debt</li>
+                </ul>
+              </div>
+              <div class="approach-not">
+                <span class="approach-detail-label approach-detail-label--not">Not</span>
+                <p>Surface requirements that ignore how the system is actually operated.</p>
+              </div>
+            </div>
           </article>
-          <article class="card reveal">
-            <h3>Design</h3>
-            <p>I design systems with clear goals from day one. Every component has a purpose, every decision is documented, and nothing gets built without first understanding why it matters. The result is infrastructure that's easier to maintain than the original.</p>
+
+          <article class="approach-card reveal">
+            <div class="approach-card-top">
+              <span class="approach-step" aria-hidden="true">02</span>
+              <span class="field-label">Design</span>
+            </div>
+            <p class="approach-statement">
+              Every decision documented — what was chosen, what was rejected, and why. The team in year three deserves to understand what they inherited.
+            </p>
+            <div class="approach-detail">
+              <div class="approach-examines">
+                <span class="approach-detail-label">Produces</span>
+                <ul>
+                  <li>Architecture decision records</li>
+                  <li>Network &amp; platform designs</li>
+                  <li>Day-two operational runbooks</li>
+                </ul>
+              </div>
+              <div class="approach-not">
+                <span class="approach-detail-label approach-detail-label--not">Not</span>
+                <p>Architecture optimised for the design review rather than the operator who inherits it.</p>
+              </div>
+            </div>
           </article>
-          <article class="card reveal">
-            <h3>Enable</h3>
-            <p>Good infrastructure doesn't just work — it's something people can use confidently. I build systems that are self-documenting, have clear failure modes, and let teams move fast without fear. The best infrastructure is the one nobody notices because it works exactly as expected.</p>
+
+          <article class="approach-card reveal">
+            <div class="approach-card-top">
+              <span class="approach-step" aria-hidden="true">03</span>
+              <span class="field-label">Enable</span>
+            </div>
+            <p class="approach-statement">
+              A system isn't delivered until the team running it can make changes without fear. Observable state. Self-evident failure modes. No tribal knowledge required.
+            </p>
+            <div class="approach-detail">
+              <div class="approach-examines">
+                <span class="approach-detail-label">Produces</span>
+                <ul>
+                  <li>Automation frameworks &amp; IaC</li>
+                  <li>Operational runbooks</li>
+                  <li>Knowledge transfer sessions</li>
+                </ul>
+              </div>
+              <div class="approach-not">
+                <span class="approach-detail-label approach-detail-label--not">Not</span>
+                <p>Documentation nobody reads because the system isn't self-evident enough to run without tribal knowledge.</p>
+              </div>
+            </div>
           </article>
+
         </div>
       </div>
     </section>
 
     <section class="section" id="contact">
       <div class="container">
-        <div class="contact-box reveal">
-          <div class="section-head" style="margin-bottom:0;">
-            <h2>Contact</h2>
-            <p>I'm available for infrastructure design consulting, technical leadership on complex projects, and deep networking work. Let me know if you're interested in collaborating.</p>
+
+        <div class="ctc-header reveal">
+          <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Contact</span>
+        </div>
+
+        <h2 class="ctc-statement reveal">Open to infrastructure engagements where the real problem shows up on day two — not in the design review.</h2>
+
+        <div class="ctc-channels reveal" role="list">
+
+          <div class="ctc-channel" role="listitem">
+            <span class="ctc-type">email</span>
+            <div class="ctc-body">
+              <div class="ctc-link-row">
+                <a class="ctc-link" href="mailto:vaino.rikkonen@gmail.com">vaino.rikkonen@gmail.com<span class="ctc-arrow" aria-hidden="true">→</span></a>
+                <button class="ctc-copy" data-copy="vaino.rikkonen@gmail.com" aria-label="Copy email address" type="button"><span class="ctc-copy-text">copy</span></button>
+              </div>
+              <p class="ctc-context">Project enquiries · Architecture consulting · Technical leadership discussions</p>
+            </div>
           </div>
-          <div class="contact-links">
-            <a href="mailto:vaino.rikkonen@gmail.com" target="_blank" rel="noopener noreferrer" class="contact-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
-              <span>vaino.rikkonen@gmail.com</span>
-            </a>
-            <a href="https://www.linkedin.com/in/rikkova" target="_blank" rel="noopener noreferrer" class="contact-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              <span>linkedin.com/in/rikkova</span>
-            </a>
-            <a href="https://github.com/rikkova" target="_blank" rel="noopener noreferrer" class="contact-item">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              <span>github.com/rikkova</span>
-            </a>
+
+          <div class="ctc-channel" role="listitem">
+            <span class="ctc-type">linkedin</span>
+            <div class="ctc-body">
+              <div class="ctc-link-row">
+                <a class="ctc-link" href="https://www.linkedin.com/in/rikkova" target="_blank" rel="noopener noreferrer">linkedin.com/in/rikkova<span class="ctc-arrow" aria-hidden="true">→</span></a>
+              </div>
+              <p class="ctc-context">Professional background · Career history · Introductions via mutual connections</p>
+            </div>
           </div>
+
+          <div class="ctc-channel" role="listitem">
+            <span class="ctc-type">github</span>
+            <div class="ctc-body">
+              <div class="ctc-link-row">
+                <a class="ctc-link" href="https://github.com/rikkova" target="_blank" rel="noopener noreferrer">github.com/rikkova<span class="ctc-arrow" aria-hidden="true">→</span></a>
+              </div>
+              <p class="ctc-context">Technical due diligence · IaC, automation frameworks, and network code review</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -378,7 +498,6 @@
     <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
   </footer>
 
-  <script src="./js/main.js"></script>
   <script src="./js/main.js"></script>
 </body>
 </html>
