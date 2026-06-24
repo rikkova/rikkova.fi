@@ -101,18 +101,8 @@
 
       // Nav links
       const navLinks = document.querySelectorAll('.nav-links a');
-      gsap.fromTo(
-        navLinks,
-        { y: -10, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.05,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: '.header', start: 'top -100' },
-        }
-      );
+      // Ensure links are visible immediately
+      gsap.set(navLinks, { opacity: 1, y: 0 });
     }
 
     // Counters
@@ -142,50 +132,5 @@
     }
   }
 
-  // Mobile navigation
-  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-  const mobileNavOverlay = document.querySelector('.mobile-nav-overlay');
-
-  if (mobileMenuToggle && mobileNavOverlay) {
-    let isMenuOpen = false;
-    mobileMenuToggle.addEventListener('click', () => {
-      isMenuOpen = !isMenuOpen;
-      mobileMenuToggle.setAttribute('aria-expanded', String(isMenuOpen));
-      mobileNavOverlay.classList.toggle('active');
-      mobileNavOverlay.setAttribute('aria-hidden', String(!isMenuOpen));
-    });
-
-    const mobileNavLink = document.querySelectorAll('.mobile-nav-link');
-    mobileNavLink.forEach(link => {
-      link.addEventListener('click', () => {
-        if (isMenuOpen) {
-          isMenuOpen = false;
-          mobileMenuToggle.setAttribute('aria-expanded', 'false');
-          mobileNavOverlay.classList.remove('active');
-          mobileNavOverlay.setAttribute('aria-hidden', 'true');
-        }
-      });
-    });
-
-    document.addEventListener('click', event => {
-      if (isMenuOpen && !mobileNavOverlay.contains(event.target) && !mobileMenuToggle.contains(event.target)) {
-        isMenuOpen = false;
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileNavOverlay.classList.remove('active');
-        mobileNavOverlay.setAttribute('aria-hidden', 'true');
-      }
-    });
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && isMenuOpen) {
-        isMenuOpen = false;
-        mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileNavOverlay.classList.remove('active');
-        mobileNavOverlay.setAttribute('aria-hidden', 'true');
-        mobileMenuToggle.focus();
-      }
-    });
-  } else {
-    console.warn('Mobile menu elements not found - navigation toggle disabled');
-  }
-})();
+  // Mobile navigation removed per user request
+  })();

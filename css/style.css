@@ -330,7 +330,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 
 /* Responsive adjustments */
 @media (max-width: 759px) {
-  .network-nodes, .circuit-overlay, .data-flow { display: none; }
+  .network-nodes, .circuit-overlay, .data-flow { display:none; }
 }
   pointer-events: none;
 }
@@ -470,7 +470,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   .nav-links { display: flex; }
   .hero-grid { grid-template-columns: 1.1fr 0.9fr; }
   .services-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .work-grid { grid-template-columns: 1fr; align-items: start; }
+  .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
   .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .timeline { grid-template-columns: 1fr 1fr; }
   .projects-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
