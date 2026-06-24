@@ -101,7 +101,6 @@
 
       // Nav links
       const navLinks = document.querySelectorAll('.nav-links a');
-      // Ensure links are visible immediately
       gsap.set(navLinks, { opacity: 1, y: 0 });
     }
 
@@ -132,5 +131,82 @@
     }
   }
 
-  // Mobile navigation removed per user request
+  // System Manifest topology visualization
+  (function () {
+    function buildTopology() {
+      var wrapper = document.getElementById('topoWrapper');
+      var svg    = document.getElementById('topoSvg');
+      var linesG = document.getElementById('topoLines');
+      if (!wrapper || !svg || !linesG) return;
+
+      var wRect = wrapper.getBoundingClientRect();
+      if (wRect.width < 10) return;
+
+      var cards = [
+        document.getElementById('topoCardA'),
+        document.getElementById('topoCardB'),
+        document.getElementById('topoCardC'),
+        document.getElementById('topoCardD'),
+      ];
+
+      // Satellite positions as fraction of wrapper width/height - centered symmetrically around VR label at center (x=0.5)
+      var positions = [
+        { x: 0.49, y: 0.18 },   /* Top-left quadrant */
+        { x: 0.51, y: 0.18 },   /* Top-right quadrant */
+        { x: 0.49, y: 0.62 },   /* Bottom-left quadrant */  
+        { x: 0.51, y: 0.62 }    /* Bottom-right quadrant */
+      ];
+
+
+      var w = wRect.width;
+      var h = wrapper.offsetHeight;
+
+      // Central node in SVG coords (200/400 × w, 170/340 × h)
+      var cx = (200 / 400) * w;
+      var cy = (170 / 340) * h;
+
+      linesG.innerHTML = '';
+
+      cards.forEach(function (card, i) {
+        if (!card) return;
+        var pos  = positions[i];
+        var left = pos.x * w;
+        var top  = pos.y * h;
+
+        card.style.left = left + 'px';
+        card.style.top  = top  + 'px';
+
+        var cw     = card.offsetWidth  || 148;
+        var ch     = card.offsetHeight || 60;
+        var cardCx = left + cw / 2;
+        var cardCy = top  + ch / 2;
+
+        var ns   = 'http://www.w3.org/2000/svg';
+        var line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', ((cx / w) * 400).toFixed(1));
+        line.setAttribute('y1', ((cy / h) * 340).toFixed(1));
+        line.setAttribute('x2', ((cardCx / w) * 400).toFixed(1));
+        line.setAttribute('y2', ((cardCy / h) * 340).toFixed(1));
+        line.setAttribute('stroke', 'rgba(114,224,160,0.28)');
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('stroke-dasharray', '4 6');
+        line.style.animation = 'topo-dash-flow 2.4s linear ' + (i * 0.6).toFixed(1) + 's infinite';
+        linesG.appendChild(line);
+
+        var dot = document.createElementNS(ns, 'circle');
+        dot.setAttribute('cx', ((cardCx / w) * 400).toFixed(1));
+        dot.setAttribute('cy', ((cardCy / h) * 340).toFixed(1));
+        dot.setAttribute('r', '3');
+        dot.setAttribute('fill', 'rgba(114,224,160,0.5)');
+        linesG.appendChild(dot);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { setTimeout(buildTopology, 100); });
+    } else {
+      setTimeout(buildTopology, 100);
+    }
+    window.addEventListener('resize', buildTopology);
   })();
+})();

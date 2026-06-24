@@ -175,6 +175,9 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 }
 
 .mobile-nav-link:hover, .mobile-nav-link:focus {
+  background: var(--color-surface-offset); transform: scale(1.02);
+}
+
 /* Section divider - subtle visual separation between major sections */
 .section:not(:first-of-type)::before {
   content: '';
@@ -191,9 +194,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   }
 }
 
-
-  background: var(--color-surface-offset); transform: scale(1.02);
-}
 
 /* Responsive breakpoints */
 @media (max-width: 759px) {
@@ -328,11 +328,95 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   50% { transform: translateX(100%); }
 }
 
+/* ════════════════════════════════════════════════════════
+   MANIFEST VISUAL EFFECTS — Animated data streams & network topology
+   All tokens reference existing :root / theme variables.
+════════════════════════════════════════════════════════════ */
+
+/* Data stream particles flowing through manifest section */
+.manifest-data-stream {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.data-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--color-primary) 60%, transparent);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--color-primary) 70%, transparent);
+  animation: data-particle-flow 5s linear infinite;
+}
+
+.data-particle:nth-child(1) { left: 10%; top: -5px; animation-delay: 0s; }
+.data-particle:nth-child(2) { left: 30%; top: -8px; animation-delay: 1.5s; }
+.data-particle:nth-child(3) { left: 60%; top: -6px; animation-delay: 3s; }
+.data-particle:nth-child(4) { left: 85%; top: -7px; animation-delay: 2s; }
+
+@keyframes data-particle-flow {
+  0% { transform: translateY(-10px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* Network topology background pattern */
+.manifest-topology {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  background-image: 
+    radial-gradient(circle at 20% 30%, color-mix(in oklab, var(--color-primary) 40%, transparent) 1px, transparent 1px),
+    radial-gradient(circle at 75% 65%, color-mix(in oklab, var(--color-blue) 40%, transparent) 1px, transparent 1px);
+}
+
+/* Animated connection lines between nodes */
+.manifest-connections {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.connection-line {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    color-mix(in oklab, var(--color-primary) 30%, transparent), 
+    transparent);
+  animation: connection-pulse 4s ease-in-out infinite;
+}
+
+.connection-line:nth-child(1) { top: 25%; left: 15%; right: 65%; animation-delay: 0s; }
+.connection-line:nth-child(2) { top: 55%; left: 10%; right: 70%; animation-delay: 2s; }
+
+@keyframes connection-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
+  50% { opacity: 0.6; transform: scaleX(1.1); }
+}
+
+/* Subtle grid overlay */
+.manifest-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    linear-gradient(rgba(var(--color-primary), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--color-primary), 0.03) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 759px) {
   .network-nodes, .circuit-overlay, .data-flow { display:none; }
-}
-  pointer-events: none;
 }
 .panel-stack { position: relative; display: grid; gap: var(--space-4); }
 .terminal, .stat-card, .signal-card {
@@ -362,7 +446,9 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 }
 
 .metrics {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);
+  display: grid; 
+  grid-template-columns: repeat(2, minmax(0, 1fr)); 
+  gap: var(--space-4);
 }
 .metric-card {
   padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
@@ -390,7 +476,10 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 }
 
 @media (min-width: 760px) {
-  .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .metrics { 
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
 }
 .card {
   padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
@@ -677,19 +766,23 @@ a:focus-visible, button:focus-visible {
 .manifest-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-8);
+  gap: clamp(var(--space-8), 4vw, var(--space-16));
   align-items: start;
 }
 
 @media (min-width: 860px) {
   .manifest-grid {
     grid-template-columns: 1.15fr 1fr;
-    gap: clamp(var(--space-8), 4vw, var(--space-16));
   }
 }
 
-.manifest-left  { display: grid; gap: var(--space-6); }
-.manifest-right { display: grid; gap: var(--space-5); }
+.manifest-left  { display: grid; gap: clamp(var(--space-4), 2vw, var(--space-6)); align-items: start;}
+.manifest-right { display: flex; flex-direction: column; gap: clamp(var(--space-3.5), 1.75vw, var(--space-5)); }
+
+/* Center expertise section within manifest-right */
+.expertise-section-container {
+  width: 100%;
+}
 
 /* ZONE 1: IDENTITY — Cabinet Grotesk 800, --text-2xl, -0.03em letter-spacing */
 .manifest-identity { display: grid; gap: var(--space-2); }
@@ -719,27 +812,15 @@ a:focus-visible, button:focus-visible {
   letter-spacing: 0.04em;
 }
 
-/* ZONE 2: CURRENT FOCUS — signal-card surface + left-accent rule + scanline sweep */
+/* ZONE 2: CURRENT FOCUS — matches hero .stat-card styling */
 .manifest-focus {
   padding: var(--space-5);
   border-radius: var(--radius-lg);
   background: color-mix(in oklab, var(--color-surface) 78%, var(--color-surface-2));
   border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-  border-left: 2px solid var(--color-primary);
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
-}
-
-/* Scanline sweep on focus block — mirrors .terminal-accent @keyframes scanline */
-.manifest-focus::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-  animation: scanline 4s ease-in-out infinite;
-  opacity: 0.4;
 }
 
 .manifest-focus-content { display: grid; gap: var(--space-2); }
@@ -780,44 +861,11 @@ a:focus-visible, button:focus-visible {
   margin-bottom: var(--space-4);
 }
 
-/* SVG topology wrapper: desktop only */
-.expertise-topology-wrapper { display: none; }
-
-@media (min-width: 860px) {
-  .expertise-topology-wrapper { display: block; }
+.expertise-grid {
+  display: grid;
+  gap: var(--space-4);
 }
 
-/* Topology container — relative positioning for absolute card placement */
-.expertise-topology {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 400 / 340;
-}
-
-.expertise-topology svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  display: block;
-}
-
-/* SVG pulse ring on central node */
-.topo-pulse-ring {
-  animation: topo-pulse 2.8s ease-out infinite;
-  transform-origin: 200px 170px;
-}
-
-@keyframes topo-pulse {
-  0%   { transform: scale(1);   opacity: 0.7; }
-  100% { transform: scale(1.6); opacity: 0;   }
-}
-
-/* Topology dash-flow animation for connector lines */
-@keyframes topo-dash-flow {
-  to { stroke-dashoffset: -40; }
-}
-
-/* Expertise cards: positioned by JS on desktop, static on mobile */
 .expertise-card {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
@@ -826,20 +874,23 @@ a:focus-visible, button:focus-visible {
   box-shadow: var(--shadow-sm);
   transition: transform var(--transition-interactive), box-shadow var(--transition-interactive),
               border-color var(--transition-interactive);
-  cursor: default;
-}
-
-@media (min-width: 860px) {
-  .expertise-card {
-    position: absolute;
-    width: 148px;
-  }
 }
 
 .expertise-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-md);
   border-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+}
+
+@media (min-width: 860px) {
+  .expertise-card {
+    position: static; /* Reset from absolute positioning */
+    width: 100%;
+  }
+  
+  .expertise-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .expertise-card-label {
@@ -890,6 +941,12 @@ a:focus-visible, button:focus-visible {
   color: var(--color-text-muted);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid color-mix(in oklab, var(--color-divider) 60%, transparent);
+  transition: background-color var(--transition-interactive), transform var(--transition-interactive);
+}
+
+.signal-strip-list li:hover {
+  background: color-mix(in oklab, var(--color-primary) 8%, transparent);
+  transform: translateX(4px);
 }
 
 .signal-strip-list li:last-child {
