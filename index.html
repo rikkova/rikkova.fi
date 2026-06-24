@@ -125,26 +125,141 @@
       </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════
+         SYSTEM MANIFEST — Who I Am (redesigned)
+         Concept: the person as a living config record.
+         Visual language derived directly from the hero:
+         terminal surfaces, signal-card rows, node topology,
+         eyebrow chip, scanline sweep, field-label system.
+    ════════════════════════════════════════════ -->
     <section class="section" id="who-am-i">
       <div class="container">
-        <div class="section-head reveal">
-          <h2>Who I am</h2>
-          <p>I am an Infrastructure Architect with a 9-year trajectory through some of the most demanding infrastructure environments in the world — hyperscale operations at Google, data center transformation at CGI, and cyber defense at Accenture.</p>
+
+        <!-- Manifest header: eyebrow chip + version stamp (mirrors .terminal-top) -->
+        <div class="manifest-header reveal">
+          <span class="manifest-label">
+            <span class="label-dot" aria-hidden="true"></span>
+            System Manifest
+          </span>
+          <span class="manifest-version">v2026.1 — active</span>
         </div>
-        <div class="services-grid">
-          <article class="card reveal">
-            <h3>Current Focus</h3>
-            <p>Deploying next-generation greenfield network fabrics and modernizing rigid legacy infrastructure. I bridge the gap between high-level architectural vision and execution, ensuring technical debt is engineered out of the equation.</p>
-          </article>
-          <article class="card reveal">
-            <h3>Core Expertise</h3>
-            <p>Advanced networking (BGP, OSPF, VXLAN-EVPN, MPLS, DWDM). Comprehensive data center capacity planning. Expert at turning manual configurations into scalable, automated workflows using Ansible.</p>
-          </article>
-          <article class="card reveal">
-            <h3>Philosophy</h3>
-            <p>Great architecture requires both resilient networks and informed teams. I invest heavily in mentoring engineers to understand the why behind design decisions, ensuring the systems we build remain sustainable long after deployment.</p>
-          </article>
-        </div>
+
+        <!-- Asymmetric two-column grid -->
+        <div class="manifest-grid">
+
+          <!-- LEFT COLUMN: Identity · Focus · Philosophy -->
+          <div class="manifest-left">
+
+            <!-- ZONE 1: IDENTITY -->
+            <div class="manifest-identity reveal">
+              <span class="field-label">Identity</span>
+              <h2 class="manifest-name">Väinö Rikkonen</h2>
+              <p class="manifest-role">Senior IT Infrastructure Architect · Helsinki, FI</p>
+            </div>
+
+            <!-- ZONE 2: CURRENT FOCUS -->
+            <div class="manifest-focus reveal">
+              <div class="manifest-focus-content">
+                <span class="field-label">Current Focus</span>
+                <p class="focus-value">
+                  Deploying greenfield VXLAN-EVPN network fabrics and migrating rigid legacy infrastructure to scalable, automated platforms — bridging architectural vision to production execution.
+                </p>
+              </div>
+            </div>
+
+            <!-- ZONE 4: PHILOSOPHY -->
+            <div class="manifest-philosophy reveal">
+              <span class="field-label">Operating Principle</span>
+              <p class="philosophy-text">
+                Great infrastructure is invisible to the teams running it. I design for the day-two operator, not the design review — building systems that stay understandable, recoverable, and honest about their failure modes.
+              </p>
+            </div>
+
+          </div><!-- .manifest-left -->
+
+          <!-- RIGHT COLUMN: Core Expertise + Signal Strip -->
+          <div class="manifest-right">
+
+            <!-- ZONE 3: CORE EXPERTISE -->
+            <div class="reveal">
+              <span class="field-label manifest-expertise-label">Core Expertise</span>
+
+              <!-- SVG topology (desktop ≥860px) -->
+              <div class="expertise-topology-wrapper">
+                <div class="expertise-topology" id="topoWrapper">
+                  <svg id="topoSvg" viewBox="0 0 400 340" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <g id="topoLines"></g>
+                    <g id="centralNode">
+                      <circle cx="200" cy="170" r="36"
+                        fill="rgba(16,19,23,0.9)"
+                        stroke="rgba(114,224,160,0.5)" stroke-width="1.5"/>
+                      <circle cx="200" cy="170" r="36"
+                        fill="none"
+                        stroke="rgba(114,224,160,0.15)" stroke-width="1"
+                        class="topo-pulse-ring"/>
+                      <text x="200" y="166" text-anchor="middle"
+                        font-family="Cabinet Grotesk, Inter, sans-serif"
+                        font-size="11" font-weight="700"
+                        fill="#72e0a0" letter-spacing="0.06em">VR</text>
+                      <text x="200" y="181" text-anchor="middle"
+                        font-family="General Sans, Inter, sans-serif"
+                        font-size="8.5" fill="rgba(163,173,184,0.85)">Architect</text>
+                    </g>
+                  </svg>
+                  <!-- Expertise cards absolutely positioned by topology JS -->
+                  <div class="expertise-card" id="topoCardA">
+                    <div class="expertise-card-label">Network Architecture</div>
+                    <div class="expertise-card-desc">BGP · OSPF · VXLAN-EVPN · MPLS · DWDM</div>
+                  </div>
+                  <div class="expertise-card" id="topoCardB">
+                    <div class="expertise-card-label">Platform &amp; DC</div>
+                    <div class="expertise-card-desc">HCI · Virtualisation · Capacity Planning</div>
+                  </div>
+                  <div class="expertise-card" id="topoCardC">
+                    <div class="expertise-card-label">Automation</div>
+                    <div class="expertise-card-desc">Ansible · Python · IaC · Zero-drift ops</div>
+                  </div>
+                  <div class="expertise-card" id="topoCardD">
+                    <div class="expertise-card-label">Security &amp; Access</div>
+                    <div class="expertise-card-desc">Zero Trust · SASE · Firewall Arch.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mobile fallback grid -->
+              <div class="expertise-grid-fallback">
+                <div class="expertise-card">
+                  <div class="expertise-card-label">Network Architecture</div>
+                  <div class="expertise-card-desc">BGP · OSPF · VXLAN-EVPN · MPLS · DWDM</div>
+                </div>
+                <div class="expertise-card">
+                  <div class="expertise-card-label">Platform &amp; DC</div>
+                  <div class="expertise-card-desc">HCI · Virtualisation · Capacity Planning</div>
+                </div>
+                <div class="expertise-card">
+                  <div class="expertise-card-label">Automation</div>
+                  <div class="expertise-card-desc">Ansible · Python · IaC · Zero-drift ops</div>
+                </div>
+                <div class="expertise-card">
+                  <div class="expertise-card-label">Security &amp; Access</div>
+                  <div class="expertise-card-desc">Zero Trust · SASE · Firewall Architecture</div>
+                </div>
+              </div>
+            </div><!-- expertise reveal -->
+
+            <!-- Signal strip — mirrors hero .signal-card key/value rows -->
+            <div class="manifest-signal-strip reveal">
+              <span class="field-label" style="display:block; margin-bottom: var(--space-3);">Record</span>
+              <ul class="signal-strip-list">
+                <li><span>Experience</span>   <span>9 years</span></li>
+                <li><span>Background</span>   <span>Google · CGI · Accenture</span></li>
+                <li><span>Availability</span> <span>Open to consulting</span></li>
+                <li><span>Approach</span>     <span>Design · Automate · Enable</span></li>
+              </ul>
+            </div>
+
+          </div><!-- .manifest-right -->
+        </div><!-- .manifest-grid -->
       </div>
     </section>
 
@@ -287,5 +402,86 @@
   </footer>
 
   <script src="./js/main.js"></script>
+
+  <!-- System Manifest topology: builds SVG connector lines between central
+       node and expertise cards. Runs after layout settles. -->
+  <script>
+  (function () {
+    function buildTopology() {
+      var wrapper = document.getElementById('topoWrapper');
+      var svg    = document.getElementById('topoSvg');
+      var linesG = document.getElementById('topoLines');
+      if (!wrapper || !svg || !linesG) return;
+
+      var wRect = wrapper.getBoundingClientRect();
+      if (wRect.width < 10) return;
+
+      var cards = [
+        document.getElementById('topoCardA'),
+        document.getElementById('topoCardB'),
+        document.getElementById('topoCardC'),
+        document.getElementById('topoCardD'),
+      ];
+
+      // Satellite positions as fraction of wrapper width/height
+      var positions = [
+        { x: 0.01, y: 0.04 },
+        { x: 0.58, y: 0.04 },
+        { x: 0.01, y: 0.62 },
+        { x: 0.58, y: 0.62 },
+      ];
+
+      var w = wRect.width;
+      var h = wrapper.offsetHeight;
+
+      // Central node in SVG coords (200/400 × w, 170/340 × h)
+      var cx = (200 / 400) * w;
+      var cy = (170 / 340) * h;
+
+      linesG.innerHTML = '';
+
+      cards.forEach(function (card, i) {
+        if (!card) return;
+        var pos  = positions[i];
+        var left = pos.x * w;
+        var top  = pos.y * h;
+
+        card.style.left = left + 'px';
+        card.style.top  = top  + 'px';
+
+        var cw     = card.offsetWidth  || 148;
+        var ch     = card.offsetHeight || 60;
+        var cardCx = left + cw / 2;
+        var cardCy = top  + ch / 2;
+
+        var ns   = 'http://www.w3.org/2000/svg';
+        var line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', ((cx / w) * 400).toFixed(1));
+        line.setAttribute('y1', ((cy / h) * 340).toFixed(1));
+        line.setAttribute('x2', ((cardCx / w) * 400).toFixed(1));
+        line.setAttribute('y2', ((cardCy / h) * 340).toFixed(1));
+        line.setAttribute('stroke', 'rgba(114,224,160,0.28)');
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('stroke-dasharray', '4 6');
+        line.style.animation = 'topo-dash-flow 2.4s linear ' + (i * 0.6).toFixed(1) + 's infinite';
+        linesG.appendChild(line);
+
+        var dot = document.createElementNS(ns, 'circle');
+        dot.setAttribute('cx', ((cardCx / w) * 400).toFixed(1));
+        dot.setAttribute('cy', ((cardCy / h) * 340).toFixed(1));
+        dot.setAttribute('r', '3');
+        dot.setAttribute('fill', 'rgba(114,224,160,0.5)');
+        linesG.appendChild(dot);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { setTimeout(buildTopology, 100); });
+    } else {
+      setTimeout(buildTopology, 100);
+    }
+    window.addEventListener('resize', buildTopology);
+  })();
+  </script>
 </body>
 </html>

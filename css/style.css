@@ -602,3 +602,311 @@ a:focus-visible, button:focus-visible {
 }
 
 /* Client/Company Logo Grid */.client-logos {  display: flex;  flex-direction: column;  align-items: center;}.logo-grid {  display: grid;  grid-template-columns: repeat(4, 1fr);  gap: var(--space-4);  margin-top: var(--space-3);}.logo-grid img {  height: 2.5rem;  opacity: 0.7;  transition: opacity var(--transition-interactive), transform var(--transition-interactive);  object-fit: contain;}.logo-grid img:hover {  opacity: 1;  transform: scale(1.05);}/* Mobile: Stack logos */@media (max-width: 759px) {  .logo-grid {    grid-template-columns: repeat(2, 1fr);    gap: var(--space-3);  }}
+
+/* ═══════════════════════════════════════════════════════════
+   SYSTEM MANIFEST — #who-am-i redesign styles
+   All tokens reference existing :root / theme variables.
+   No new custom properties introduced.
+════════════════════════════════════════════════════════════ */
+
+/* Transition bridge from hero: green gradient rule */
+#who-am-i::before {
+  content: '';
+  display: block;
+  width: min(calc(100% - 2rem), var(--content-wide));
+  margin-inline: auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--color-primary) 55%, transparent) 30%,
+    color-mix(in oklab, var(--color-primary) 55%, transparent) 70%,
+    transparent
+  );
+  margin-bottom: clamp(var(--space-12), 8vw, var(--space-20));
+  opacity: 0.45;
+}
+
+/* Manifest header row — mirrors .terminal-top flex pattern */
+.manifest-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+/* Eyebrow chip — extends .eyebrow token values exactly */
+.manifest-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  background: color-mix(in oklab, var(--color-primary) 10%, var(--color-surface));
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Live pulse dot — extends .node pulse-ring animation */
+.label-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 6px var(--color-primary);
+  animation: manifest-pulse-dot 2.4s ease-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes manifest-pulse-dot {
+  0%   { box-shadow: 0 0 0px 0px color-mix(in oklab, var(--color-primary) 80%, transparent); }
+  60%  { box-shadow: 0 0 0px 5px transparent; }
+  100% { box-shadow: 0 0 0px 0px transparent; }
+}
+
+.manifest-version {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+  letter-spacing: 0.06em;
+}
+
+/* Two-column asymmetric layout — echoes hero-grid column ratio */
+.manifest-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (min-width: 860px) {
+  .manifest-grid {
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(var(--space-8), 4vw, var(--space-16));
+  }
+}
+
+.manifest-left  { display: grid; gap: var(--space-6); }
+.manifest-right { display: grid; gap: var(--space-5); }
+
+/* ZONE 1: IDENTITY — Cabinet Grotesk 800, --text-2xl, -0.03em letter-spacing */
+.manifest-identity { display: grid; gap: var(--space-2); }
+
+/* Field label — --color-primary dt treatment, matches .label but accent-coloured */
+.field-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.manifest-name {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  line-height: 1.05;
+}
+
+.manifest-role {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* ZONE 2: CURRENT FOCUS — signal-card surface + left-accent rule + scanline sweep */
+.manifest-focus {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--color-surface) 78%, var(--color-surface-2));
+  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  border-left: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Scanline sweep on focus block — mirrors .terminal-accent @keyframes scanline */
+.manifest-focus::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  animation: scanline 4s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+.manifest-focus-content { display: grid; gap: var(--space-2); }
+
+.focus-value {
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-weight: 500;
+  line-height: 1.55;
+  max-width: 44ch;
+}
+
+/* ZONE 4: PHILOSOPHY — italic, muted, left vertical rule */
+.manifest-philosophy { display: grid; gap: var(--space-3); }
+
+.philosophy-text {
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  font-style: italic;
+  line-height: 1.65;
+  max-width: 46ch;
+  position: relative;
+  padding-left: var(--space-5);
+}
+
+.philosophy-text::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0.25em;
+  width: 1px;
+  height: calc(100% - 0.5em);
+  background: color-mix(in oklab, var(--color-primary) 40%, transparent);
+}
+
+/* ZONE 3: CORE EXPERTISE — label spacing */
+.manifest-expertise-label {
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+/* SVG topology wrapper: desktop only */
+.expertise-topology-wrapper { display: none; }
+
+@media (min-width: 860px) {
+  .expertise-topology-wrapper { display: block; }
+}
+
+/* Topology container — relative positioning for absolute card placement */
+.expertise-topology {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 400 / 340;
+}
+
+.expertise-topology svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  display: block;
+}
+
+/* SVG pulse ring on central node */
+.topo-pulse-ring {
+  animation: topo-pulse 2.8s ease-out infinite;
+  transform-origin: 200px 170px;
+}
+
+@keyframes topo-pulse {
+  0%   { transform: scale(1);   opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0;   }
+}
+
+/* Topology dash-flow animation for connector lines */
+@keyframes topo-dash-flow {
+  to { stroke-dashoffset: -40; }
+}
+
+/* Expertise cards: positioned by JS on desktop, static on mobile */
+.expertise-card {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--color-surface) 78%, var(--color-surface-2));
+  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-interactive), box-shadow var(--transition-interactive),
+              border-color var(--transition-interactive);
+  cursor: default;
+}
+
+@media (min-width: 860px) {
+  .expertise-card {
+    position: absolute;
+    width: 148px;
+  }
+}
+
+.expertise-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+  border-color: color-mix(in oklab, var(--color-primary) 35%, transparent);
+}
+
+.expertise-card-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: var(--space-1);
+}
+
+.expertise-card-desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+/* Mobile fallback grid — shown when topology is hidden */
+.expertise-grid-fallback {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 860px) {
+  .expertise-grid-fallback { display: none; }
+}
+
+/* Signal strip — mirrors hero .signal-card list exactly */
+.manifest-signal-strip {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--color-surface) 78%, var(--color-surface-2));
+  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+.signal-strip-list {
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.signal-strip-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid color-mix(in oklab, var(--color-divider) 60%, transparent);
+}
+
+.signal-strip-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.signal-strip-list li span:last-child {
+  color: var(--color-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label-dot,
+  .manifest-focus::after,
+  .topo-pulse-ring {
+    animation: none;
+  }
+}
