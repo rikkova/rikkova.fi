@@ -1482,13 +1482,7 @@ a:focus-visible, button:focus-visible {
   letter-spacing: 0;
 }
 
-.kpi-unit {
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text);
-}
+.kpi-unit { font-size: var(--text-sm); }
 
 .kpi-context {
   font-size: var(--text-xs);
@@ -1544,10 +1538,7 @@ a:focus-visible, button:focus-visible {
   flex-shrink: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .label-dot,
-  .manifest-focus::after,
-  .topo-pulse-ring {
-    animation: none;
-  }
+/* Theme-specific icon adjustments */
+[data-theme="dark"] .ctc-channel img {
+  filter: invert(1) brightness(0.9);
 }
