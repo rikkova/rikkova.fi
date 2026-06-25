@@ -25,6 +25,7 @@
   --content-wide: 1280px;
   --font-display: 'Cabinet Grotesk', 'Inter', sans-serif;
   --font-body: 'General Sans', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', ui-monospace, monospace;
 }
 
 [data-theme="light"] {
@@ -58,7 +59,7 @@
   --color-border: #2b343e;
   --color-text: #eef2f6;
   --color-text-muted: #a3adb8;
-  --color-text-faint: #6f7b87;
+  --color-text-faint: #7e8c99;
   --color-text-inverse: #0b0d10;
   --color-primary: #72e0a0;
   --color-primary-hover: #88ebb0;
@@ -101,7 +102,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 .skip-link:focus { top: var(--space-4); }
 .container { width: min(calc(100% - 2rem), var(--content-default)); margin-inline: auto; }
 .wide { width: min(calc(100% - 2rem), var(--content-wide)); margin-inline: auto; }
-.section { padding-block: clamp(var(--space-12), 10vw, var(--space-24)); }
+.section { padding-block: clamp(var(--space-12), 10vw, var(--space-24)); position: relative; }
 
 .header {
   position: sticky; top: 0; z-index: 50;
@@ -119,7 +120,8 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 }
 .nav { display: flex; align-items: center; gap: var(--space-3); }
 .nav-links { display: none; gap: var(--space-4); font-size: var(--text-sm); color: var(--color-text-muted); }
-.nav-links a:hover { color: var(--color-text); }
+.nav-links a { transition: color var(--transition-interactive), transform var(--transition-interactive); }
+.nav-links a:hover { color: var(--color-text); transform: translateY(-2px); }
 .theme-toggle {
   width: 2.75rem; height: 2.75rem; display: inline-grid; place-items: center; border-radius: var(--radius-full);
   border: 1px solid color-mix(in oklab, var(--color-text) 12%, transparent); background: var(--color-surface);
@@ -165,7 +167,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 
 .mobile-nav-content {
   position: absolute; inset: 0; background: color-mix(in oklab, var(--color-bg) 95%, transparent);
-  backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; gap: var(--space-8);
+  backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-6);
 }
 
 .mobile-nav-link {
@@ -201,8 +203,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   
   .mobile-menu-toggle { display: flex; }
   
-  /* Hide desktop nav links in mobile view */
-  .nav-links.mobile-only { display: none !important; }
 }
 
 @media (min-width: 760px) {
@@ -218,17 +218,12 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 .reveal.is-visible {
   will-change: auto;
 }
-.eyebrow {
-  display: inline-flex; align-items: center; gap: var(--space-2); width: fit-content; padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-full); background: color-mix(in oklab, var(--color-primary) 10%, var(--color-surface));
-  color: var(--color-primary); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-}
 .hero h1 {
   margin-top: var(--space-5); font-family: var(--font-display); font-size: var(--text-hero); font-weight: 800; letter-spacing: -0.04em;
   max-width: 10ch;
 }
 .hero p {
-  margin-top: var(--space-5); color: var(--color-text-muted); font-size: var(--text-lg); max-width: 38ch;
+  margin-top: var(--space-5); color: var(--color-text-muted); font-size: var(--text-lg); max-width: 50ch;
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
 .btn {
@@ -241,22 +236,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 .btn-secondary {
   border: 1px solid color-mix(in oklab, var(--color-text) 12%, transparent); background: var(--color-surface);
 }
-.hero-panel {
-  position: relative; overflow: hidden; padding: var(--space-6); border-radius: 1.75rem; background: linear-gradient(180deg, var(--color-surface), var(--color-surface-2));
-  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-lg);
-  min-height: 28rem;
-}
-
-/* Infrastructure Visual Metaphors - Network Nodes & Circuit Patterns */
-.hero-panel::before {
-  content: ""; position: absolute; inset: 0; background:
-  linear-gradient(130deg, transparent 0 52%, color-mix(in oklab, var(--color-primary) 8%, transparent) 52% 56%, transparent 56% 100%),
-  linear-gradient(90deg, color-mix(in oklab, var(--color-text) 4%, transparent) 1px, transparent 1px),
-  linear-gradient(0deg, color-mix(in oklab, var(--color-text) 4%, transparent) 1px, transparent 1px);
-  background-size: auto, 3rem 3rem, 3rem 3rem;
-  opacity: 0.9;
-}
-
 /* Animated Network Nodes */
 .network-nodes {
   position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1;
@@ -285,36 +264,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   100% { transform: scale(2); opacity: 0; border-color: transparent; }
 }
 
-/* Circuit Pattern Overlay */
-.circuit-overlay {
-  position: absolute; inset: 0; pointer-events: none; z-index: 2;
-  background-image: 
-    linear-gradient(45deg, color-mix(in oklab, var(--color-text) 1%, transparent) 1px, transparent 1px),
-    linear-gradient(-45deg, color-mix(in oklab, var(--color-text) 1%, transparent) 1px, transparent 1px);
-  background-size: 2rem 2rem;
-  opacity: 0.03;
-}
-
-/* Data Flow Animation Lines */
-.data-flow {
-  position: absolute; top: 50%; left: 0; right: 0; height: 1px; z-index: 3;
-  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-primary) 80%, transparent), transparent);
-  opacity: 0.4;
-}
-
-.data-particle {
-  position: absolute; top: -10px; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--color-primary); box-shadow: 0 0 15px var(--color-primary);
-  animation: flow-right 4s linear infinite;
-}
-
-@keyframes flow-right {
-  0% { transform: translateX(-100%) translateY(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(calc(100vw + 100px)) translateY(var(--random-y, 0)); opacity: 0; }
-}
-
 /* Terminal accent line animation */
 .terminal-accent {
   position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
@@ -328,114 +277,12 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   50% { transform: translateX(100%); }
 }
 
-/* ════════════════════════════════════════════════════════
-   MANIFEST VISUAL EFFECTS — Animated data streams & network topology
-   All tokens reference existing :root / theme variables.
-════════════════════════════════════════════════════════════ */
-
-/* Data stream particles flowing through manifest section */
-.manifest-data-stream {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.data-particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--color-primary) 60%, transparent);
-  box-shadow: 0 0 12px color-mix(in oklab, var(--color-primary) 70%, transparent);
-  animation: data-particle-flow 5s linear infinite;
-}
-
-.data-particle:nth-child(1) { left: 10%; top: -5px; animation-delay: 0s; }
-.data-particle:nth-child(2) { left: 30%; top: -8px; animation-delay: 1.5s; }
-.data-particle:nth-child(3) { left: 60%; top: -6px; animation-delay: 3s; }
-.data-particle:nth-child(4) { left: 85%; top: -7px; animation-delay: 2s; }
-
-@keyframes data-particle-flow {
-  0% { transform: translateY(-10px); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0; }
-}
-
-/* Network topology background pattern */
-.manifest-topology {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.03;
-  background-image: 
-    radial-gradient(circle at 20% 30%, color-mix(in oklab, var(--color-primary) 40%, transparent) 1px, transparent 1px),
-    radial-gradient(circle at 75% 65%, color-mix(in oklab, var(--color-blue) 40%, transparent) 1px, transparent 1px);
-}
-
-/* Animated connection lines between nodes */
-.manifest-connections {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.connection-line {
-  position: absolute;
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    color-mix(in oklab, var(--color-primary) 30%, transparent), 
-    transparent);
-  animation: connection-pulse 4s ease-in-out infinite;
-}
-
-.connection-line:nth-child(1) { top: 25%; left: 15%; right: 65%; animation-delay: 0s; }
-.connection-line:nth-child(2) { top: 55%; left: 10%; right: 70%; animation-delay: 2s; }
-
-@keyframes connection-pulse {
-  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
-  50% { opacity: 0.6; transform: scaleX(1.1); }
-}
-
-/* Subtle grid overlay */
-.manifest-grid-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: 
-    linear-gradient(rgba(var(--color-primary), 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(var(--color-primary), 0.03) 1px, transparent 1px);
-  background-size: 4rem 4rem;
-}
-
-/* Responsive adjustments */
 @media (max-width: 759px) {
-  .network-nodes, .circuit-overlay, .data-flow { display:none; }
+  .network-nodes { display: none; }
 }
-.panel-stack { position: relative; display: grid; gap: var(--space-4); }
-.terminal, .stat-card, .signal-card {
-  border-radius: var(--radius-lg); background: color-mix(in oklab, var(--color-surface) 78%, var(--color-surface-2));
-  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-sm);
-}
-.terminal { padding: var(--space-4); margin-top: auto; }
-.terminal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); }
 .dots { display: flex; gap: 0.35rem; }
 .dots span { width: 0.65rem; height: 0.65rem; border-radius: 999px; background: var(--color-surface-dynamic); }
-.terminal code { display: grid; gap: var(--space-2); color: var(--color-text-muted); font-size: var(--text-sm); }
-.terminal strong { color: var(--color-text); font-weight: 600; }
-.hero-aside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
-.stat-card, .signal-card { padding: var(--space-4); }
-.kpi { font-family: var(--font-display); font-size: var(--text-xl); font-weight: 700; letter-spacing: -0.03em; }
 .label { margin-top: var(--space-1); color: var(--color-text-muted); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; }
-.signal-card ul { list-style: none; display: grid; gap: var(--space-3); margin-top: var(--space-3); }
-.signal-card li { display: flex; justify-content: space-between; gap: var(--space-3); color: var(--color-text-muted); font-size: var(--text-sm); }
-.signal-card li span:last-child { color: var(--color-text); font-weight: 600; }
 
 .section-head { display: grid; gap: var(--space-3); margin-bottom: var(--space-8); }
 .section-head h2 { font-family: var(--font-display); font-size: var(--text-2xl); letter-spacing: -0.03em; max-width: 15ch; }
@@ -445,55 +292,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   width: 100%; /* Ensure text fills full section width */
 }
 
-.metrics {
-  display: grid; 
-  grid-template-columns: repeat(2, minmax(0, 1fr)); 
-  gap: var(--space-4);
-}
-.metric-card {
-  padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
-  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-  transition: transform var(--transition-interactive), box-shadow var(--transition-interactive);
-}
-.metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-.counter-wrapper {
-  display: flex; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-3);
-}
-.counter {
-  font-family: var(--font-display); font-size: clamp(2.5rem, 1.5rem + 4vw, 4rem);
-  line-height: 1; font-weight: 700; color: var(--color-primary);
-  display: inline-block; min-width: fit-content;
-}
-.counter-label {
-  font-size: var(--text-sm); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em;
-}
-.metric-card p {
-  margin: 0; padding-top: var(--space-3); border-top: 1px solid color-mix(in oklab, var(--color-divider) 50%, transparent);
-  font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-muted);
-}
-
-@media (min-width: 760px) {
-  .metrics { 
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4);
-  }
-}
-.card {
-  padding: var(--space-5); border-radius: var(--radius-xl); background: color-mix(in oklab, var(--color-surface) 88%, var(--color-surface-2));
-  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); box-shadow: var(--shadow-sm);
-}
-.card h3 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
-.card p { 
-  color: var(--color-text-muted); 
-  font-size: var(--text-base);
-  max-width: none; /* Override global paragraph width constraint */
-  width: 100%; /* Ensure text fills full card width */
-}
-.card ul { list-style: none; display: grid; gap: var(--space-2); margin-top: var(--space-4); color: var(--color-text-muted); font-size: var(--text-sm); }
-.card li::before { content: "— "; color: var(--color-primary); }
 
 /* ─── SERVICES LIST — #what-i-build ─────────────────────────────────────────
    Horizontal stacked rows instead of a card grid — visually distinct from the
@@ -587,16 +385,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   font-size: var(--text-xs);
   top: 0.2em;
 }
-
-.timeline {
-  display: grid; gap: var(--space-4);
-}
-.timeline-item {
-  display: grid; gap: var(--space-3); padding: var(--space-5); border-radius: var(--radius-xl); background: var(--color-surface);
-  border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-}
-.timeline-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); font-size: var(--text-sm); color: var(--color-text-muted); }
-.timeline-item h3 { font-size: var(--text-lg); }
 
 .projects-grid {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4);
@@ -854,13 +642,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   border-left: 2px solid color-mix(in oklab, var(--color-text) 12%, transparent);
 }
 
-.quote {
-  padding: var(--space-8); border-radius: 1.75rem; background: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 68%, var(--color-blue)));
-  color: var(--color-text-inverse); box-shadow: var(--shadow-lg);
-}
-.quote p { font-family: var(--font-display); font-size: var(--text-xl); letter-spacing: -0.03em; max-width: 18ch; color: var(--color-text-inverse); }
-.quote span { display: block; margin-top: var(--space-4); font-size: var(--text-sm); opacity: 0.86; }
-
 /* ─── CONTACT — scoped to #contact ──────────────────────────────────────────
    CLI-row layout. Monospace channel type labels. No card, no gradient.
    Left border accent on hover mimics terminal selection.
@@ -899,7 +680,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 
 #contact .ctc-type {
   font-size: 0.6875rem;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-faint);
@@ -939,7 +720,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 
 #contact .ctc-copy {
   font-size: 0.6875rem;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-faint);
@@ -965,7 +746,7 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   line-height: 1.5;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 759px) {
   #contact .ctc-channel {
     grid-template-columns: 1fr;
     gap: var(--space-2);
@@ -1000,30 +781,13 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 @media (min-width: 760px) {
   .nav-links { display: flex; }
   .hero-grid { grid-template-columns: 1.1fr 0.9fr; }
-  .services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-  .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
-  .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .timeline { grid-template-columns: 1fr 1fr; }
   .projects-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 759px) {
-  .hero-panel { min-height: auto; }
-  .hero h1 { max-width: 14ch; font-size: clamp(2rem, 5vw + 1rem, 3.5rem); } /* Fixed from 12ch */
-  .hero-aside { grid-template-columns: 1fr; }
-  
-  /* Increase touch targets for better accessibility */
-  .btn, .contact-item { min-height: 48px; }
-}
-  .projects-grid { 
-    grid-template-columns: 1fr; 
-    gap: var(--space-3);
-  }
+  .hero h1 { max-width: 14ch; font-size: clamp(2rem, 5vw + 1rem, 3.5rem); }
+  .projects-grid { grid-template-columns: 1fr; gap: var(--space-3); }
+  .btn { min-height: 48px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1032,75 +796,14 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
   .reveal { opacity: 1; transform: none; }
 }
 
-/* GSAP Animation Utilities */
-.animate-in-up {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
-.animate-in-scale {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
-.animate-in-fade {
-  opacity: 0;
-}
-
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Enhanced card hover effects for professional feel */
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-interactive);
-}
-
 .project-card:hover .project-tags span {
   background: var(--color-surface-offset);
   padding: var(--space-1) var(--space-3);
   color: var(--color-text-muted);
 }
 
-/* Hero section subtle floating animation */
-/* Hero typography - optimized for readability */
-@media (max-width: 759px) {
-  .hero h1 { 
-    max-width: 14ch; 
-    font-size: clamp(2rem, 5vw + 1rem, 3.5rem);
-  }
-}
-
-.hero p {
-  max-width: 50ch; /* Increased from 38ch for better desktop readability */
-}
-
-/* Hero section - reduced animation intensity */
-@media (max-width: 759px) {
-  .hero h1 { 
-    opacity: 1 !important; /* Ensure full opacity on mobile */
-  }
-}
-
-.hero h1, .hero p, .hero-actions {
-  opacity: 1 !important; /* Full opacity - no fade-in animation */
-}
-
-/* Section heading entrance animations */
 .section-head h2 {
   font-feature-settings: "ss01", "cv03", "cv04";
-}
-
-/* Navigation smooth reveal on scroll */
-.nav-links a {
-  transition: color var(--transition-interactive), transform var(--transition-interactive);
-}
-
-.nav-links a:hover {
-  transform: translateY(-2px);
 }
 
 /* Focus states for accessibility */
@@ -1109,29 +812,6 @@ a:focus-visible, button:focus-visible {
   outline-offset: 3px;
   border-radius: var(--radius-md);
 }
-
-/* Loading state utilities */
-.loading-skeleton {
-  background: linear-gradient(90deg, var(--color-surface-2) 25%, var(--color-surface) 50%, var(--color-surface-2) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Performance optimizations */
-.hero h1, .hero p, .hero-actions {
-  contain: layout style paint;
-}
-
-.card, .project-card {
-  will-change: transform, opacity;
-}
-
-/* Client/Company Logo Grid */.client-logos {  display: flex;  flex-direction: column;  align-items: center;}.logo-grid {  display: grid;  grid-template-columns: repeat(4, 1fr);  gap: var(--space-4);  margin-top: var(--space-3);}.logo-grid img {  height: 2.5rem;  opacity: 0.7;  transition: opacity var(--transition-interactive), transform var(--transition-interactive);  object-fit: contain;}.logo-grid img:hover {  opacity: 1;  transform: scale(1.05);}/* Mobile: Stack logos */@media (max-width: 759px) {  .logo-grid {    grid-template-columns: repeat(2, 1fr);    gap: var(--space-3);  }}
 
 /* ═══════════════════════════════════════════════════════════
    SYSTEM MANIFEST — #who-am-i redesign styles
@@ -1256,15 +936,15 @@ a:focus-visible, button:focus-visible {
 /* ZONE 2: CURRENT FOCUS — matches hero .stat-card styling */
 .manifest-focus {
   padding: var(--space-6);
-  border-radius: 0.5rem; /* Subtle curve for an architectural feel */
+  border-radius: var(--radius-md);
   background: color-mix(in oklab, var(--color-primary) 3%, var(--color-surface));
   border-left: 4px solid var(--color-primary);
   border-top: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
   border-right: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
   border-bottom: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent);
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-sm);
   position: relative;
-  max-width: 70ch; /* Balanced width for the focus statement */
+  max-width: 70ch;
 }
 
 .manifest-focus-content { display: grid; gap: var(--space-2); }
@@ -1538,7 +1218,3 @@ a:focus-visible, button:focus-visible {
   flex-shrink: 0;
 }
 
-/* Theme-specific icon adjustments */
-[data-theme="dark"] .ctc-channel img {
-  filter: invert(1) brightness(0.9);
-}
