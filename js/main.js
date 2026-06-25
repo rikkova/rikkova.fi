@@ -1,4 +1,8 @@
 (function () {
+  // Progressive enhancement flag — CSS targets .js-enabled .reveal to avoid
+  // content hidden when JS is blocked or slow
+  document.documentElement.classList.add('js-enabled');
+
   // Theme toggle
   const toggle = document.querySelector('[data-theme-toggle]');
   const root = document.documentElement;
@@ -23,12 +27,35 @@
     });
   }
 
+  // Mobile navigation
+  const mobileToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  if (mobileToggle && mobileNav) {
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('active');
+      mobileNav.setAttribute('aria-hidden', String(!isOpen));
+      mobileToggle.setAttribute('aria-expanded', String(isOpen));
+      mobileToggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    mobileNav.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        mobileToggle.setAttribute('aria-expanded', 'false');
+        mobileToggle.setAttribute('aria-label', 'Open navigation');
+        document.body.style.overflow = '';
+      });
+    });
+  }
+
   // GSAP animations
   if (typeof gsap !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
     const customEase = 'cubic-bezier(0.16,1,0.3,1)';
 
-    // Reveal elements
     const revealElements = document.querySelectorAll('.reveal');
     if (revealElements.length > 0) {
       revealElements.forEach(el => {
@@ -67,7 +94,6 @@
         }
       });
 
-      // Hero parallax
       if (document.querySelector('.hero')) {
         gsap.to('.hero h1', {
           yPercent: -30,
@@ -86,7 +112,6 @@
         });
       }
 
-      // Section headings
       const sectionHeadings = document.querySelectorAll('.section-head h2');
       sectionHeadings.forEach(heading => {
         gsap.fromTo(
@@ -102,12 +127,10 @@
         );
       });
 
-      // Nav links
       const navLinks = document.querySelectorAll('.nav-links a');
       gsap.set(navLinks, { opacity: 1, y: 0 });
     }
 
-    // Counters (Fixed logic: checks if elements exist before running)
     const counters = document.querySelectorAll('.counter');
     if (counters.length > 0) {
       counters.forEach(counter => {
@@ -131,82 +154,6 @@
       });
     }
   }
-
-  // System Manifest topology visualization
-  (function () {
-    function buildTopology() {
-      var wrapper = document.getElementById('topoWrapper');
-      var svg    = document.getElementById('topoSvg');
-      var linesG = document.getElementById('topoLines');
-      if (!wrapper || !svg || !linesG) return;
-
-      var wRect = wrapper.getBoundingClientRect();
-      if (wRect.width < 10) return;
-
-      var cards = [
-        document.getElementById('topoCardA'),
-        document.getElementById('topoCardB'),
-        document.getElementById('topoCardC'),
-        document.getElementById('topoCardD'),
-      ];
-
-      var positions = [
-        { x: 0.49, y: 0.18 },   /* Top-left quadrant */
-        { x: 0.51, y: 0.18 },   /* Top-right quadrant */
-        { x: 0.49, y: 0.62 },   /* Bottom-left quadrant */  
-        { x: 0.51, y: 0.62 }    /* Bottom-right quadrant */
-      ];
-
-      var w = wRect.width;
-      var h = wrapper.offsetHeight;
-
-      var cx = (200 / 400) * w;
-      var cy = (170 / 340) * h;
-
-      linesG.innerHTML = '';
-
-      cards.forEach(function (card, i) {
-        if (!card) return;
-        var pos  = positions[i];
-        var left = pos.x * w;
-        var top  = pos.y * h;
-
-        card.style.left = left + 'px';
-        card.style.top  = top  + 'px';
-
-        var cw     = card.offsetWidth  || 148;
-        var ch     = card.offsetHeight || 60;
-        var cardCx = left + cw / 2;
-        var cardCy = top  + ch / 2;
-
-        var ns   = 'http://www.w3.org/2000/svg';
-        var line = document.createElementNS(ns, 'line');
-        line.setAttribute('x1', ((cx / w) * 400).toFixed(1));
-        line.setAttribute('y1', ((cy / h) * 340).toFixed(1));
-        line.setAttribute('x2', ((cardCx / w) * 400).toFixed(1));
-        line.setAttribute('y2', ((cardCy / h) * 340).toFixed(1));
-        line.setAttribute('stroke', 'rgba(114,224,160,0.28)');
-        line.setAttribute('stroke-width', '1');
-        line.setAttribute('stroke-dasharray', '4 6');
-        line.style.animation = 'topo-dash-flow 2.4s linear ' + (i * 0.6).toFixed(1) + 's infinite';
-        linesG.appendChild(line);
-
-        var dot = document.createElementNS(ns, 'circle');
-        dot.setAttribute('cx', ((cardCx / w) * 400).toFixed(1));
-        dot.setAttribute('cy', ((cardCy / h) * 340).toFixed(1));
-        dot.setAttribute('r', '3');
-        dot.setAttribute('fill', 'rgba(114,224,160,0.5)');
-        linesG.appendChild(dot);
-      });
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function () { setTimeout(buildTopology, 100); });
-    } else {
-      setTimeout(buildTopology, 100);
-    }
-    window.addEventListener('resize', buildTopology);
-  })();
 
   // Copy-to-clipboard — contact section email
   document.querySelectorAll('#contact .ctc-copy').forEach(function(btn) {
