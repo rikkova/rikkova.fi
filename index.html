@@ -101,7 +101,7 @@
             <div class="manifest-philosophy reveal">
               <span class="field-label">Operating Principle</span>
               <p class="philosophy-text">
-                Great infrastructure is invisible to the teams running it. I design for the day-two operator, not the design review — building systems that stay understandable, recoverable, and honest about their failure modes.
+                Great infrastructure is invisible to the teams running it. I design for the day-two operator, not the design review — building systems that stay understandable, recoverable, honest about their failure modes, and transparent about their cost of ownership.
               </p>
             </div>
 
@@ -171,7 +171,7 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>What I build</h2>
-          <p>Network, platform, and security infrastructure — designed to stay understandable, recoverable, and honest about failure modes.</p>
+          <p>Network, platform, security, observability, and resilience infrastructure — designed to stay understandable, recoverable, and honest about failure modes.</p>
         </div>
         <div class="services-list">
 
@@ -186,6 +186,9 @@
                 <li>Routing &amp; switching architecture — BGP, OSPF, VXLAN-EVPN, MPLS</li>
                 <li>Edge, WAN, and datacenter fabric design</li>
                 <li>Protocol migrations with zero-downtime execution strategy</li>
+                <li>DWDM inter-DC transport — wavelength-multiplexed dark fiber delivering hundreds of Gbps with per-service wavelength isolation, dual systems over geographically diverse fiber paths so a single fiber cut does not take down inter-site connectivity</li>
+                <li>IPv4/IPv6 dual-stack design and deployment — production IPv6 at the internet edge including DNS services, with active rollout ongoing</li>
+                <li>Hybrid cloud connectivity — AWS Direct Connect and Azure ExpressRoute terminated at the MPLS edge, bridging on-premises infrastructure to cloud workloads with dedicated private paths</li>
               </ul>
             </div>
           </article>
@@ -216,6 +219,38 @@
                 <li>Infrastructure as Code — Ansible, Terraform, Python</li>
                 <li>Zero Trust access architecture — SASE, Zscaler ZTE</li>
                 <li>Zero-drift operational model: version-controlled, auditable, repeatable</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="service-item reveal">
+            <div class="service-item-meta">
+              <span class="service-number">04</span>
+              <h3 class="service-name">Observability &amp; Telemetry</h3>
+            </div>
+            <div class="service-item-content">
+              <p class="service-statement">Infrastructure you can't see is infrastructure you can't trust — telemetry pipelines and monitoring stacks that make network state visible, queryable, and alertable before incidents become outages.</p>
+              <ul class="service-delivers">
+                <li>Network telemetry pipeline — Telegraf, InfluxDB, Grafana (TIG stack)</li>
+                <li>BGP advertisement monitoring via BMP (RFC 7854)</li>
+                <li>NetFlow collection at the internet edge — traffic baselining and DDoS detection</li>
+                <li>Service availability monitoring — synthetic checks, alerting, and uptime visibility</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="service-item reveal">
+            <div class="service-item-meta">
+              <span class="service-number">05</span>
+              <h3 class="service-name">High Availability &amp; Resilience</h3>
+            </div>
+            <div class="service-item-content">
+              <p class="service-statement">A single device failure should be an event in the monitoring system, not an incident for the service desk — resilience is designed in at every layer, then validated by automation.</p>
+              <ul class="service-delivers">
+                <li>HA firewall clusters with nodes across separate DC rooms or sites — no single device failure interrupts traffic flow</li>
+                <li>WAN path diversity — MPLS edge present at each DC, shared services reachable independently via either site</li>
+                <li>3rd-site backup architecture — off-site recovery target and archive beyond the primary DC or secondary DC</li>
+                <li>Automation-enforced standby consistency — backup paths and configurations kept in sync with primary, drift-free</li>
               </ul>
             </div>
           </article>
@@ -295,7 +330,7 @@
               <span class="project-stat">50<span class="project-stat-sup">%</span></span>
               <span class="project-stat-label">ops reduction</span>
             </div>
-            <p class="project-outcome">Ansible and Python frameworks eliminated half of all manual touchpoints. High-risk changes became repeatable, zero-drift workflows.</p>
+            <p class="project-outcome">Built a library of Ansible playbooks covering the team's most frequent operational tasks — configuration changes, device provisioning, and compliance checks — and integrated them into existing team workflows. Eliminated half of all manual CLI touchpoints; high-risk changes became repeatable, zero-drift operations.</p>
             <div class="project-tags">
               <span>Ansible · Python</span>
               <span>IaC</span>
@@ -363,6 +398,7 @@
                   <li>Performance data &amp; failure patterns</li>
                   <li>Team habits &amp; operational load</li>
                   <li>Latent technical debt</li>
+                  <li>Budget envelope and business constraints</li>
                 </ul>
               </div>
               <div class="approach-not">
@@ -387,6 +423,7 @@
                   <li>Architecture decision records</li>
                   <li>Network &amp; platform designs</li>
                   <li>Day-two operational runbooks</li>
+                  <li>Cost impact documentation — design decisions justified in terms a CTO and CFO can both reason about</li>
                 </ul>
               </div>
               <div class="approach-not">
