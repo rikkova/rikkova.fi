@@ -679,13 +679,18 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
 }
 
 #contact .ctc-type {
-  font-size: 0.6875rem;
-  font-family: var(--font-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--color-text-faint);
-  padding-top: 0.2em;
+  padding-top: 0.25rem;
   transition: color 180ms ease;
+  display: flex;
+  align-items: flex-start;
+}
+
+#contact .ctc-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 #contact .ctc-channel:hover .ctc-type { color: var(--color-primary); }
@@ -753,7 +758,6 @@ h1, h2, h3 { line-height: 1.05; text-wrap: balance; }
     padding-left: var(--space-3);
   }
   #contact .ctc-channel:hover { padding-left: var(--space-4); }
-  #contact .ctc-type { padding-top: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
