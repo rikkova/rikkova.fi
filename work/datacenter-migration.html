@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: Datacenter Decommissioning & Consolidation — Väinö Rikkonen</title>
+  <meta name="description" content="Decommissioning a production datacenter and consolidating 20+ racks of critical infrastructure into existing facilities — physical through logical, zero service interruption. Case study by Väinö Rikkonen." />
+  <link rel="canonical" href="https://rikkova.fi/work/datacenter-migration.html" />
+  <meta property="og:title" content="Case Study: Datacenter Decommissioning &amp; Consolidation" />
+  <meta property="og:description" content="A production datacenter decommissioned and consolidated into existing facilities — rack, power, and cooling through BGP, MPLS, and DWDM. Zero service interruption." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://rikkova.fi/work/datacenter-migration.html" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
+  <script>
+    document.documentElement.setAttribute(
+      'data-theme',
+      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    );
+  </script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html">Väinö Rikkonen / @rikkova</a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-links desktop-only" style="display:flex">
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#expertise">Expertise</a>
+          <a href="../index.html#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="case-study">
+      <div class="container">
+        <a class="cs-back" href="../index.html#work">← All work</a>
+
+        <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Case Study · Infrastructure</span>
+        <h1>Datacenter Decommissioning &amp; Consolidation</h1>
+        <p class="cs-lede">Taking a production datacenter out of service and consolidating its workloads into existing facilities — owning the full stack from rack, power, and cooling to BGP, MPLS, and DWDM, without interrupting a single service.</p>
+
+        <div class="cs-summary">
+          <p><strong>Summary:</strong> Technical Lead. Owned the end-to-end strategy for decommissioning a production datacenter and consolidating 20+ racks of critical, multi-vendor infrastructure into existing facilities. All moves executed within agreed maintenance windows; zero service interruption across all workloads; the vacated facility's hardware, licensing, and support contracts eliminated.</p>
+        </div>
+
+        <div class="cs-meta">
+          <span class="domain-tag">DC Migration</span>
+          <span class="domain-tag">Consolidation</span>
+          <span class="domain-tag">MPLS · DWDM</span>
+          <span class="domain-tag">Critical Infrastructure</span>
+        </div>
+
+        <h2>Problem</h2>
+        <p>The organization was carrying a datacenter it no longer needed: aging facility, underutilized capacity, and a growing share of EOL hardware whose support contracts consumed budget without adding capability. The strategic decision was consolidation — but the facility hosted production workloads that customers depended on daily, wired into the network core over years of organic growth. Exiting the site meant unwinding all of it without anyone noticing.</p>
+
+        <h2>Environment</h2>
+        <ul>
+          <li>Production datacenter: 20+ racks of critical infrastructure serving live enterprise workloads</li>
+          <li>Multi-vendor estate: network, compute, storage, and security platforms accumulated over the facility's lifetime</li>
+          <li>Target: existing, already-production datacenters — consolidation, not a greenfield move</li>
+          <li>Inter-site connectivity: MPLS core with DWDM transport over geographically diverse fiber paths</li>
+        </ul>
+
+        <h2>Constraints</h2>
+        <ul>
+          <li>Zero service interruption — the workloads were in production before, during, and after every move</li>
+          <li>Target facilities were themselves live: every arriving workload had to fit existing power, cooling, and rack capacity without endangering what already ran there</li>
+          <li>All changes confined to agreed maintenance windows, each with a verified rollback path</li>
+          <li>Dependencies were partially undocumented — years of organic growth meant the real topology had to be discovered before it could be moved</li>
+        </ul>
+
+        <h2>Role and ownership</h2>
+        <p>Technical Lead for the program: owned the migration strategy, sequencing, and network design; coordinated execution across network engineering, datacenter operations, and platform teams; authored the runbooks each wave was executed from. Physical planning — rack layouts, power distribution, cooling for the densified target sites — was designed together with Datacenter Operations.</p>
+
+        <h2>Architecture decisions</h2>
+        <div class="cs-adr">
+          <p><strong>Consolidate into live facilities rather than build new.</strong> A greenfield target would have simplified sequencing but forfeited the business case: the point was reducing footprint and cost, not relocating it. Consolidation raised the stakes — capacity modelling for the target sites had to account for existing production load plus arrivals — and that modelling was treated as a first-class design deliverable, not an afterthought.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Discovery before sequencing.</strong> Rather than trusting existing documentation, the program began by mapping actual dependencies — traffic flows, service adjacencies, undocumented links. Migration waves were then sequenced by dependency cluster, so each wave moved a coherent set of services instead of cutting through the middle of one.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Network reachability first, workloads second.</strong> Inter-site transport (MPLS/DWDM) and the target-side network segments were established and validated before any workload moved. Every migrating service had its destination network waiting for it — moves became a controlled re-homing, not a rebuild under pressure.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Decommission as a deliverable, not a cleanup.</strong> EOL and underutilized hardware was explicitly filtered out during migration planning rather than moved and dealt with later. Migrating dead weight would have consumed window time and target capacity for assets scheduled for disposal — the migration and the estate cleanup were one program, not two.</p>
+        </div>
+
+        <h2>Implementation</h2>
+        <p>Executed in planned waves within agreed maintenance windows: dependency discovery and wave design first, then target-side network and capacity preparation, then service migrations in dependency order — each wave validated against reachability and telemetry baselines before the next was approved. As waves completed, source-side infrastructure was progressively powered down, decommissioned, and processed for secure disposal, with license and support contracts terminated behind it.</p>
+
+        <h2>Results</h2>
+        <ul>
+          <li>Production datacenter fully decommissioned; 20+ racks of critical infrastructure consolidated into existing facilities</li>
+          <li>Zero service interruption across all workloads, every move inside its agreed maintenance window</li>
+          <li>50+ underutilized and EOL devices retired instead of migrated, with their license and support contracts eliminated — contributing to a €50–100k reduction in annual infrastructure spend (roughly 10–15%)</li>
+          <li>Consolidated estate is simpler to operate: fewer sites, fewer platforms, documented topology where organic growth had left gaps</li>
+        </ul>
+
+        <h2>Lessons learned</h2>
+        <p>The migration is won or lost in discovery. Every difficult moment in the program traced back to an undocumented dependency, and every smooth wave was smooth because its dependencies had been mapped honestly beforehand. The second lesson: decommissioning is a design activity — deciding what <em>not</em> to move saved more money and window time than any optimization of the moves themselves.</p>
+
+        <h2>Technical notes</h2>
+        <ul>
+          <li>Transport: MPLS core connectivity with DWDM inter-site transport over geographically diverse fiber</li>
+          <li>Sequencing: dependency-clustered migration waves, each with pre-verified rollback</li>
+          <li>Physical design: rack layout, power distribution, and cooling plans for densified target sites, built with Datacenter Operations</li>
+          <li>Validation: per-wave reachability checks and telemetry baseline comparison before wave sign-off</li>
+          <li>Runbooks: wave-by-wave execution and rollback procedures authored as part of the design</li>
+        </ul>
+
+        <p style="margin-top:var(--space-8)"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+  </footer>
+</body>
+</html>

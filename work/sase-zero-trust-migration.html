@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: SASE / Zero Trust Remote Access Migration — Väinö Rikkonen</title>
+  <meta name="description" content="Replacing a legacy full-tunnel VPN with a SASE-based Zero Trust access platform for ~4,000 users. Case study by Väinö Rikkonen, Infrastructure & Network Architect." />
+  <link rel="canonical" href="https://rikkova.fi/work/sase-zero-trust-migration.html" />
+  <meta property="og:title" content="Case Study: SASE / Zero Trust Remote Access Migration" />
+  <meta property="og:description" content="Legacy full-tunnel VPN eliminated. Zero Trust access deployed for ~4,000 users while maintaining strict admin network segmentation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://rikkova.fi/work/sase-zero-trust-migration.html" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
+  <script>
+    document.documentElement.setAttribute(
+      'data-theme',
+      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    );
+  </script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html">Väinö Rikkonen / @rikkova</a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-links desktop-only" style="display:flex">
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#expertise">Expertise</a>
+          <a href="../index.html#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="case-study">
+      <div class="container">
+        <a class="cs-back" href="../index.html#work">← All work</a>
+
+        <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Case Study · Security</span>
+        <h1>SASE / Zero Trust Remote Access Migration</h1>
+        <p class="cs-lede">Replacing a legacy full-tunnel VPN platform with SASE-based Zero Trust access for roughly 4,000 users — without weakening the segmentation that protected administrative networks.</p>
+
+        <div class="cs-summary">
+          <p><strong>Summary:</strong> Lead Architect. Designed, architected, and engineered the modernization of enterprise remote access from a legacy VPN platform to a SASE-based Zero Trust solution (Zscaler) supporting approximately 4,000 users. Full-tunnel VPN eliminated; strict admin network segmentation maintained throughout.</p>
+        </div>
+
+        <div class="cs-meta">
+          <span class="domain-tag">Zero Trust</span>
+          <span class="domain-tag">SASE</span>
+          <span class="domain-tag">Zscaler</span>
+          <span class="domain-tag">Cloud Security</span>
+        </div>
+
+        <h2>Problem</h2>
+        <p>Remote access ran on a legacy full-tunnel VPN: every remote user landed on the network with broad reachability, all traffic hairpinned through central concentrators, and access policy was network-location-based rather than identity-based. The model concentrated risk (a compromised endpoint inherited network-level access) and concentrated load (all remote traffic through one chokepoint). End-of-life pressure on the platform forced the decision point.</p>
+
+        <h2>Environment</h2>
+        <ul>
+          <li>Enterprise environment, approximately 4,000 remote-access users</li>
+          <li>Legacy VPN platform with full-tunnel architecture and centralized concentrators</li>
+          <li>Strictly segmented administrative networks that had to remain isolated from the user access plane</li>
+          <li>50+ internal applications and services inventoried and mapped to identity-based access policy</li>
+        </ul>
+
+        <h2>Constraints</h2>
+        <ul>
+          <li>No loss of access for the user population during migration — remote work is the business</li>
+          <li>Admin network segmentation could not be relaxed at any phase, including transition states</li>
+          <li>Coexistence: legacy VPN and SASE platform had to operate side by side during phased rollout</li>
+          <li>Access policy had to become auditable and identity-based, not implied by network location</li>
+        </ul>
+
+        <h2>Role and ownership</h2>
+        <p>Lead Architect: owned the target architecture, platform selection input, policy model design, and migration sequencing. Defined the segmentation strategy that separated the user access plane from administrative planes, and the rollout plan that moved user groups in controlled waves.</p>
+
+        <h2>Architecture decisions</h2>
+        <div class="cs-adr">
+          <p><strong>Application-scoped access over network-scoped access.</strong> Recreating the VPN's network-level reachability inside the SASE platform was rejected — it would have modernized the transport while preserving the trust flaw. Access is granted per application and identity, so a compromised endpoint no longer inherits a network.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Admin access stays on its own plane.</strong> Folding administrative access into the same user-facing Zero Trust deployment was rejected. Administrative networks kept strict, separate segmentation; the user migration was not allowed to become a backdoor into infrastructure management.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Phased coexistence over big-bang cutover.</strong> User groups migrated in waves with the legacy VPN as a live fallback, so every wave was reversible and helpdesk load stayed bounded. Cost: running two access platforms in parallel for the transition period — accepted as the price of a safe migration at this user count.</p>
+        </div>
+
+        <h2>Implementation</h2>
+        <p>Policy model designed first: applications inventoried, access mapped to identities and groups, and the default changed from "reachable unless blocked" to "invisible unless granted." Pilot group validated the client experience and policy behaviour; rollout then proceeded in planned waves across the ~4,000-user population, with the legacy platform drained progressively and decommissioned at the end.</p>
+
+        <h2>Results</h2>
+        <ul>
+          <li>Full-tunnel VPN eliminated; legacy platform decommissioned</li>
+          <li>~4,000 users migrated to identity-based, application-scoped Zero Trust access</li>
+          <li>Admin network segmentation preserved intact through every migration phase</li>
+          <li>Lateral-movement exposure from compromised remote endpoints structurally reduced</li>
+          <li>€50–100k/yr in legacy platform costs eliminated: licensing, support, and an avoided concentrator hardware refresh</li>
+          <li>Remote-access support tickets roughly halved once the rollout stabilised</li>
+        </ul>
+
+        <h2>Lessons learned</h2>
+        <p>The application inventory is the hard part, not the platform. Zero Trust forces you to make explicit every access relationship the VPN allowed implicitly — surfacing that undocumented reality was the majority of the work, and it left the organization with an asset it never had before: an accurate map of who needs what.</p>
+
+        <h2>Technical notes</h2>
+        <ul>
+          <li>Platform: SASE architecture (Zscaler), identity-driven access policy</li>
+          <li>Policy model: per-application access scoped to identity and group; no network-level grants</li>
+          <li>Segmentation: administrative planes isolated from the user access plane throughout</li>
+          <li>Rollout: pilot → wave-based migration with live legacy fallback → decommission</li>
+        </ul>
+
+        <p style="margin-top:var(--space-8)"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+  </footer>
+</body>
+</html>

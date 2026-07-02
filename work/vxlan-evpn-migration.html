@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: VXLAN-EVPN Fabric Migration — Väinö Rikkonen</title>
+  <meta name="description" content="Migrating a production enterprise network fabric from spanning-tree to a VXLAN-EVPN overlay with zero service interruption. Case study by Väinö Rikkonen, Infrastructure & Network Architect." />
+  <link rel="canonical" href="https://rikkova.fi/work/vxlan-evpn-migration.html" />
+  <meta property="og:title" content="Case Study: VXLAN-EVPN Fabric Migration" />
+  <meta property="og:description" content="Production fabric migrated from spanning-tree to VXLAN-EVPN overlay via phased parallel-run cutover. Zero service interruption, MPLS integration sustained throughout." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://rikkova.fi/work/vxlan-evpn-migration.html" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
+  <script>
+    document.documentElement.setAttribute(
+      'data-theme',
+      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    );
+  </script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html">Väinö Rikkonen / @rikkova</a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-links desktop-only" style="display:flex">
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#expertise">Expertise</a>
+          <a href="../index.html#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="case-study">
+      <div class="container">
+        <a class="cs-back" href="../index.html#work">← All work</a>
+
+        <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Case Study · Network</span>
+        <h1>VXLAN-EVPN Fabric Migration</h1>
+        <p class="cs-lede">Migrating a production enterprise fabric from spanning-tree to a VXLAN-EVPN overlay — without a maintenance-window outage, and without breaking the MPLS core it depends on.</p>
+
+        <div class="cs-summary">
+          <p><strong>Summary:</strong> Lead Architect. Designed and executed the migration of a production datacenter network from a spanning-tree topology to a BGP EVPN-signalled VXLAN overlay. Phased parallel-run cutover; MPLS core integration sustained throughout; zero service interruption across a 20+ switch fabric carrying 300+ VLANs.</p>
+        </div>
+
+        <div class="cs-meta">
+          <span class="domain-tag">VXLAN-EVPN</span>
+          <span class="domain-tag">BGP</span>
+          <span class="domain-tag">MPLS</span>
+          <span class="domain-tag">Protocol Migration</span>
+        </div>
+
+        <h2>Problem</h2>
+        <p>The existing fabric ran classic spanning-tree: blocked links, large L2 failure domains, and change windows where a single misstep could take down a broadcast domain. The topology had become the ceiling on growth — new workloads needed L2 adjacency across the fabric, and every extension made the failure domain larger. The business need was capacity and change-safety; the technical answer was an overlay.</p>
+
+        <h2>Environment</h2>
+        <ul>
+          <li>Production enterprise datacenter fabric, multi-vendor environment</li>
+          <li>MPLS core connectivity and DWDM inter-datacenter transport in active use</li>
+          <li>20+ leaf/spine switches; 300+ VLANs mapped to VXLAN VNIs</li>
+        </ul>
+
+        <h2>Constraints</h2>
+        <ul>
+          <li>No service interruption acceptable — production workloads served throughout</li>
+          <li>MPLS integration had to remain functional at every phase of the migration</li>
+          <li>Legacy segments could not all move at once; the design had to tolerate a long coexistence period between STP and EVPN domains</li>
+          <li>Changes restricted to agreed maintenance windows with verified rollback at each step</li>
+        </ul>
+
+        <h2>Role and ownership</h2>
+        <p>Lead Architect: owned the target design, the migration sequencing, and the cutover execution strategy. Coordinated implementation across network engineering and datacenter operations; authored the runbooks each phase was executed from.</p>
+
+        <h2>Architecture decisions</h2>
+        <div class="cs-adr">
+          <p><strong>Parallel-run over flag-day cutover.</strong> Options considered: staged flag-day migration per segment vs. running the EVPN overlay in parallel with the legacy STP domain and moving workloads gradually. Chosen: parallel-run. A flag-day approach concentrated all risk into single windows with limited rollback; parallel-run made every move individually reversible. Cost: longer coexistence period and temporary complexity at the L2/L3 boundary — accepted deliberately.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>BGP EVPN as the control plane.</strong> Static VXLAN (flood-and-learn) was rejected: it scales MAC learning poorly and gives no policy control. EVPN provides MAC/IP reachability via BGP, ARP suppression, and a clean integration story with the existing BGP/MPLS edge.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Sustain MPLS integration during migration, not after.</strong> Rebuilding the MPLS edge post-migration was rejected — it would have decoupled two risky changes into two risky projects. The boundary between overlay and MPLS core was designed and validated first, then held stable while segments migrated behind it.</p>
+        </div>
+
+        <h2>Implementation</h2>
+        <p>Phased execution: overlay fabric built and validated alongside production; boundary to the MPLS core established and soak-tested; workload segments migrated in planned waves inside agreed windows, each with pre-verified rollback; legacy STP domain progressively drained and decommissioned. Validation at each wave covered reachability, failover behaviour, and telemetry baselines before the next wave was approved.</p>
+
+        <h2>Results</h2>
+        <ul>
+          <li>Zero service interruption across the full migration</li>
+          <li>L2 failure domains eliminated in favour of a routed underlay with ARP-suppressed overlay</li>
+          <li>Change risk profile transformed: segment moves became routine, reversible operations</li>
+          <li>Link and device failover cut from tens of seconds of STP reconvergence (~30–50s) to sub-second ECMP reroute</li>
+          <li>New segment provisioning reduced from a multi-day change process to minutes, via Ansible-driven repeatable workflows</li>
+        </ul>
+
+        <h2>Lessons learned</h2>
+        <p>The coexistence period is the real project. The target architecture was the easy part; most of the design effort went into making the *intermediate* states safe — every wave had to leave the network in a fully supportable condition, because production doesn't pause while you migrate.</p>
+
+        <h2>Technical notes</h2>
+        <ul>
+          <li>Overlay: VXLAN data plane, BGP EVPN control plane, ARP suppression enabled</li>
+          <li>Underlay: routed fabric; integration with existing BGP/OSPF and MPLS core</li>
+          <li>Validation: TIG-stack telemetry baselines per wave; state compared pre/post cutover</li>
+          <li>Runbooks: per-wave execution and rollback procedures, authored as part of the design</li>
+        </ul>
+
+        <p style="margin-top:var(--space-8)"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: Network Automation Framework — Väinö Rikkonen</title>
+  <meta name="description" content="Ansible/Python automation framework for a 100+ device multi-vendor network fleet — 50% fewer manual touchpoints, changes cut from hours to minutes. Case study by Väinö Rikkonen." />
+  <link rel="canonical" href="https://rikkova.fi/work/network-automation-framework.html" />
+  <meta property="og:title" content="Case Study: Network Automation Framework" />
+  <meta property="og:description" content="Git-versioned Ansible playbook library covering configuration changes, provisioning, and compliance across 100+ multi-vendor devices. 50% fewer manual operations; hours of CLI work reduced to minutes." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://rikkova.fi/work/network-automation-framework.html" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
+  <script>
+    document.documentElement.setAttribute(
+      'data-theme',
+      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    );
+  </script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html">Väinö Rikkonen / @rikkova</a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-links desktop-only" style="display:flex">
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#expertise">Expertise</a>
+          <a href="../index.html#contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="case-study">
+      <div class="container">
+        <a class="cs-back" href="../index.html#work">← All work</a>
+
+        <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Case Study · Automation</span>
+        <h1>Network Automation Framework</h1>
+        <p class="cs-lede">Replacing manual, device-by-device CLI operations with a version-controlled Ansible playbook library — built around the changes the team actually makes, not the ones a framework diagram says they should.</p>
+
+        <div class="cs-summary">
+          <p><strong>Summary:</strong> Lead Engineer. Architected and deployed an Ansible/Python automation framework for lifecycle management and configuration changes across a fleet of 100+ multi-vendor devices. Manual touchpoints cut by 50%; multi-device changes reduced from hours of sequential CLI work to minutes of playbook runtime; high-risk changes became repeatable, auditable, zero-drift operations.</p>
+        </div>
+
+        <div class="cs-meta">
+          <span class="domain-tag">Ansible · Python</span>
+          <span class="domain-tag">IaC</span>
+          <span class="domain-tag">Multi-vendor</span>
+          <span class="domain-tag">Zero-drift</span>
+        </div>
+
+        <h2>Problem</h2>
+        <p>Every routine operation — configuration changes, device provisioning, software upgrades, compliance checks — was executed by hand, device by device, over the CLI. At 100+ multi-vendor devices, that meant slow change windows, inconsistent configurations that drifted apart over time, and a risk profile where the most dangerous part of any change was a human typing into a production device. The team's capacity was consumed by repetition instead of engineering.</p>
+
+        <h2>Environment</h2>
+        <ul>
+          <li>Fleet of 100+ production network devices across datacenter and edge environments</li>
+          <li>Multi-vendor estate — no single vendor's native automation tooling could cover the fleet</li>
+          <li>Operations previously executed manually per device, per change, within maintenance windows</li>
+        </ul>
+
+        <h2>Constraints</h2>
+        <ul>
+          <li>Production fleet — automation had to earn trust incrementally; a bad playbook at fleet scale is a fleet-scale incident</li>
+          <li>Multi-vendor syntax and behaviour differences had to be abstracted without hiding what a change actually does</li>
+          <li>Every automated change had to remain reviewable and auditable — no opaque tooling between the engineer and the network</li>
+          <li>The team had to be able to run, read, and extend the framework — no single-maintainer tooling</li>
+        </ul>
+
+        <h2>Role and ownership</h2>
+        <p>Lead Engineer: designed the framework architecture, authored the core playbook library and supporting Python tooling, and set the conventions — inventory structure, review workflow, playbook standards — that let the rest of the team contribute safely. Introduced automation to the team's operating model, not just its toolbox.</p>
+
+        <h2>Architecture decisions</h2>
+        <div class="cs-adr">
+          <p><strong>Cover the most frequent tasks first, not the most impressive ones.</strong> The library was scoped by operational frequency: configuration changes, device provisioning, and compliance checks — the work that consumed the team weekly. Ambitions like full intent-based provisioning were deliberately deferred; automating the boring 80% delivered the 50% touchpoint reduction on its own.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Git as the source of truth.</strong> Playbooks and inventory live in version control; changes are peer-reviewed before they run, and executed from a control node. Rejected: engineers running local copies — the whole value of automation collapses if two people can hold different versions of the same operation.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Ansible for orchestration, Python where Ansible bends.</strong> Ansible's inventory and idempotent module model fit fleet operations; custom Python fills the gaps — data transformation, vendor quirks, validation logic — rather than forcing everything through one tool. Rejected: a bespoke pure-Python framework, which would have been a maintenance burden only its author could carry.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Automation enforces consistency, not just speed.</strong> Playbooks are idempotent and re-runnable: applying one to an already-compliant device changes nothing, and applying it to a drifted device corrects it. This turned standby and backup configurations from a thing someone remembers to sync into a thing that cannot drift unnoticed.</p>
+        </div>
+
+        <h2>Implementation</h2>
+        <p>Rolled out task by task: each operation was automated, validated against a limited device set, peer-reviewed, then promoted to fleet use — building the team's trust with each cycle. Provisioning, VLAN/VRF changes, software upgrade workflows, and compliance checks moved into the library in order of operational frequency. The framework's conventions were documented in the same SOP library that governs the team's manual procedures, so automated and manual operations share one standard.</p>
+
+        <h2>Results</h2>
+        <ul>
+          <li>50% reduction in manual touchpoints across the 100+ device fleet</li>
+          <li>Multi-device configuration changes cut from hours of sequential CLI work to minutes of playbook runtime</li>
+          <li>High-risk changes became repeatable, reviewable operations with consistent results across vendors</li>
+          <li>Configuration drift between paired and standby systems eliminated by re-runnable, idempotent playbooks</li>
+          <li>Capacity shifted from repetitive execution to engineering work that scales without added headcount</li>
+        </ul>
+
+        <h2>Lessons learned</h2>
+        <p>Adoption is the hard engineering problem. The framework only produced its numbers once the whole team ran it by default, and that took conventions, review workflow, and documentation — not more features. A playbook nobody trusts is slower than the CLI it replaces, because now the team maintains both.</p>
+
+        <h2>Technical notes</h2>
+        <ul>
+          <li>Stack: Ansible playbook library with custom Python tooling for validation and vendor abstraction</li>
+          <li>Source control: Git-versioned playbooks and inventory; peer-reviewed changes, executed from a control node</li>
+          <li>Coverage: configuration changes, device provisioning, VLAN/VRF operations, multi-vendor software upgrades, compliance checks</li>
+          <li>Design properties: idempotent, re-runnable, auditable — drift is corrected by re-application, not detected by accident</li>
+        </ul>
+
+        <p style="margin-top:var(--space-8)"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+  </footer>
+</body>
+</html>

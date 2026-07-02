@@ -1,41 +1,32 @@
-# Väinö Rikkonen | Infrastructure Architect & Design Engineer
+# rikkova.fi — Väinö Rikkonen, Infrastructure & Network Architect
 
-> *“Building reliable systems people can trust through architectural clarity and automation standards.”*
+Source for [rikkova.fi](https://rikkova.fi), the professional portfolio of Väinö Rikkonen: infrastructure and network architect in Helsinki, Finland. 8+ years across hyperscale operations (Google), enterprise datacenter transformation (CGI), and cyber defense (Accenture).
 
-## 🚀 Overview
-This repository hosts the source code and design artifacts for **rikkova.fi**, a professional portfolio dedicated to showcasing high-scale infrastructure architecture, network engineering, and automated system design.
+## What the site covers
 
-The project serves as a digital "System Manifest"—a blueprint of my approach to infrastructure: moving away from vendor-specific silos toward explainable, cohesive architectural standards.
+- **Network architecture** — BGP, OSPF, VXLAN-EVPN, MPLS, DWDM inter-DC transport, IPv4/IPv6 dual-stack, hybrid cloud connectivity (AWS Direct Connect, Azure ExpressRoute)
+- **Platform & compute** — Nutanix HCI design and migration, datacenter decommissioning and consolidation, capacity planning
+- **Automation & Zero Trust** — Ansible/Python infrastructure as code, SASE/Zero Trust access architecture
+- **Observability** — TIG-stack telemetry, BGP monitoring via BMP (RFC 7854), NetFlow at the internet edge
+- **Case studies** — [VXLAN-EVPN fabric migration](https://rikkova.fi/work/vxlan-evpn-migration.html), [SASE/Zero Trust migration for ~4,000 users](https://rikkova.fi/work/sase-zero-trust-migration.html)
 
-## 🏗️ Philosophy
-I believe that the complexity of modern infrastructure should not be an excuse for opacity. My work is centered on three core principles:
-1. **Explainable Infrastructure:** Architecture should be readable by humans and verifiable by systems alike.
-2. **Automation as Standard:** Manual configuration is a debt; IaC (Infrastructure as Code) and automated workflows are the baseline.
-3. **Design Cohesion:** A professional portfolio must reflect the same rigor as the networks it describes—focused, consistent, and intentionally designed.
+## Stack
 
-## 🛠️ Expertise & Services
-With over 9 years of experience in high-stakes environments (including **Google**, **Accenture**, and currently **CGI Helsinki**), I specialize in:
+Static site: HTML, CSS (custom design tokens, fluid type), vanilla JS with GSAP scroll animations. Deployed on Cloudflare (Wrangler). No framework, no build step.
 
-*   **Network Architecture:** BGP, OSPF, VXLAN-EVPN, MPLS, and DWDM.
-*   **Automation Frameworks:** Developing custom automation tools to bridge the gap between design and deployment.
-*   **Infrastructure Migrations:** Planning and executing large-scale network transitions with zero-downtime targets.
-*   **Technical Leadership:** Guiding cross-functional teams through complex technical due diligence and architectural audits.
+## Structure
 
-## 🖥️ Project Highlights (Portfolio)
-The website features a curated selection of work highlighting:
-- **Network Migration Automation:** HSRP failover planning and large-scale migrations.
-- **IaC & Frameworks:** Custom Python/Terraform implementations for scalable environments.
-- **Technical Due Diligence:** Analysis of legacy systems to modernization pathways.
+```
+index.html          Single-page portfolio
+work/               Case study pages
+css/style.css       Design tokens + all styles
+js/main.js          Theme toggle, mobile nav, scroll reveal
+robots.txt          Crawl config
+sitemap.xml         Index of pages
+```
 
-## 🔧 Tech Stack (Portfolio Development)
-*   **Frontend:** HTML5, CSS3 (Modern Grid, Fluid Typography), ES6+ JavaScript.
-*   **Design:** Custom Design Tokens, Responsive Architecture, Accessibility Standards.
-*   **DevOps:** Git, WSL-based development environment.
+## Contact
 
-## 🌐 Connect
-- **Portfolio:** [rikkova.fi](https://rikkova.fi)
-- **LinkedIn:** [linkedin.com/in/rikkova](https://www.linkedin.com/in/rikkova)
-- **Email:** [vaino.rikkonen@gmail.com](mailto:vaino.rikkonen@gmail.com)
-
----
-*Designed and architected by Väinö Rikkonen.*
+- [rikkova.fi](https://rikkova.fi)
+- [linkedin.com/in/rikkova](https://www.linkedin.com/in/rikkova)
+- [vaino.rikkonen@gmail.com](mailto:vaino.rikkonen@gmail.com)

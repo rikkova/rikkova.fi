@@ -3,12 +3,40 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rikkova.fi</title>
-  <meta name="description" content="Portfolio landing page for Väinö Rikkonen, an IT infrastructure architect." />
-  <meta property="og:title" content="Infrastructure Architect Portfolio" />
-  <meta property="og:description" content="A structured, modern portfolio landing page with a dark 2026 color direction." />
+  <title>Väinö Rikkonen — Infrastructure & Network Architect | Helsinki</title>
+  <meta name="description" content="Infrastructure and network architect (ex-Google). VXLAN-EVPN fabric migrations, datacenter transformations, SASE/Zero Trust for 4,000+ users, Ansible/Python network automation. Helsinki, Finland." />
+  <link rel="canonical" href="https://rikkova.fi/" />
+  <meta property="og:title" content="Väinö Rikkonen — Infrastructure & Network Architect" />
+  <meta property="og:description" content="Network fabrics, datacenter migrations, and the automation layer that keeps them operable. VXLAN-EVPN · BGP/MPLS · DWDM · Ansible. Ex-Google, based in Helsinki." />
   <meta property="og:type" content="website" />
-  <link rel="icon" href="data:," />
+  <meta property="og:url" content="https://rikkova.fi/" />
+  <meta property="og:site_name" content="rikkova.fi" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Väinö Rikkonen — Infrastructure & Network Architect" />
+  <meta name="twitter:description" content="VXLAN-EVPN fabrics, datacenter migrations, SASE/Zero Trust, network automation. Ex-Google, Helsinki." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Väinö Rikkonen",
+    "jobTitle": "Infrastructure Architect",
+    "url": "https://rikkova.fi/",
+    "email": "mailto:vaino.rikkonen@gmail.com",
+    "worksFor": { "@type": "Organization", "name": "CGI" },
+    "address": { "@type": "PostalAddress", "addressLocality": "Helsinki", "addressCountry": "FI" },
+    "sameAs": [
+      "https://www.linkedin.com/in/rikkova",
+      "https://github.com/rikkova"
+    ],
+    "knowsAbout": [
+      "Network Architecture", "Data Center Architecture", "Data Center Migration",
+      "Network Automation", "VXLAN-EVPN", "BGP", "OSPF", "MPLS", "DWDM",
+      "Ansible", "Python", "Zero Trust", "SASE", "Nutanix HCI",
+      "Hybrid Cloud Connectivity", "Network Observability", "High Availability"
+    ]
+  }
+  </script>
   <!-- Run before stylesheets: sets js-enabled (so .js-enabled .reveal hides correctly from first paint)
        and data-theme (so light/dark colour tokens resolve before any paint, no colour flash) -->
   <script>
@@ -49,8 +77,8 @@
         <!-- Desktop nav links -->
         <div class="nav-links desktop-only">
           <a href="#who-am-i">About</a>
-          <a href="#services">Services</a>
           <a href="#work">Work</a>
+          <a href="#expertise">Expertise</a>
           <a href="#how-i-work">Approach</a>
           <a href="#contact">Contact</a>
         </div>
@@ -72,8 +100,8 @@
   <div class="mobile-nav-overlay" id="mobile-nav" aria-hidden="true">
     <div class="mobile-nav-content">
       <a href="#who-am-i" class="mobile-nav-link">About</a>
-      <a href="#services" class="mobile-nav-link">Services</a>
       <a href="#work" class="mobile-nav-link">Work</a>
+      <a href="#expertise" class="mobile-nav-link">Expertise</a>
       <a href="#how-i-work" class="mobile-nav-link">Approach</a>
       <a href="#contact" class="mobile-nav-link">Contact</a>
     </div>
@@ -83,12 +111,13 @@
     <section class="hero section" id="top">
       <div class="wide hero-grid">
         <div class="reveal">
+          <p class="hero-kicker">Väinö Rikkonen — Infrastructure &amp; Network Architect · ex-Google · Helsinki</p>
           <h1>Designing reliable systems people can trust.</h1>
           <p>
-            I shape network, platform, and operational foundations that stay resilient under pressure, stay understandable for teams, and stay aligned with business change.
+            Network fabrics, datacenter migrations, and the automation layer that keeps them operable. VXLAN-EVPN · BGP/MPLS · DWDM · Ansible.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#contact">Start a conversation</a>
+            <a class="btn btn-primary" href="#contact">Discuss a role or project →</a>
             <a class="btn btn-secondary" href="#work">View selected work</a>
           </div>
         </div>
@@ -101,9 +130,8 @@
         <div class="manifest-header reveal">
           <span class="manifest-label">
             <span class="label-dot" aria-hidden="true"></span>
-            System Manifest
+            About
           </span>
-          <span class="manifest-version">v2026.6 · active</span>
         </div>
 
         <div class="manifest-grid">
@@ -150,7 +178,7 @@
 
               <div class="manifest-kpi-row">
                 <div class="manifest-kpi">
-                  <span class="kpi-number">9<span class="kpi-sup">yr</span></span>
+                  <span class="kpi-number">8<span class="kpi-sup">+yr</span></span>
                   <span class="kpi-context">enterprise infrastructure</span>
                 </div>
                 <div class="manifest-kpi">
@@ -186,10 +214,131 @@
       </div>
     </section>
 
-    <section class="section" id="services">
+    <section class="section" id="work">
       <div class="container">
         <div class="section-head reveal">
-          <h2>What I build</h2>
+          <h2>Selected Work</h2>
+          <p>Six engagements, each led from architecture through production.</p>
+        </div>
+        <div class="projects-grid">
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Technical Lead</span>
+              <span class="project-domain">Infrastructure</span>
+            </div>
+            <h3>Datacenter Migration</h3>
+            <div class="project-impact">
+              <span class="project-stat">20<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">racks consolidated</span>
+            </div>
+            <p class="project-outcome">End-to-end DC decommission strategy executed across complex multi-vendor environments. Critical infrastructure moved within agreed maintenance windows with zero service interruption across all workloads.</p>
+            <div class="project-tags">
+              <span>DC Migration</span>
+              <span>Critical Infrastructure</span>
+            </div>
+            <a class="project-link" href="./work/datacenter-migration.html">Read case study →</a>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Lead Architect</span>
+              <span class="project-domain">Network</span>
+            </div>
+            <h3>VXLAN-EVPN Fabric Migration</h3>
+            <div class="project-impact">
+              <span class="project-transform">STP → VXLAN-EVPN</span>
+            </div>
+            <p class="project-outcome">Production fabric migrated from spanning-tree to VXLAN-EVPN overlay. MPLS integration sustained throughout via phased parallel-run cutover with zero service interruption.</p>
+            <div class="project-tags">
+              <span>VXLAN-EVPN</span>
+              <span>BGP · MPLS</span>
+              <span>Protocol Migration</span>
+            </div>
+            <a class="project-link" href="./work/vxlan-evpn-migration.html">Read case study →</a>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Lead Architect</span>
+              <span class="project-domain">Security</span>
+            </div>
+            <h3>Zscaler SASE Modernisation</h3>
+            <div class="project-impact">
+              <span class="project-stat">4,000<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">users migrated</span>
+            </div>
+            <p class="project-outcome">Full-tunnel VPN eliminated. Zero Trust access deployed at enterprise scale while maintaining strict admin network segmentation.</p>
+            <div class="project-tags">
+              <span>Zero Trust</span>
+              <span>SASE</span>
+              <span>Cloud Security</span>
+            </div>
+            <a class="project-link" href="./work/sase-zero-trust-migration.html">Read case study →</a>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Lead Engineer</span>
+              <span class="project-domain">Automation</span>
+            </div>
+            <h3>Network Automation Framework</h3>
+            <div class="project-impact">
+              <span class="project-stat">50<span class="project-stat-sup">%</span></span>
+              <span class="project-stat-label">ops reduction</span>
+            </div>
+            <p class="project-outcome">Built a library of Ansible playbooks covering the team's most frequent operational tasks: configuration changes, device provisioning, and compliance checks. Eliminated half of all manual CLI touchpoints; high-risk changes became repeatable, zero-drift operations.</p>
+            <div class="project-tags">
+              <span>Ansible · Python</span>
+              <span>IaC</span>
+              <span>Zero-drift</span>
+            </div>
+            <a class="project-link" href="./work/network-automation-framework.html">Read case study →</a>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Technical Lead</span>
+              <span class="project-domain">Platform</span>
+            </div>
+            <h3>Nutanix HCI Migration</h3>
+            <div class="project-impact">
+              <span class="project-stat">1,000<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">VMs migrated</span>
+            </div>
+            <p class="project-outcome">Legacy Cisco UCS transformed to modern HCI platform covering architecture planning, network design, and full service transition.</p>
+            <div class="project-tags">
+              <span>HCI Migration</span>
+              <span>Virtualisation</span>
+              <span>Nutanix</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal">
+            <div class="project-card-header">
+              <span class="project-role">Migration Lead</span>
+              <span class="project-domain">Security</span>
+            </div>
+            <h3>Cisco ASA → FortiGate</h3>
+            <div class="project-impact">
+              <span class="project-stat">10<span class="project-stat-sup">+</span></span>
+              <span class="project-stat-label">EOL firewalls replaced</span>
+            </div>
+            <p class="project-outcome">Undocumented environment mapped, hardened, and migrated under critical timeline pressure. Security posture improved on delivery.</p>
+            <div class="project-tags">
+              <span>Firewall Migration</span>
+              <span>Security Hardening</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="expertise">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>Expertise</h2>
           <p>Network, platform, security, observability, and resilience infrastructure. Designed to stay understandable, recoverable, and honest about failure modes.</p>
         </div>
         <div class="services-list">
@@ -266,122 +415,6 @@
                 <li>3rd-site backup architecture: off-site recovery target and archive beyond the primary and secondary DC</li>
                 <li>Automation-enforced standby consistency: backup paths and configurations kept in sync with primary, drift-free</li>
               </ul>
-            </div>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="work">
-      <div class="container">
-        <div class="section-head reveal">
-          <h2>Selected Work</h2>
-          <p>Six engagements, each led from architecture through production.</p>
-        </div>
-        <div class="projects-grid">
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Lead Architect</span>
-              <span class="project-domain">Network</span>
-            </div>
-            <h3>VXLAN-EVPN Fabric Migration</h3>
-            <div class="project-impact">
-              <span class="project-transform">STP → VXLAN-EVPN</span>
-            </div>
-            <p class="project-outcome">Production fabric migrated from spanning-tree to VXLAN-EVPN overlay. MPLS integration sustained throughout via phased parallel-run cutover with zero service interruption.</p>
-            <div class="project-tags">
-              <span>VXLAN-EVPN</span>
-              <span>BGP · MPLS</span>
-              <span>Protocol Migration</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Lead Architect</span>
-              <span class="project-domain">Security</span>
-            </div>
-            <h3>Zscaler SASE Modernisation</h3>
-            <div class="project-impact">
-              <span class="project-stat">4,000<span class="project-stat-sup">+</span></span>
-              <span class="project-stat-label">users migrated</span>
-            </div>
-            <p class="project-outcome">Full-tunnel VPN eliminated. Zero Trust access deployed at enterprise scale while maintaining strict admin network segmentation.</p>
-            <div class="project-tags">
-              <span>Zero Trust</span>
-              <span>SASE</span>
-              <span>Cloud Security</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Technical Lead</span>
-              <span class="project-domain">Platform</span>
-            </div>
-            <h3>Nutanix HCI Migration</h3>
-            <div class="project-impact">
-              <span class="project-stat">1,000<span class="project-stat-sup">+</span></span>
-              <span class="project-stat-label">VMs migrated</span>
-            </div>
-            <p class="project-outcome">Legacy Cisco UCS transformed to modern HCI platform covering architecture planning, network design, and full service transition.</p>
-            <div class="project-tags">
-              <span>HCI Migration</span>
-              <span>Virtualisation</span>
-              <span>Nutanix</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Lead Engineer</span>
-              <span class="project-domain">Automation</span>
-            </div>
-            <h3>Network Automation Framework</h3>
-            <div class="project-impact">
-              <span class="project-stat">50<span class="project-stat-sup">%</span></span>
-              <span class="project-stat-label">ops reduction</span>
-            </div>
-            <p class="project-outcome">Built a library of Ansible playbooks covering the team's most frequent operational tasks: configuration changes, device provisioning, and compliance checks. Eliminated half of all manual CLI touchpoints; high-risk changes became repeatable, zero-drift operations.</p>
-            <div class="project-tags">
-              <span>Ansible · Python</span>
-              <span>IaC</span>
-              <span>Zero-drift</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Migration Lead</span>
-              <span class="project-domain">Security</span>
-            </div>
-            <h3>Cisco ASA → FortiGate</h3>
-            <div class="project-impact">
-              <span class="project-stat">10<span class="project-stat-sup">+</span></span>
-              <span class="project-stat-label">EOL firewalls replaced</span>
-            </div>
-            <p class="project-outcome">Undocumented environment mapped, hardened, and migrated under critical timeline pressure. Security posture improved on delivery.</p>
-            <div class="project-tags">
-              <span>Firewall Migration</span>
-              <span>Security Hardening</span>
-            </div>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Technical Lead</span>
-              <span class="project-domain">Infrastructure</span>
-            </div>
-            <h3>Datacenter Migration</h3>
-            <div class="project-impact">
-              <span class="project-transform">Multi-site · Multi-vendor</span>
-            </div>
-            <p class="project-outcome">End-to-end DC decommission strategy executed across complex multi-vendor environments. Critical infrastructure moved within agreed maintenance windows with zero service interruption across all workloads.</p>
-            <div class="project-tags">
-              <span>DC Migration</span>
-              <span>Critical Infrastructure</span>
             </div>
           </article>
 
@@ -482,7 +515,7 @@
           <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Contact</span>
         </div>
 
-        <h2 class="ctc-statement reveal">Open to infrastructure engagements where the real problem shows up on day two, not in the design review.</h2>
+        <h2 class="ctc-statement reveal">Open to senior infrastructure and network architecture roles, and selective consulting engagements — especially where the real problem shows up on day two, not in the design review.</h2>
 
         <div class="ctc-channels reveal" role="list">
 
@@ -493,7 +526,7 @@
                 <a class="ctc-link" href="mailto:vaino.rikkonen@gmail.com">vaino.rikkonen@gmail.com<span class="ctc-arrow" aria-hidden="true">→</span></a>
                 <button class="ctc-copy" data-copy="vaino.rikkonen@gmail.com" aria-label="Copy email address" type="button"><span class="ctc-copy-text">copy</span></button>
               </div>
-              <p class="ctc-context">Project enquiries · Architecture consulting · Technical leadership discussions</p>
+              <p class="ctc-context">Role enquiries · Project &amp; consulting enquiries · Technical leadership discussions</p>
             </div>
           </div>
 
