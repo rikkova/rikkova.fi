@@ -1,0 +1,15 @@
+# Not part of the public site — excluded from Workers asset upload
+.git
+.gitignore
+.wrangler
+.claude
+.agents
+.codex
+.impeccable
+.assetsignore
+.dev.vars*
+.env*
+node_modules
+wrangler.jsonc
+PRODUCT.md
+README.md

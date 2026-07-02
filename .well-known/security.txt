@@ -1,0 +1,4 @@
+Contact: mailto:vaino.rikkonen@gmail.com
+Expires: 2027-07-02T00:00:00.000Z
+Preferred-Languages: en, fi
+Canonical: https://rikkova.fi/.well-known/security.txt
