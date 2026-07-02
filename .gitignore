@@ -4,3 +4,9 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# AI tooling / local agent config — not part of the site
+.agents/
+.claude/
+.codex/
+.impeccable/
