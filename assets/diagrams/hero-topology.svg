@@ -1,0 +1,110 @@
+<svg viewBox="0 0 560 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="topo-title topo-desc">
+  <title id="topo-title">Dual-datacenter architecture</title>
+  <desc id="topo-desc">Two datacenters, each with a leaf-spine fabric, connected by DWDM over two diverse paths at the MPLS edge, with AWS and Azure cloud on-ramps.</desc>
+
+  <!--
+    HERO TOPOLOGY — tweak guide
+    · Colors are CSS custom properties with fallbacks. When this SVG is
+      inlined into index.html, replace the fallback literals with your
+      site tokens: var(- -color-primary), var(- -color-blue),
+      var(- -color-text), var(- -color-text-faint).
+    · Standalone preview adapts to OS dark/light via prefers-color-scheme.
+    · Layers, top to bottom: cloud chips → on-ramp lines → MPLS edge
+      nodes → DWDM arcs → DC containers → spines → mesh → leaves.
+    · Deliberately static. No animation.
+  -->
+
+  <style>
+    svg {
+      --ink:        var(--color-text, #eef2f6);
+      --faint:      var(--color-text-faint, #7e8c99);
+      --mint:       var(--color-primary, #72e0a0);
+      --blue:       var(--color-blue, #73b5ff);
+      --box-stroke: rgba(148, 163, 178, .45);
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    @media (prefers-color-scheme: light) {
+      svg { --ink: #0f172a; --faint: #64748b; }
+    }
+    .node   { fill: none; stroke: var(--box-stroke); stroke-width: 1.2; }
+    .dc     { fill: none; stroke: var(--box-stroke); stroke-width: 1; stroke-dasharray: 3 4; opacity: .8; }
+    .mesh   { stroke: var(--mint); stroke-width: 1.1; opacity: .5; fill: none; }
+    .uplink { stroke: var(--faint); stroke-width: 1; opacity: .6; fill: none; }
+    .dwdm-a { stroke: var(--blue); stroke-width: 1.6; opacity: .9;  fill: none; }
+    .dwdm-b { stroke: var(--blue); stroke-width: 1.6; opacity: .38; fill: none; }
+    .onramp { stroke: var(--faint); stroke-width: 1; opacity: .45; fill: none; }
+    .lbl    { fill: var(--faint); font-size: 10px; letter-spacing: .12em; }
+    .ntext  { fill: var(--ink);  font-size: 10px; letter-spacing: .08em; text-anchor: middle; }
+    .accent { fill: var(--mint); }
+  </style>
+
+  <!-- ── Cloud on-ramps ─────────────────────────────────────────── -->
+  <rect class="node" x="204" y="18" width="64" height="26" rx="8"/>
+  <text class="ntext" x="236" y="35">AWS</text>
+  <rect class="node" x="284" y="18" width="76" height="26" rx="8"/>
+  <text class="ntext" x="322" y="35">AZURE</text>
+
+  <path class="onramp" d="M 226 44 C 198 88, 158 130, 138 172"/>
+  <path class="onramp" d="M 334 44 C 362 88, 402 130, 422 172"/>
+
+  <!-- ── MPLS edge nodes ────────────────────────────────────────── -->
+  <rect class="node" x="105" y="174" width="60" height="24" rx="7"/>
+  <text class="ntext" x="135" y="190">MPLS</text>
+  <rect class="node" x="395" y="174" width="60" height="24" rx="7"/>
+  <text class="ntext" x="425" y="190">MPLS</text>
+
+  <!-- ── DWDM: two geographically diverse paths (active / standby) ─ -->
+  <path class="dwdm-a" d="M 168 180 C 240 112, 320 112, 392 180"/>
+  <path class="dwdm-b" d="M 168 192 C 240 156, 320 156, 392 192"/>
+  <text class="lbl" x="280" y="140" text-anchor="middle">DWDM · DIVERSE PATHS</text>
+
+  <!-- ── DC A ───────────────────────────────────────────────────── -->
+  <rect class="dc" x="30" y="228" width="220" height="192" rx="14"/>
+  <text class="lbl" x="46" y="252">DC A</text>
+
+  <!-- edge → spines -->
+  <path class="uplink" d="M 125 198 L 101 272"/>
+  <path class="uplink" d="M 145 198 L 169 272"/>
+
+  <!-- spines -->
+  <rect class="node" x="79"  y="274" width="44" height="20" rx="6"/>
+  <rect class="node" x="149" y="274" width="44" height="20" rx="6"/>
+  <circle class="accent" cx="101" cy="284" r="1.8"/>
+  <circle class="accent" cx="171" cy="284" r="1.8"/>
+
+  <!-- full mesh -->
+  <path class="mesh" d="M 101 294 L 70 360"/>
+  <path class="mesh" d="M 101 294 L 140 360"/>
+  <path class="mesh" d="M 101 294 L 210 360"/>
+  <path class="mesh" d="M 171 294 L 70 360"/>
+  <path class="mesh" d="M 171 294 L 140 360"/>
+  <path class="mesh" d="M 171 294 L 210 360"/>
+
+  <!-- leaves -->
+  <rect class="node" x="52"  y="360" width="36" height="18" rx="5"/>
+  <rect class="node" x="122" y="360" width="36" height="18" rx="5"/>
+  <rect class="node" x="192" y="360" width="36" height="18" rx="5"/>
+
+  <!-- ── DC B ───────────────────────────────────────────────────── -->
+  <rect class="dc" x="310" y="228" width="220" height="192" rx="14"/>
+  <text class="lbl" x="326" y="252">DC B</text>
+
+  <path class="uplink" d="M 415 198 L 381 272"/>
+  <path class="uplink" d="M 435 198 L 449 272"/>
+
+  <rect class="node" x="359" y="274" width="44" height="20" rx="6"/>
+  <rect class="node" x="429" y="274" width="44" height="20" rx="6"/>
+  <circle class="accent" cx="381" cy="284" r="1.8"/>
+  <circle class="accent" cx="451" cy="284" r="1.8"/>
+
+  <path class="mesh" d="M 381 294 L 350 360"/>
+  <path class="mesh" d="M 381 294 L 420 360"/>
+  <path class="mesh" d="M 381 294 L 490 360"/>
+  <path class="mesh" d="M 451 294 L 350 360"/>
+  <path class="mesh" d="M 451 294 L 420 360"/>
+  <path class="mesh" d="M 451 294 L 490 360"/>
+
+  <rect class="node" x="332" y="360" width="36" height="18" rx="5"/>
+  <rect class="node" x="402" y="360" width="36" height="18" rx="5"/>
+  <rect class="node" x="472" y="360" width="36" height="18" rx="5"/>
+</svg>
