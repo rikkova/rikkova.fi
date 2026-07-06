@@ -46,19 +46,10 @@
       window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     );
   </script>
-  <link rel="preconnect" href="https://api.fontshare.com" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-  <!-- Non-critical font CSS: preload then swap to stylesheet once downloaded -->
-  <link rel="preload" as="style"
-    href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap" /></noscript>
-  <link rel="preload" as="style"
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-    onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" /></noscript>
+  <!-- Fonts are self-hosted (@font-face in style.css → assets/fonts/). Preload the two above-the-fold faces. -->
+  <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/SpaceGrotesk-Bold.woff2" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/Inter-Regular.woff2" crossorigin />
   <link rel="stylesheet" href="./css/style.css" />
   <!-- GSAP for scroll animations — defer so they don't block first paint.
        Deferred scripts execute in document order after parsing, so ScrollTrigger
@@ -211,7 +202,7 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>Selected Work</h2>
-          <p>Six engagements, each led from architecture through production.</p>
+          <p>Six engagements across network, platform, security, automation, and AI — five delivered to production, one in active development.</p>
         </div>
         <div class="projects-grid">
 
