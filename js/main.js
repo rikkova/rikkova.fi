@@ -6,7 +6,8 @@
   // Theme toggle
   const toggle = document.querySelector('[data-theme-toggle]');
   const root = document.documentElement;
-  let current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let current = localStorage.getItem('theme') || (systemPrefersDark ? 'dark' : 'light');
 
   function renderIcon(theme) {
     if (!toggle) return;
@@ -23,6 +24,7 @@
     toggle.addEventListener('click', () => {
       current = current === 'dark' ? 'light' : 'dark';
       root.setAttribute('data-theme', current);
+      localStorage.setItem('theme', current);
       renderIcon(current);
     });
   }
@@ -32,126 +34,150 @@
   const mobileNav = document.getElementById('mobile-nav');
 
   if (mobileToggle && mobileNav) {
+    const focusableSelector = 'a[href], button:not([disabled])';
+
+    function setMobileNav(open) {
+      mobileNav.classList.toggle('active', open);
+      mobileNav.setAttribute('aria-hidden', String(!open));
+      mobileToggle.setAttribute('aria-expanded', String(open));
+      mobileToggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      document.body.style.overflow = open ? 'hidden' : '';
+
+      if (open) {
+        const firstLink = mobileNav.querySelector('.mobile-nav-link');
+        if (firstLink) firstLink.focus();
+      } else {
+        mobileToggle.focus();
+      }
+    }
+
     mobileToggle.addEventListener('click', () => {
-      const isOpen = mobileNav.classList.toggle('active');
-      mobileNav.setAttribute('aria-hidden', String(!isOpen));
-      mobileToggle.setAttribute('aria-expanded', String(isOpen));
-      mobileToggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+      setMobileNav(!mobileNav.classList.contains('active'));
     });
 
     mobileNav.querySelectorAll('.mobile-nav-link').forEach(link => {
       link.addEventListener('click', () => {
-        mobileNav.classList.remove('active');
-        mobileNav.setAttribute('aria-hidden', 'true');
-        mobileToggle.setAttribute('aria-expanded', 'false');
-        mobileToggle.setAttribute('aria-label', 'Open navigation');
-        document.body.style.overflow = '';
+        setMobileNav(false);
       });
+    });
+
+    document.addEventListener('keydown', event => {
+      if (!mobileNav.classList.contains('active')) return;
+
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMobileNav(false);
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const focusable = [mobileToggle, ...mobileNav.querySelectorAll(focusableSelector)];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     });
   }
 
-  // GSAP animations
-  if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
-    const customEase = 'cubic-bezier(0.16,1,0.3,1)';
-
-    const revealElements = document.querySelectorAll('.reveal');
-    if (revealElements.length > 0) {
-      revealElements.forEach(el => {
-        gsap.fromTo(
-          el,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.5,
-            ease: customEase,
-            scrollTrigger: {
-              trigger: el,
-              start: 'top 82%',
-              end: 'top 60%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        );
-
-        const cards = el.querySelectorAll('.card');
-        if (cards.length > 1) {
-          gsap.to(cards, {
-            y: 0,
-            opacity: 1,
-            duration: 0.4,
-            stagger: { each: 0.12, from: 'start', grid: 'autoRows', rowHeight: 140, clamp: cards.length },
-            ease: customEase,
-            scrollTrigger: {
-              trigger: el.parentElement?.parentElement || el,
-              start: 'top 82%',
-              toggleActions: 'play none none reverse',
-            },
-          });
-        }
+  // Native scroll reveals. If IntersectionObserver is unavailable, show content.
+  const revealElements = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && revealElements.length > 0) {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
       });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.08 });
 
-      if (document.querySelector('.hero')) {
-        gsap.to('.hero h1', {
-          yPercent: -30,
-          ease: 'none',
-          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-        });
-        gsap.to('.hero p', {
-          yPercent: -20,
-          ease: 'none',
-          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-        });
-        gsap.to('.hero-actions', {
-          yPercent: -10,
-          ease: 'none',
-          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true },
-        });
-      }
-
-      const sectionHeadings = document.querySelectorAll('.section-head h2');
-      sectionHeadings.forEach(heading => {
-        gsap.fromTo(
-          heading,
-          { y: 20, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.4,
-            ease: customEase,
-            scrollTrigger: { trigger: heading.parentElement, start: 'top 80%', toggleActions: 'play none none reverse' },
-          }
-        );
-      });
-
-      const navLinks = document.querySelectorAll('.nav-links a');
-      gsap.set(navLinks, { opacity: 1, y: 0 });
-    }
-
-    const counters = document.querySelectorAll('.counter');
-    if (counters.length > 0) {
-      counters.forEach(counter => {
-        const targetValue = parseFloat(counter.getAttribute('data-target'));
-        const suffix = counter.getAttribute('data-suffix') || '';
-        gsap.to(counter, {
-          innerHTML: () => String(targetValue) + suffix,
-          duration: 2.5,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: counter.parentElement.parentElement,
-            start: 'top 80%',
-            end: 'top 60%',
-            toggleActions: 'play none none reverse',
-            onEnter: () => gsap.set(counter, { innerHTML: '0' + suffix }),
-          },
-        });
-      });
-    }
+    revealElements.forEach(el => revealObserver.observe(el));
+  } else {
+    document.documentElement.classList.remove('js-enabled');
   }
 
-  // Copy-to-clipboard — contact section email
+  // Section-level scroll presence: keeps large desktop sections feeling paced.
+  const pageSections = Array.from(document.querySelectorAll('main > .section'));
+  if (pageSections.length > 0) {
+    let sectionTicking = false;
+
+    function setCurrentSection(section) {
+      pageSections.forEach(item => {
+        item.classList.toggle('is-section-current', item === section);
+      });
+    }
+
+    function updateCurrentSection() {
+      const viewportAnchor = window.scrollY + window.innerHeight * 0.52;
+      const currentSection = pageSections.find(section => {
+        const top = section.offsetTop;
+        const bottom = top + section.offsetHeight;
+        return viewportAnchor >= top && viewportAnchor < bottom;
+      }) || pageSections[pageSections.length - 1];
+
+      setCurrentSection(currentSection);
+      sectionTicking = false;
+    }
+
+    function requestSectionUpdate() {
+      if (sectionTicking) return;
+      sectionTicking = true;
+      requestAnimationFrame(updateCurrentSection);
+    }
+
+    window.addEventListener('scroll', requestSectionUpdate, { passive: true });
+    window.addEventListener('resize', requestSectionUpdate);
+    updateCurrentSection();
+  }
+
+  const sectionNavLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+  const navTargets = sectionNavLinks
+    .map(link => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+
+  if ('IntersectionObserver' in window && sectionNavLinks.length > 0 && navTargets.length > 0) {
+    const setActiveNav = id => {
+      sectionNavLinks.forEach(link => {
+        if (link.getAttribute('href') === '#' + id) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+    };
+
+    const activeObserver = new IntersectionObserver(entries => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (visible) setActiveNav(visible.target.id);
+    }, { rootMargin: '-30% 0px -55% 0px', threshold: [0.08, 0.2, 0.4] });
+
+    navTargets.forEach(section => activeObserver.observe(section));
+  }
+
+  // Back-to-top: visible only after ~80% of a viewport of scroll
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    let ticking = false;
+    function updateBackToTop() {
+      backToTop.classList.toggle('visible', window.scrollY > window.innerHeight * 0.8);
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) { requestAnimationFrame(updateBackToTop); ticking = true; }
+    }, { passive: true });
+    updateBackToTop();
+  }
+
+  // Copy-to-clipboard: contact section email
   document.querySelectorAll('#contact .ctc-copy').forEach(function(btn) {
     btn.addEventListener('click', function() {
       var text = btn.dataset.copy;

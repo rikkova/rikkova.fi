@@ -9,17 +9,18 @@ Source for [rikkova.fi](https://rikkova.fi), the professional portfolio of Väin
 - **Automation & Zero Trust** — Ansible/Python infrastructure as code, SASE/Zero Trust access architecture
 - **Observability** — TIG-stack telemetry, BGP monitoring via BMP (RFC 7854), NetFlow at the internet edge
 - **AI & infrastructure** — hyperscale AI compute operations (Google), LLM-assisted network engineering with RAG over SOPs (in development)
-- **Case studies** — [Datacenter decommissioning & consolidation (20+ racks)](https://rikkova.fi/work/datacenter-migration.html), [VXLAN-EVPN fabric migration](https://rikkova.fi/work/vxlan-evpn-migration.html), [SASE/Zero Trust migration for ~4,000 users](https://rikkova.fi/work/sase-zero-trust-migration.html), [Network automation framework (100+ devices)](https://rikkova.fi/work/network-automation-framework.html)
+- **Case studies** — [Datacenter decommissioning & consolidation (20+ racks)](https://rikkova.fi/work/datacenter-migration.html), [VXLAN-EVPN fabric migration](https://rikkova.fi/work/vxlan-evpn-migration.html), [SASE/Zero Trust migration for ~4,000 users](https://rikkova.fi/work/sase-zero-trust-migration.html), [Network automation framework (100+ devices)](https://rikkova.fi/work/network-automation-framework.html), [Nutanix HCI migration (1,000+ VMs)](https://rikkova.fi/work/nutanix-hci-migration.html)
 
 ## Stack
 
-Static site: HTML, CSS (custom design tokens, fluid type), vanilla JS with GSAP scroll animations. Deployed on Cloudflare (Wrangler). No framework, no build step.
+Static site: HTML, CSS (custom design tokens, fluid type), and vanilla JS with native IntersectionObserver scroll reveals. Deployed on Cloudflare (Wrangler). No framework, no build step.
 
 ## Structure
 
 ```
 index.html          Single-page portfolio
-work/               Case study pages (4)
+404.html            Branded not-found page
+work/               Case study pages (5)
 css/style.css       Design tokens + all styles
 js/main.js          Theme toggle, mobile nav, scroll reveal
 robots.txt          Crawl config

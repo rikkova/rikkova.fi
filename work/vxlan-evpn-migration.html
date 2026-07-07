@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Case Study: VXLAN-EVPN Fabric Migration — Väinö Rikkonen</title>
-  <meta name="description" content="Migrating a production enterprise network fabric from spanning-tree to a VXLAN-EVPN overlay with zero service interruption. Case study by Väinö Rikkonen, Infrastructure & Network Architect." />
+  <meta name="description" content="Migrating a production enterprise network fabric from spanning-tree to a VXLAN-EVPN overlay without a maintenance-window outage. Case study by Väinö Rikkonen, Infrastructure & Network Architect." />
   <link rel="canonical" href="https://rikkova.fi/work/vxlan-evpn-migration.html" />
   <meta property="og:title" content="Case Study: VXLAN-EVPN Fabric Migration" />
   <meta property="og:description" content="Production fabric migrated from spanning-tree to VXLAN-EVPN overlay via phased parallel-run cutover. Zero service interruption, MPLS integration sustained throughout." />
@@ -12,9 +12,10 @@
   <meta property="og:url" content="https://rikkova.fi/work/vxlan-evpn-migration.html" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
   <script>
+    const savedTheme = localStorage.getItem('theme');
     document.documentElement.setAttribute(
       'data-theme',
-      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
     );
   </script>
   <link rel="stylesheet" href="../css/style.css" />
@@ -22,16 +23,36 @@
 <body>
   <header class="header">
     <div class="container header-inner">
-      <a class="brand" href="../index.html">Väinö Rikkonen / @rikkova</a>
+      <a class="brand" href="../index.html">Väinö Rikkonen</a>
       <nav class="nav" aria-label="Primary">
-        <div class="nav-links desktop-only" style="display:flex">
+        <div class="nav-links desktop-only">
+          <a href="../index.html#who-am-i">About</a>
           <a href="../index.html#work">Work</a>
           <a href="../index.html#expertise">Expertise</a>
+          <a href="../index.html#how-i-work">How I work</a>
           <a href="../index.html#contact">Contact</a>
         </div>
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
       </nav>
     </div>
   </header>
+
+  <div class="mobile-nav-overlay" id="mobile-nav" aria-hidden="true">
+    <div class="mobile-nav-content">
+      <a href="../index.html#who-am-i" class="mobile-nav-link">About</a>
+      <a href="../index.html#work" class="mobile-nav-link">Work</a>
+      <a href="../index.html#expertise" class="mobile-nav-link">Expertise</a>
+      <a href="../index.html#how-i-work" class="mobile-nav-link">How I work</a>
+      <a href="../index.html#contact" class="mobile-nav-link">Contact</a>
+    </div>
+  </div>
 
   <main id="main">
     <article class="case-study">
@@ -41,9 +62,10 @@
         <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Case Study · Network</span>
         <h1>VXLAN-EVPN Fabric Migration</h1>
         <p class="cs-lede">Migrating a production enterprise fabric from spanning-tree to a VXLAN-EVPN overlay — without a maintenance-window outage, and without breaking the MPLS core it depends on.</p>
+        <p class="cs-context">Context: Finnish enterprise datacenter fabric; 20+ switches and 300+ VLANs mapped through a live production migration.</p>
 
         <div class="cs-summary">
-          <p><strong>Summary:</strong> Lead Architect. Designed and executed the migration of a production datacenter network from a spanning-tree topology to a BGP EVPN-signalled VXLAN overlay. Phased parallel-run cutover; MPLS core integration sustained throughout; zero service interruption across a 20+ switch fabric carrying 300+ VLANs.</p>
+          <p><strong>Summary:</strong> Lead Architect. Designed and executed the migration of a production datacenter network from a spanning-tree topology to a BGP EVPN-signalled VXLAN overlay. Phased parallel-run cutover; MPLS core integration sustained throughout; no maintenance-window outage across a 20+ switch fabric carrying 300+ VLANs.</p>
         </div>
 
         <div class="cs-meta">
@@ -108,13 +130,14 @@
           <li>Runbooks: per-wave execution and rollback procedures, authored as part of the design</li>
         </ul>
 
-        <p style="margin-top:var(--space-8)"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
+        <p class="cs-cta"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
       </div>
     </article>
   </main>
 
   <footer class="footer">
-    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+    <div class="container">© 2026 Väinö Rikkonen · Helsinki</div>
   </footer>
+  <script defer src="../js/main.js"></script>
 </body>
 </html>

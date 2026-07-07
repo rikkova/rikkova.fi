@@ -41,36 +41,31 @@
        and data-theme (so light/dark colour tokens resolve before any paint, no colour flash) -->
   <script>
     document.documentElement.classList.add('js-enabled');
+    const savedTheme = localStorage.getItem('theme');
     document.documentElement.setAttribute(
       'data-theme',
-      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
     );
   </script>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
   <!-- Fonts are self-hosted (@font-face in style.css → assets/fonts/). Preload the two above-the-fold faces. -->
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/SpaceGrotesk-Bold.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/Inter-Regular.woff2" crossorigin />
   <link rel="stylesheet" href="./css/style.css" />
-  <!-- GSAP for scroll animations — defer so they don't block first paint.
-       Deferred scripts execute in document order after parsing, so ScrollTrigger
-       and main.js are guaranteed to find gsap defined. -->
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="header">
     <div class="container header-inner">
-      <a class="brand" href="#">Väinö Rikkonen / @rikkova</a>
+      <a class="brand" href="#">Väinö Rikkonen</a>
       <nav class="nav" aria-label="Primary">
 
         <!-- Desktop nav links -->
         <div class="nav-links desktop-only">
           <a href="#who-am-i">About</a>
           <a href="#work">Work</a>
+          <a href="#how-i-work">How I work</a>
           <a href="#expertise">Expertise</a>
-          <a href="#how-i-work">Approach</a>
           <a href="#contact">Contact</a>
         </div>
 
@@ -92,8 +87,8 @@
     <div class="mobile-nav-content">
       <a href="#who-am-i" class="mobile-nav-link">About</a>
       <a href="#work" class="mobile-nav-link">Work</a>
+      <a href="#how-i-work" class="mobile-nav-link">How I work</a>
       <a href="#expertise" class="mobile-nav-link">Expertise</a>
-      <a href="#how-i-work" class="mobile-nav-link">Approach</a>
       <a href="#contact" class="mobile-nav-link">Contact</a>
     </div>
   </div>
@@ -103,7 +98,7 @@
       <div class="wide hero-grid">
         <div class="reveal">
           <p class="hero-kicker">Infrastructure &amp; Network Architect · ex-Google · Helsinki</p>
-          <h1>Designing reliable systems people can trust.</h1>
+          <h1>Designing reliable networks people can trust.</h1>
           <p>
             Network fabrics, datacenter migrations, and the automation layer that keeps them operable. VXLAN-EVPN · BGP/MPLS · DWDM · Ansible.
           </p>
@@ -112,87 +107,142 @@
             <a class="btn btn-secondary" href="#work">View selected work</a>
           </div>
         </div>
+
+        <div class="hero-visual reveal">
+          <svg id="hero-topo" viewBox="0 0 560 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="topo-title topo-desc">
+            <title id="topo-title">Multi-site VXLAN-EVPN architecture</title>
+            <desc id="topo-desc">Two datacenters, each with a leaf-spine fabric, joined by a VXLAN-EVPN overlay across DWDM diverse paths at the MPLS edge, with AWS and Azure cloud on-ramps.</desc>
+            <style>
+              #hero-topo{font-family:var(--font-mono)}
+              #hero-topo .ht-node{fill:none;stroke:color-mix(in oklab,var(--color-text) 38%,transparent);stroke-width:1.2}
+              #hero-topo .ht-dc{fill:none;stroke:color-mix(in oklab,var(--color-text) 30%,transparent);stroke-width:1;stroke-dasharray:3 4;opacity:.8}
+              #hero-topo .ht-mesh{stroke:var(--color-primary);stroke-width:1.1;opacity:.5;fill:none}
+              #hero-topo .ht-uplink{stroke:var(--color-text-faint);stroke-width:1;opacity:.6;fill:none}
+              #hero-topo .ht-dwdm-a{stroke:var(--color-blue);stroke-width:1.6;opacity:.9;fill:none}
+              #hero-topo .ht-dwdm-b{stroke:var(--color-blue);stroke-width:1.6;opacity:.38;fill:none}
+              #hero-topo .ht-onramp{stroke:var(--color-text-faint);stroke-width:1;opacity:.45;fill:none}
+              #hero-topo .ht-overlay{stroke:var(--color-primary);stroke-width:1.5;stroke-dasharray:6 5;opacity:.85;fill:none}
+              #hero-topo .ht-lbl{fill:var(--color-text-faint);font-size:10px;letter-spacing:.12em}
+              #hero-topo .ht-ntext{fill:var(--color-text);font-size:10px;letter-spacing:.08em;text-anchor:middle;opacity:.9}
+              #hero-topo .ht-vtep{fill:var(--color-primary)}
+            </style>
+
+            <!-- Cloud on-ramps -->
+            <rect class="ht-node" x="204" y="18" width="64" height="26" rx="8"/>
+            <text class="ht-ntext" x="236" y="35">AWS</text>
+            <rect class="ht-node" x="284" y="18" width="76" height="26" rx="8"/>
+            <text class="ht-ntext" x="322" y="35">AZURE</text>
+            <path class="ht-onramp" d="M 226 44 C 198 88, 158 130, 138 172"/>
+            <path class="ht-onramp" d="M 334 44 C 362 88, 402 130, 422 172"/>
+
+            <!-- MPLS edge -->
+            <rect class="ht-node" x="105" y="174" width="60" height="24" rx="7"/>
+            <text class="ht-ntext" x="135" y="190">MPLS</text>
+            <rect class="ht-node" x="395" y="174" width="60" height="24" rx="7"/>
+            <text class="ht-ntext" x="425" y="190">MPLS</text>
+
+            <!-- DWDM underlay: two diverse paths -->
+            <path class="ht-dwdm-a" d="M 168 180 C 240 112, 320 112, 392 180"/>
+            <path class="ht-dwdm-b" d="M 168 192 C 240 156, 320 156, 392 192"/>
+            <text class="ht-lbl" x="280" y="124" text-anchor="middle">DWDM · DIVERSE PATHS</text>
+
+            <!-- DC A -->
+            <rect class="ht-dc" x="30" y="228" width="220" height="192" rx="14"/>
+            <text class="ht-lbl" x="46" y="252">DC A</text>
+            <path class="ht-uplink" d="M 125 198 L 101 272"/>
+            <path class="ht-uplink" d="M 145 198 L 169 272"/>
+            <rect class="ht-node" x="79" y="274" width="44" height="20" rx="6"/>
+            <rect class="ht-node" x="149" y="274" width="44" height="20" rx="6"/>
+            <path class="ht-mesh" d="M 101 294 L 70 360"/>
+            <path class="ht-mesh" d="M 101 294 L 140 360"/>
+            <path class="ht-mesh" d="M 101 294 L 210 360"/>
+            <path class="ht-mesh" d="M 171 294 L 70 360"/>
+            <path class="ht-mesh" d="M 171 294 L 140 360"/>
+            <path class="ht-mesh" d="M 171 294 L 210 360"/>
+            <rect class="ht-node" x="52" y="360" width="36" height="18" rx="5"/>
+            <rect class="ht-node" x="122" y="360" width="36" height="18" rx="5"/>
+            <rect class="ht-node" x="192" y="360" width="36" height="18" rx="5"/>
+            <circle class="ht-vtep" cx="70" cy="369" r="1.8"/>
+            <circle class="ht-vtep" cx="140" cy="369" r="1.8"/>
+            <circle class="ht-vtep" cx="210" cy="369" r="1.8"/>
+            <text class="ht-lbl" x="46" y="404">VTEP LEAVES</text>
+
+            <!-- DC B -->
+            <rect class="ht-dc" x="310" y="228" width="220" height="192" rx="14"/>
+            <text class="ht-lbl" x="326" y="252">DC B</text>
+            <path class="ht-uplink" d="M 415 198 L 381 272"/>
+            <path class="ht-uplink" d="M 435 198 L 449 272"/>
+            <rect class="ht-node" x="359" y="274" width="44" height="20" rx="6"/>
+            <rect class="ht-node" x="429" y="274" width="44" height="20" rx="6"/>
+            <path class="ht-mesh" d="M 381 294 L 350 360"/>
+            <path class="ht-mesh" d="M 381 294 L 420 360"/>
+            <path class="ht-mesh" d="M 381 294 L 490 360"/>
+            <path class="ht-mesh" d="M 451 294 L 350 360"/>
+            <path class="ht-mesh" d="M 451 294 L 420 360"/>
+            <path class="ht-mesh" d="M 451 294 L 490 360"/>
+            <rect class="ht-node" x="332" y="360" width="36" height="18" rx="5"/>
+            <rect class="ht-node" x="402" y="360" width="36" height="18" rx="5"/>
+            <rect class="ht-node" x="472" y="360" width="36" height="18" rx="5"/>
+            <circle class="ht-vtep" cx="350" cy="369" r="1.8"/>
+            <circle class="ht-vtep" cx="420" cy="369" r="1.8"/>
+            <circle class="ht-vtep" cx="490" cy="369" r="1.8"/>
+
+            <!-- VXLAN-EVPN overlay between sites -->
+            <path class="ht-overlay" d="M 140 382 C 190 458, 370 458, 420 382"/>
+            <text class="ht-lbl" x="280" y="470" text-anchor="middle">VXLAN-EVPN OVERLAY · BGP EVPN</text>
+          </svg>
+        </div>
       </div>
     </section>
 
     <section class="section" id="who-am-i">
       <div class="wide">
 
-        <div class="manifest-header reveal">
-          <span class="manifest-label">
-            <span class="label-dot" aria-hidden="true"></span>
-            About
-          </span>
-        </div>
-
         <div class="manifest-grid">
 
-          <!-- LEFT: Identity · Current Focus · Operating Principle -->
+          <!-- LEFT: About · Current Focus · Operating Principle -->
           <div class="manifest-left">
 
             <div class="manifest-identity reveal">
-              <span class="field-label">Identity</span>
               <h2 class="manifest-name">Väinö Rikkonen</h2>
               <p class="manifest-role">IT Infrastructure Architect · Helsinki, FI</p>
             </div>
 
             <div class="manifest-focus reveal">
-              <span class="field-label">Current Focus</span>
+              <span class="field-label">Infrastructure Focus</span>
               <p class="focus-value">
-                Deploying greenfield VXLAN-EVPN network fabrics, migrating rigid legacy infrastructure to scalable automated platforms — and building an LLM-based agent that validates network designs against SOPs.
+                I design and modernize infrastructure across network fabrics, data center platforms, security boundaries, and automation workflows. My work focuses on making complex environments easier to operate, hand over, recover, and scale, from VXLAN-EVPN fabrics and legacy migrations to AI-assisted validation against engineering standards.
               </p>
             </div>
 
             <div class="manifest-philosophy reveal">
               <span class="field-label">Operating Principle</span>
               <p class="philosophy-text">
-                Great infrastructure is invisible to the teams running it. I design for the day-two operator, not the design review: building systems that stay understandable, recoverable, honest about their failure modes, and transparent about their cost of ownership.
+                I design infrastructure for the team that inherits it: explainable, recoverable, measurable, and honest about failure modes.
               </p>
             </div>
 
           </div><!-- .manifest-left -->
 
-          <!-- RIGHT: Architecture Record panel -->
-          <div class="manifest-panel reveal" aria-label="Architecture record">
-            <div class="manifest-panel-inner">
+          <aside class="manifest-evidence reveal" aria-label="Track record">
+            <span class="field-label">Track Record</span>
 
-              <div class="manifest-panel-top">
-                <span class="label">Architecture Record</span>
-              </div>
+            <div class="evidence-metrics">
+              <div><strong>8+yr</strong><span>enterprise infrastructure</span></div>
+              <div><strong>4,000+</strong><span>Zero Trust users migrated</span></div>
+              <div><strong>100+</strong><span>devices automated</span></div>
+            </div>
 
-              <div class="manifest-kpi-row">
-                <div class="manifest-kpi">
-                  <span class="kpi-number">8<span class="kpi-sup">+yr</span></span>
-                  <span class="kpi-context">enterprise infrastructure</span>
-                </div>
-                <div class="manifest-kpi">
-                  <span class="kpi-number">4k<span class="kpi-sup">+</span></span>
-                  <span class="kpi-context">users migrated to Zero Trust remote access</span>
-                </div>
-                <div class="manifest-kpi">
-                  <span class="kpi-number">50<span class="kpi-sup">%</span></span>
-                  <span class="kpi-context">fewer manual ops via automation</span>
-                </div>
-              </div>
+            <div class="evidence-timeline" aria-label="Selected experience">
+              <div><span>CGI</span><strong>Enterprise infrastructure</strong><em>2017-2022 / 2024-present</em></div>
+              <div><span>Google</span><strong>Hyperscale operations</strong><em>2023-2024</em></div>
+              <div><span>Accenture</span><strong>Security operations</strong><em>2020-2021</em></div>
+            </div>
 
-              <div class="manifest-signal-strip">
-                <span class="field-label">Signal</span>
-                <ul class="signal-strip-list">
-                  <li><span>Core Skill</span><span>Network Architecture</span></li>
-                  <li><span>Background</span><span>Google · CGI · Accenture</span></li>
-                  <li><span>Open to</span><span>Senior roles · Consulting</span></li>
-                </ul>
-              </div>
-
-              <div class="manifest-domains">
-                <span class="domain-tag">Network Architecture</span>
-                <span class="domain-tag">Platform &amp; DC</span>
-                <span class="domain-tag">Automation</span>
-                <span class="domain-tag">Security &amp; Access</span>
-              </div>
-
-            </div><!-- .manifest-panel-inner -->
-          </div><!-- .manifest-panel -->
+            <div class="evidence-cert-list">
+              <p class="evidence-cert">Cisco CCNP Service Provider SPCOR in progress</p>
+            </div>
+          </aside>
 
         </div><!-- .manifest-grid -->
       </div>
@@ -202,116 +252,209 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>Selected Work</h2>
-          <p>Six engagements across network, platform, security, automation, and AI — five delivered to production, one in active development.</p>
+          <p>Selected programs, reduced to the change made and the operational result.</p>
         </div>
-        <div class="projects-grid">
+        <div class="case-records">
 
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Technical Lead</span>
-              <span class="project-domain">Infrastructure</span>
+          <article class="case-record case-record--featured reveal">
+            <div class="case-index">01</div>
+            <div class="case-body">
+              <div class="case-meta">
+                <span>Lead Architect</span>
+                <span>Network fabric</span>
+              </div>
+              <h3>VXLAN-EVPN Fabric Migration</h3>
+              <p class="case-transform">STP <span aria-hidden="true">→</span> VXLAN-EVPN</p>
+              <p>Production fabric moved from spanning-tree to VXLAN-EVPN while MPLS integration stayed live through a phased parallel-run cutover.</p>
+              <dl class="case-facts">
+                <div><dt>Outcome</dt><dd>Zero service interruption</dd></div>
+                <div><dt>Constraint</dt><dd>Parallel-run migration</dd></div>
+              </dl>
+              <a class="case-link" href="./work/vxlan-evpn-migration.html">Case record <span aria-hidden="true">→</span></a>
             </div>
-            <h3>Datacenter Migration</h3>
-            <div class="project-impact">
-              <span class="project-stat">20<span class="project-stat-sup">+</span></span>
-              <span class="project-stat-label">racks consolidated</span>
-            </div>
-            <p class="project-outcome">End-to-end DC decommission strategy executed across complex multi-vendor environments. Critical infrastructure moved within agreed maintenance windows with zero service interruption across all workloads.</p>
-            <div class="project-tags">
-              <span>DC Migration</span>
-              <span>Critical Infrastructure</span>
-            </div>
-            <a class="project-link" href="./work/datacenter-migration.html">Read case study →</a>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Lead Architect</span>
-              <span class="project-domain">Network</span>
-            </div>
-            <h3>VXLAN-EVPN Fabric Migration</h3>
-            <div class="project-impact">
-              <span class="project-transform">STP → VXLAN-EVPN</span>
-            </div>
-            <p class="project-outcome">Production fabric migrated from spanning-tree to VXLAN-EVPN overlay. MPLS integration sustained throughout via phased parallel-run cutover with zero service interruption.</p>
-            <div class="project-tags">
-              <span>VXLAN-EVPN</span>
-              <span>BGP · MPLS</span>
-              <span>Protocol Migration</span>
-            </div>
-            <a class="project-link" href="./work/vxlan-evpn-migration.html">Read case study →</a>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Lead Architect</span>
-              <span class="project-domain">Security</span>
-            </div>
-            <h3>Zscaler SASE Modernisation</h3>
-            <div class="project-impact">
-              <span class="project-stat">4,000<span class="project-stat-sup">+</span></span>
-              <span class="project-stat-label">users migrated</span>
-            </div>
-            <p class="project-outcome">Full-tunnel VPN eliminated. Zero Trust access deployed at enterprise scale while maintaining strict admin network segmentation.</p>
-            <div class="project-tags">
-              <span>Zero Trust</span>
-              <span>SASE</span>
-              <span>Cloud Security</span>
-            </div>
-            <a class="project-link" href="./work/sase-zero-trust-migration.html">Read case study →</a>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Lead Engineer</span>
-              <span class="project-domain">Automation</span>
-            </div>
-            <h3>Network Automation Framework</h3>
-            <div class="project-impact">
-              <span class="project-stat">50<span class="project-stat-sup">%</span></span>
-              <span class="project-stat-label">ops reduction</span>
-            </div>
-            <p class="project-outcome">Built a library of Ansible playbooks covering the team's most frequent operational tasks: configuration changes, device provisioning, and compliance checks. Eliminated half of all manual CLI touchpoints; high-risk changes became repeatable, zero-drift operations.</p>
-            <div class="project-tags">
-              <span>Ansible · Python</span>
-              <span>IaC</span>
-              <span>Zero-drift</span>
-            </div>
-            <a class="project-link" href="./work/network-automation-framework.html">Read case study →</a>
-          </article>
-
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Technical Lead</span>
-              <span class="project-domain">Platform</span>
-            </div>
-            <h3>Nutanix HCI Migration</h3>
-            <div class="project-impact">
-              <span class="project-stat">1,000<span class="project-stat-sup">+</span></span>
-              <span class="project-stat-label">VMs migrated</span>
-            </div>
-            <p class="project-outcome">Legacy Cisco UCS transformed to modern HCI platform covering architecture planning, network design, and full service transition.</p>
-            <div class="project-tags">
-              <span>HCI Migration</span>
-              <span>Virtualisation</span>
-              <span>Nutanix</span>
+            <div class="case-diagram case-diagram--fabric" aria-hidden="true">
+              <svg viewBox="0 0 280 180" focusable="false">
+                <text x="140" y="18" text-anchor="middle">VXLAN FABRIC</text>
+                <g class="diagram-box"><rect x="76" y="28" width="56" height="26" rx="4"></rect><rect x="148" y="28" width="56" height="26" rx="4"></rect></g>
+                <path class="diagram-muted" d="M104 54 68 126M104 54 140 126M104 54 212 126M176 54 68 126M176 54 140 126M176 54 212 126"></path>
+                <g class="diagram-box"><rect x="44" y="126" width="48" height="26" rx="4"></rect><rect x="116" y="126" width="48" height="26" rx="4"></rect><rect x="188" y="126" width="48" height="26" rx="4"></rect></g>
+                <g class="diagram-node"><circle cx="68" cy="139" r="4"></circle><circle cx="140" cy="139" r="4"></circle><circle cx="212" cy="139" r="4"></circle></g>
+                <path class="diagram-accent" stroke-dasharray="6 5" d="M68 156C96 174 184 174 212 156"></path>
+                <rect class="diagram-box" x="118" y="80" width="44" height="20" rx="10"></rect>
+                <text x="140" y="94" text-anchor="middle">EVPN</text>
+              </svg>
             </div>
           </article>
 
-          <article class="project-card reveal">
-            <div class="project-card-header">
-              <span class="project-role">Architect · In Development</span>
-              <span class="project-domain">AI</span>
+          <article class="case-record case-record--featured reveal">
+            <div class="case-index">02</div>
+            <div class="case-body">
+              <div class="case-meta">
+                <span>Technical Lead</span>
+                <span>Infrastructure</span>
+              </div>
+              <h3>Datacenter Migration</h3>
+              <p class="case-transform">Legacy rooms <span aria-hidden="true">→</span> consolidated DC footprint</p>
+              <p>Multi-vendor datacenter consolidation completed inside maintenance windows, with critical infrastructure moved without user-visible downtime.</p>
+              <dl class="case-facts">
+                <div><dt>Scale</dt><dd>20+ racks consolidated</dd></div>
+                <div><dt>Constraint</dt><dd>Critical service windows</dd></div>
+              </dl>
+              <a class="case-link" href="./work/datacenter-migration.html">Case record <span aria-hidden="true">→</span></a>
             </div>
-            <h3>Intelligent Network Agent</h3>
-            <div class="project-impact">
-              <span class="project-transform">LLM × Network Engineering</span>
+            <div class="case-diagram case-diagram--dc" aria-hidden="true">
+              <svg viewBox="0 0 280 180" focusable="false">
+                <g class="diagram-box diagram-muted-box">
+                  <rect x="28" y="36" width="34" height="86" rx="4"></rect>
+                  <rect x="72" y="50" width="34" height="72" rx="4"></rect>
+                  <rect x="116" y="64" width="34" height="58" rx="4"></rect>
+                </g>
+                <path class="diagram-muted" d="M38 54h14M38 72h14M82 68h14M82 86h14M126 82h14M126 100h14"></path>
+                <path class="diagram-accent" d="M156 88h42m-12-12 12 12-12 12"></path>
+                <rect class="diagram-box" x="206" y="36" width="48" height="92" rx="5"></rect>
+                <path class="diagram-accent" d="M216 56h28M216 76h28M216 96h28M216 116h28"></path>
+                <path class="diagram-muted" d="M230 128v8M216 136h28"></path>
+                <text x="88" y="150" text-anchor="middle">LEGACY ROOMS</text>
+                <text x="230" y="150" text-anchor="middle">TARGET DC</text>
+              </svg>
             </div>
-            <p class="project-outcome">Self-hosted LLM with RAG over the SOP library: validates network designs, answers engineering questions from internal documentation, and reads live network state through the Ansible framework — deploys nothing by design. Production rollout planned for 2026.</p>
-            <div class="project-tags">
-              <span>LLM · RAG</span>
-              <span>Self-hosted</span>
-              <span>Ansible Integration</span>
+          </article>
+
+          <article class="case-record case-record--featured reveal">
+            <div class="case-index">03</div>
+            <div class="case-body">
+              <div class="case-meta">
+                <span>Lead Architect</span>
+                <span>Security access</span>
+              </div>
+              <h3>Zscaler SASE Modernisation</h3>
+              <p class="case-transform">Full-tunnel VPN <span aria-hidden="true">→</span> Zero Trust access</p>
+              <p>Full-tunnel VPN retired and Zero Trust access deployed at enterprise scale while preserving strict admin network segmentation.</p>
+              <dl class="case-facts">
+                <div><dt>Scale</dt><dd>4,000+ users migrated</dd></div>
+                <div><dt>Constraint</dt><dd>Admin network segmentation</dd></div>
+              </dl>
+              <a class="case-link" href="./work/sase-zero-trust-migration.html">Case record <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="case-diagram case-diagram--sase" aria-hidden="true">
+              <svg viewBox="0 0 280 180" focusable="false">
+                <g class="diagram-node">
+                  <circle cx="46" cy="56" r="8"></circle><circle cx="46" cy="92" r="8"></circle><circle cx="46" cy="128" r="8"></circle>
+                </g>
+                <path class="diagram-muted" d="M54 56C70 56 70 92 78 92M54 92h24M54 128C70 128 70 92 78 92"></path>
+                <path class="diagram-accent" d="M78 92h28"></path>
+                <path class="diagram-accent" style="fill:color-mix(in oklab,var(--color-bg) 72%,transparent)" d="M124 78c8-20 40-20 48 0 16 0 26 10 26 24 0 15-12 25-28 25h-48c-17 0-28-10-28-25 0-14 12-24 30-24Z"></path>
+                <path class="diagram-accent" d="M198 102h38M236 102V74"></path>
+                <path class="diagram-muted" stroke-dasharray="4 4" d="M236 102v20"></path>
+                <rect class="diagram-box" x="214" y="46" width="44" height="28" rx="4"></rect>
+                <rect class="diagram-box" x="214" y="122" width="44" height="28" rx="4"></rect>
+                <text x="146" y="106" text-anchor="middle">ZTE</text>
+                <text x="236" y="39" text-anchor="middle">APPS</text>
+                <text x="236" y="166" text-anchor="middle">ADMIN</text>
+              </svg>
+            </div>
+          </article>
+
+          <article class="case-record reveal">
+            <div class="case-index">04</div>
+            <div class="case-body">
+              <div class="case-meta">
+                <span>Lead Engineer</span>
+                <span>Automation</span>
+              </div>
+              <h3>Network Automation Framework</h3>
+              <p class="case-transform">Manual changes <span aria-hidden="true">→</span> repeatable operations</p>
+              <p>Ansible playbook library for configuration changes, provisioning, and compliance checks; high-risk changes became repeatable operations.</p>
+              <dl class="case-facts">
+                <div><dt>Outcome</dt><dd>Reduced operational effort</dd></div>
+                <div><dt>Constraint</dt><dd>Multi-vendor device estate</dd></div>
+              </dl>
+              <a class="case-link" href="./work/network-automation-framework.html">Case record <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="case-diagram case-diagram--automation" aria-hidden="true">
+              <svg viewBox="0 0 280 180" focusable="false">
+                <rect class="diagram-box" x="26" y="36" width="78" height="108" rx="5"></rect>
+                <path class="diagram-muted" d="M42 62h46M42 84h34M42 106h46M42 128h30"></path>
+                <path class="diagram-accent" d="M112 51h48m-10-10 10 10-10 10M112 91h48m-10-10 10 10-10 10M112 131h48m-10-10 10 10-10 10"></path>
+                <g class="diagram-box">
+                  <rect x="178" y="38" width="70" height="26" rx="4"></rect>
+                  <rect x="178" y="78" width="70" height="26" rx="4"></rect>
+                  <rect x="178" y="118" width="70" height="26" rx="4"></rect>
+                </g>
+                <g class="diagram-node"><circle cx="232" cy="51" r="4"></circle><circle cx="232" cy="91" r="4"></circle><circle cx="232" cy="131" r="4"></circle></g>
+                <text x="65" y="24" text-anchor="middle">PLAYBOOKS</text>
+                <text x="213" y="24" text-anchor="middle">DEVICES</text>
+              </svg>
+            </div>
+          </article>
+
+          <article class="case-record reveal">
+            <div class="case-index">05</div>
+            <div class="case-body">
+              <div class="case-meta">
+                <span>Technical Lead</span>
+                <span>Platform</span>
+              </div>
+              <h3>Nutanix HCI Migration</h3>
+              <p class="case-transform">Cisco UCS estate <span aria-hidden="true">→</span> modern HCI platform</p>
+              <p>Legacy Cisco UCS estate transformed to a modern HCI platform, covering architecture, network design, and service transition.</p>
+              <dl class="case-facts">
+                <div><dt>Scale</dt><dd>1,000+ VMs migrated</dd></div>
+                <div><dt>Constraint</dt><dd>Service transition and capacity model</dd></div>
+              </dl>
+              <a class="case-link" href="./work/nutanix-hci-migration.html">Case record <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="case-diagram case-diagram--hci" aria-hidden="true">
+              <svg viewBox="0 0 280 180" focusable="false">
+                <g class="diagram-box diagram-muted-box">
+                  <rect x="28" y="46" width="44" height="78" rx="4"></rect>
+                  <rect x="82" y="46" width="44" height="78" rx="4"></rect>
+                </g>
+                <path class="diagram-muted" d="M40 64h20M40 82h20M94 64h20M94 82h20"></path>
+                <path class="diagram-accent" d="M132 88h34m-10-10 10 10-10 10"></path>
+                <g class="diagram-node">
+                  <circle cx="198" cy="58" r="18"></circle>
+                  <circle cx="230" cy="90" r="18"></circle>
+                  <circle cx="198" cy="122" r="18"></circle>
+                </g>
+                <path class="diagram-accent" d="M211 71l6 6M217 103l-6 6M198 76v28"></path>
+                <text x="78" y="146" text-anchor="middle">UCS</text>
+                <text x="214" y="32" text-anchor="middle">HCI CLUSTER</text>
+              </svg>
+            </div>
+          </article>
+
+          <article class="case-record case-record--planned reveal">
+            <div class="case-index">06</div>
+            <div class="case-body">
+              <div class="case-meta">
+                <span>Architect</span>
+                <span>AI / in development</span>
+              </div>
+              <h3>Intelligent Network Agent</h3>
+              <p class="case-transform">SOP library <span aria-hidden="true">→</span> read-only design assistant</p>
+              <p>Self-hosted LLM with RAG over SOPs and read-only Ansible state; validates designs and answers engineering questions without deployment rights.</p>
+              <dl class="case-facts">
+                <div><dt>Mode</dt><dd>Human-in-the-loop validation</dd></div>
+                <div><dt>Constraint</dt><dd>Reads state, deploys nothing</dd></div>
+              </dl>
+            </div>
+            <div class="case-diagram case-diagram--agent" aria-hidden="true">
+              <svg viewBox="0 0 280 180" focusable="false">
+                <rect class="diagram-box" x="24" y="34" width="56" height="42" rx="5"></rect>
+                <rect class="diagram-box" x="24" y="104" width="56" height="42" rx="5"></rect>
+                <path class="diagram-muted" d="M38 52h28M38 62h20M38 122h28M38 132h20"></path>
+                <path class="diagram-accent" d="M80 55C108 55 106 90 128 90M80 125C108 125 106 90 128 90"></path>
+                <circle class="diagram-node" cx="154" cy="90" r="24"></circle>
+                <path class="diagram-muted" d="M144 84h20M144 96h20"></path>
+                <path class="diagram-accent" d="M178 90h38"></path>
+                <rect class="diagram-box" x="216" y="64" width="40" height="52" rx="5"></rect>
+                <path class="diagram-muted" d="M226 82h20M226 98h20"></path>
+                <text x="52" y="24" text-anchor="middle">SOP</text>
+                <text x="52" y="162" text-anchor="middle">STATE</text>
+                <text x="154" y="128" text-anchor="middle">RAG</text>
+                <text x="236" y="132" text-anchor="middle">READ</text>
+              </svg>
             </div>
           </article>
 
@@ -321,101 +464,111 @@
 
     <section class="section" id="expertise">
       <div class="container">
-        <div class="section-head reveal">
-          <h2>Expertise</h2>
-          <p>Network, platform, security, observability, and resilience infrastructure. Designed to stay understandable, recoverable, and honest about failure modes.</p>
-        </div>
-        <div class="services-list">
+        <div class="expertise-map">
+          <div class="expertise-map-intro reveal">
+            <p class="expertise-kicker">What I do</p>
+            <h2>Expertise</h2>
+            <div class="expertise-intro-rule" aria-hidden="true"></div>
+            <p>Designing resilient, recoverable infrastructure across network, platform, security, automation, observability, and AI-assisted engineering domains.</p>
+            <div class="expertise-radar" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
 
-          <article class="service-item reveal">
-            <div class="service-item-meta">
-              <h3 class="service-name">Network Architecture</h3>
-            </div>
-            <div class="service-item-content">
-              <p class="service-statement">From BGP topology decisions to VXLAN-EVPN fabric deployment: production-grade network design that accounts for failure modes before the first packet flows.</p>
-              <ul class="service-delivers">
-                <li>Routing &amp; switching architecture: BGP, OSPF, VXLAN-EVPN, MPLS</li>
-                <li>Edge, WAN, and datacenter fabric design</li>
-                <li>Protocol migrations with zero-downtime execution strategy</li>
-                <li>DWDM inter-DC transport: wavelength-multiplexed dark fiber delivering hundreds of Gbps, with per-service wavelength isolation and dual systems over geographically diverse fiber paths</li>
-                <li>IPv4/IPv6 dual-stack design and deployment: production IPv6 at the internet edge including DNS services, with active rollout ongoing</li>
-                <li>Hybrid cloud connectivity: AWS Direct Connect and Azure ExpressRoute terminated at the MPLS edge, bridging on-premises infrastructure to cloud workloads with dedicated private paths</li>
-              </ul>
-            </div>
-          </article>
+          <div class="expertise-map-body reveal">
+            <p class="expertise-map-label">Core competencies</p>
 
-          <article class="service-item reveal">
-            <div class="service-item-meta">
-              <h3 class="service-name">Platform &amp; Compute</h3>
-            </div>
-            <div class="service-item-content">
-              <p class="service-statement">Compute and virtualisation infrastructure built for the team who inherits it: HCI platforms, datacenter migrations, and capacity models that age gracefully.</p>
-              <ul class="service-delivers">
-                <li>HCI platform design and migration (Nutanix)</li>
-                <li>Datacenter decommission and consolidation strategy</li>
-                <li>Virtualisation architecture and capacity planning</li>
-              </ul>
-            </div>
-          </article>
+            <article class="expertise-node expertise-node--right">
+              <span class="expertise-node-number">01</span>
+              <span class="expertise-node-dot" aria-hidden="true"></span>
+              <div class="expertise-node-content">
+                <svg class="expertise-node-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <circle cx="24" cy="10" r="5"></circle>
+                  <circle cx="12" cy="34" r="5"></circle>
+                  <circle cx="36" cy="34" r="5"></circle>
+                  <path d="M22 15 14 29M26 15l8 14M17 34h14"></path>
+                </svg>
+                <div>
+                  <h3>Network Architecture</h3>
+                  <p>BGP &middot; OSPF &middot; VXLAN-EVPN &middot; MPLS &middot; DWDM &middot; IPv6 &middot; cloud on-ramps</p>
+                </div>
+              </div>
+            </article>
 
-          <article class="service-item reveal">
-            <div class="service-item-meta">
-              <h3 class="service-name">Automation &amp; Zero Trust</h3>
-            </div>
-            <div class="service-item-content">
-              <p class="service-statement">Removing humans from routine operations and implicit trust from the security model at the same time, because they're the same problem.</p>
-              <ul class="service-delivers">
-                <li>Infrastructure as Code: Ansible, Terraform, Python</li>
-                <li>Zero Trust access architecture: SASE, Zscaler ZTE</li>
-                <li>Zero-drift operational model: version-controlled, auditable, repeatable</li>
-              </ul>
-            </div>
-          </article>
+            <article class="expertise-node expertise-node--left">
+              <span class="expertise-node-number">02</span>
+              <span class="expertise-node-dot" aria-hidden="true"></span>
+              <div class="expertise-node-content">
+                <svg class="expertise-node-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <rect x="10" y="8" width="28" height="9" rx="3"></rect>
+                  <rect x="10" y="20" width="28" height="9" rx="3"></rect>
+                  <rect x="10" y="32" width="28" height="9" rx="3"></rect>
+                  <path d="M16 12h1M16 24h1M16 36h1"></path>
+                </svg>
+                <div>
+                  <h3>Platform &amp; Compute</h3>
+                  <p>Nutanix &middot; Cisco UCS transitions &middot; datacenter migration &middot; capacity model &middot; backup posture</p>
+                </div>
+              </div>
+            </article>
 
-          <article class="service-item reveal">
-            <div class="service-item-meta">
-              <h3 class="service-name">Observability &amp; Telemetry</h3>
-            </div>
-            <div class="service-item-content">
-              <p class="service-statement">Infrastructure you can't see is infrastructure you can't trust. Telemetry pipelines and monitoring stacks that make network state visible, queryable, and alertable before incidents become outages.</p>
-              <ul class="service-delivers">
-                <li>Network telemetry pipeline: Telegraf, InfluxDB, Grafana (TIG stack)</li>
-                <li>BGP advertisement monitoring via BMP (RFC 7854)</li>
-                <li>NetFlow collection at the internet edge: traffic baselining and DDoS detection</li>
-                <li>Service availability monitoring: synthetic checks, alerting, and uptime visibility</li>
-              </ul>
-            </div>
-          </article>
+            <article class="expertise-node expertise-node--right">
+              <span class="expertise-node-number">03</span>
+              <span class="expertise-node-dot" aria-hidden="true"></span>
+              <div class="expertise-node-content">
+                <svg class="expertise-node-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M24 6 38 12v12c0 10-6 16-14 19C16 40 10 34 10 24V12l14-6Z"></path>
+                </svg>
+                <div>
+                  <h3>Security Architecture</h3>
+                  <p>SASE &middot; Zscaler ZTE &middot; admin segmentation &middot; cyber defense operations &middot; incident workflows</p>
+                </div>
+              </div>
+            </article>
 
-          <article class="service-item reveal">
-            <div class="service-item-meta">
-              <h3 class="service-name">High Availability &amp; Resilience</h3>
-            </div>
-            <div class="service-item-content">
-              <p class="service-statement">A single device failure should be an event in the monitoring system, not an incident for the service desk. Resilience is designed in at every layer, then validated by automation.</p>
-              <ul class="service-delivers">
-                <li>HA firewall clusters with nodes across separate DC rooms or sites: no single device failure interrupts traffic flow</li>
-                <li>WAN path diversity: MPLS edge present at each DC, shared services reachable independently via either site</li>
-                <li>3rd-site backup architecture: off-site recovery target and archive beyond the primary and secondary DC</li>
-                <li>Automation-enforced standby consistency: backup paths and configurations kept in sync with primary, drift-free</li>
-              </ul>
-            </div>
-          </article>
+            <article class="expertise-node expertise-node--left">
+              <span class="expertise-node-number">04</span>
+              <span class="expertise-node-dot" aria-hidden="true"></span>
+              <div class="expertise-node-content">
+                <svg class="expertise-node-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="m18 14-9 10 9 10M30 14l9 10-9 10M26 9 21 39"></path>
+                </svg>
+                <div>
+                  <h3>Automation &amp; IaC</h3>
+                  <p>Ansible &middot; Terraform &middot; Python &middot; provisioning &middot; compliance checks &middot; zero-drift operations</p>
+                </div>
+              </div>
+            </article>
 
-          <article class="service-item reveal">
-            <div class="service-item-meta">
-              <h3 class="service-name">AI &amp; Infrastructure</h3>
-            </div>
-            <div class="service-item-content">
-              <p class="service-statement">Infrastructure that runs AI, and AI that helps run infrastructure. The same discipline applies on both sides: grounded in documentation, constrained by design, never trusted blindly.</p>
-              <ul class="service-delivers">
-                <li>Hyperscale AI compute: deployed and maintained the compute infrastructure behind Google's AI workloads</li>
-                <li>LLM-assisted network engineering: self-hosted model with RAG over the SOP library, validating designs and answering engineering questions from internal documentation — in development, production rollout planned for 2026</li>
-                <li>Human-in-the-loop by design: read-only integration with the Ansible automation framework — the agent reads live network state, deploys nothing</li>
-                <li>Self-hosted LLM operations since 2023: running and evaluating open models to understand the stack, not just consume it</li>
-              </ul>
-            </div>
-          </article>
+            <article class="expertise-node expertise-node--right">
+              <span class="expertise-node-number">05</span>
+              <span class="expertise-node-dot" aria-hidden="true"></span>
+              <div class="expertise-node-content">
+                <svg class="expertise-node-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M10 38h28M10 38V10M15 31l7-8 6 5 10-13"></path>
+                </svg>
+                <div>
+                  <h3>Observability &amp; Operations</h3>
+                  <p>Telegraf &middot; InfluxDB &middot; Grafana &middot; BMP &middot; NetFlow &middot; synthetic checks &middot; alerting</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="expertise-node expertise-node--left">
+              <span class="expertise-node-number">06</span>
+              <span class="expertise-node-dot" aria-hidden="true"></span>
+              <div class="expertise-node-content">
+                <svg class="expertise-node-icon" viewBox="0 0 48 48" aria-hidden="true">
+                  <path d="M24 8v32M16 12c-5 1-8 5-8 10 0 4 2 7 5 9-1 5 3 9 8 9M32 12c5 1 8 5 8 10 0 4-2 7-5 9 1 5-3 9-8 9"></path>
+                  <path d="M17 20h6M25 28h6M17 31h4M27 17h4"></path>
+                </svg>
+                <div>
+                  <h3>AI-assisted Network Engineering</h3>
+                  <p>Hyperscale AI compute &middot; self-hosted LLMs &middot; RAG over SOPs &middot; read-only Ansible state</p>
+                </div>
+              </div>
+            </article>
+          </div>
 
         </div>
       </div>
@@ -425,81 +578,49 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>How I work</h2>
-          <p>Architecture that's explainable, measurable, and operable once the workshop ends, not just during the design review.</p>
+          <p>Keep the system understandable: measure first, document the decision, leave the team able to operate it.</p>
         </div>
-        <div class="approach-grid">
+        <div class="lifecycle-path" aria-label="Operational architecture lifecycle">
 
-          <article class="approach-card reveal">
-            <div class="approach-card-top">
-              <span class="approach-step" aria-hidden="true">01</span>
-              <h3 class="field-label">Assess</h3>
-            </div>
-            <p class="approach-statement">
-              Audit failure modes before design begins. Every bad design is a misread constraint in disguise.
-            </p>
-            <div class="approach-detail">
-              <div class="approach-examines">
-                <span class="approach-detail-label">Examines</span>
-                <ul>
-                  <li>Performance data &amp; failure patterns</li>
-                  <li>Team habits &amp; operational load</li>
-                  <li>Latent technical debt</li>
-                  <li>Budget envelope and business constraints</li>
-                </ul>
-              </div>
-              <div class="approach-not">
-                <span class="approach-detail-label approach-detail-label--not">Not</span>
-                <p>Surface requirements that ignore how the system is actually operated.</p>
-              </div>
+          <article class="lifecycle-step reveal">
+            <div class="lifecycle-node" aria-hidden="true"></div>
+            <div class="lifecycle-copy">
+              <p class="lifecycle-label">Ingress / discovery</p>
+              <h3>Assess</h3>
+              <p>Expose constraints, failure modes, operational load, and hidden technical debt before design decisions are made.</p>
+              <ul>
+                <li>Performance data and failure patterns</li>
+                <li>Team habits and operational load</li>
+                <li>Budget envelope and business constraints</li>
+              </ul>
             </div>
           </article>
 
-          <article class="approach-card reveal">
-            <div class="approach-card-top">
-              <span class="approach-step" aria-hidden="true">02</span>
-              <h3 class="field-label">Design</h3>
-            </div>
-            <p class="approach-statement">
-              Every decision documented: what was chosen, what was rejected, and why. The team in year three deserves to understand what they inherited.
-            </p>
-            <div class="approach-detail">
-              <div class="approach-examines">
-                <span class="approach-detail-label">Produces</span>
-                <ul>
-                  <li>Architecture decision records</li>
-                  <li>Network &amp; platform designs</li>
-                  <li>Day-two operational runbooks</li>
-                  <li>Cost impact documentation: design decisions justified in terms a CTO and CFO can both reason about</li>
-                </ul>
-              </div>
-              <div class="approach-not">
-                <span class="approach-detail-label approach-detail-label--not">Not</span>
-                <p>Architecture optimised for the design review rather than the operator who inherits it.</p>
-              </div>
+          <article class="lifecycle-step reveal">
+            <div class="lifecycle-node" aria-hidden="true"></div>
+            <div class="lifecycle-copy">
+              <p class="lifecycle-label">Control plane / decision</p>
+              <h3>Design</h3>
+              <p>Produce architecture decisions, migration paths, runbooks, and cost-aware tradeoffs the inheriting team can defend.</p>
+              <ul>
+                <li>Architecture decision records</li>
+                <li>Network and platform designs</li>
+                <li>Day-two operational runbooks</li>
+              </ul>
             </div>
           </article>
 
-          <article class="approach-card reveal">
-            <div class="approach-card-top">
-              <span class="approach-step" aria-hidden="true">03</span>
-              <h3 class="field-label">Enable</h3>
-            </div>
-            <p class="approach-statement">
-              A system isn't delivered until the team running it can make changes without fear. Observable state. Self-evident failure modes. No tribal knowledge required.
-            </p>
-            <div class="approach-detail">
-              <div class="approach-examines">
-                <span class="approach-detail-label">Produces</span>
-                <ul>
-                  <li>Automation frameworks &amp; IaC</li>
-                  <li>Operational runbooks</li>
-                  <li>Knowledge transfer sessions</li>
-                </ul>
-              </div>
-              <div class="approach-not">
-                <span class="approach-detail-label approach-detail-label--not">Not</span>
-                <p>Documentation nobody reads because the system isn't self-evident enough to run without tribal knowledge.</p>
-              </div>
+          <article class="lifecycle-step reveal">
+            <div class="lifecycle-node" aria-hidden="true"></div>
+            <div class="lifecycle-copy">
+              <p class="lifecycle-label">Handover / operation</p>
+              <h3>Enable</h3>
+              <p>Leave behind an operable system: observable state, documented failure modes, automation hooks, and no dependency on tribal knowledge.</p>
+              <ul>
+                <li>Automation frameworks and IaC</li>
+                <li>Operational ownership model</li>
+                <li>Knowledge transfer with failure modes</li>
+              </ul>
             </div>
           </article>
 
@@ -510,11 +631,14 @@
     <section class="section" id="contact">
       <div class="container">
 
-        <div class="ctc-header reveal">
-          <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Contact</span>
-        </div>
+        <h2 class="ctc-statement reveal">Let’s design infrastructure people can operate on day two.</h2>
 
-        <h2 class="ctc-statement reveal">Open to senior infrastructure and network architecture roles, and selective consulting engagements — especially where the real problem shows up on day two, not in the design review.</h2>
+        <div class="contact-scope reveal" aria-label="Engagement types">
+          <span>Senior infrastructure architecture roles</span>
+          <span>Network architecture roles</span>
+          <span>Selective consulting engagements</span>
+          <span>Technical due diligence / design review</span>
+        </div>
 
         <div class="ctc-channels reveal" role="list">
 
@@ -545,7 +669,17 @@
               <div class="ctc-link-row">
                 <a class="ctc-link" href="https://github.com/rikkova" target="_blank" rel="noopener noreferrer">github.com/rikkova<span class="ctc-arrow" aria-hidden="true">→</span></a>
               </div>
-              <p class="ctc-context">Technical due diligence · IaC, automation frameworks, and network code review</p>
+              <p class="ctc-context">Selected engineering references · IaC, automation frameworks, and infrastructure tooling</p>
+            </div>
+          </div>
+
+          <div class="ctc-channel" role="listitem">
+            <span class="ctc-type" role="img" aria-label="CV"><svg class="ctc-icon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+            <div class="ctc-body">
+              <div class="ctc-link-row">
+                <a class="ctc-link" href="./Vaino_Rikkonen_CV.pdf" download>Download CV (PDF)<span class="ctc-arrow" aria-hidden="true">→</span></a>
+              </div>
+              <p class="ctc-context">Complete CV · Career history &amp; certifications · For recruiters and HR systems</p>
             </div>
           </div>
 
@@ -554,13 +688,13 @@
     </section>
 
     <!-- Back to top button -->
-    <a class="back-to-top reveal" href="#top" aria-label="Back to top">↑</a>
+    <a class="back-to-top" href="#top" aria-label="Back to top">↑</a>
   </main>
 
   <footer class="footer">
-    <div class="container">© 2026 Väinö Rikkonen | Designing reliable systems people can trust.</div>
+    <div class="container">© 2026 Väinö Rikkonen · Helsinki</div>
   </footer>
 
-  <script defer src="./js/main.js"></script>
+  <script defer src="./js/main.js?v=20260707-3"></script>
 </body>
 </html>

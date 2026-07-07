@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Study: Nutanix HCI Migration - Vaino Rikkonen</title>
+  <meta name="description" content="Migrating a legacy Cisco UCS estate to Nutanix HCI for 1,000+ VMs: architecture, migration planning, network design, and service transition." />
+  <link rel="canonical" href="https://rikkova.fi/work/nutanix-hci-migration.html" />
+  <meta property="og:title" content="Case Study: Nutanix HCI Migration" />
+  <meta property="og:description" content="Legacy Cisco UCS transformed to a Nutanix HCI platform for 1,000+ VMs, covering architecture, network design, migration planning, and service transition." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://rikkova.fi/work/nutanix-hci-migration.html" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    document.documentElement.setAttribute(
+      'data-theme',
+      savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+    );
+  </script>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="../index.html">Väinö Rikkonen</a>
+      <nav class="nav" aria-label="Primary">
+        <div class="nav-links desktop-only">
+          <a href="../index.html#who-am-i">About</a>
+          <a href="../index.html#work">Work</a>
+          <a href="../index.html#expertise">Expertise</a>
+          <a href="../index.html#how-i-work">How I work</a>
+          <a href="../index.html#contact">Contact</a>
+        </div>
+        <button class="mobile-menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch color mode">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="mobile-nav-overlay" id="mobile-nav" aria-hidden="true">
+    <div class="mobile-nav-content">
+      <a href="../index.html#who-am-i" class="mobile-nav-link">About</a>
+      <a href="../index.html#work" class="mobile-nav-link">Work</a>
+      <a href="../index.html#expertise" class="mobile-nav-link">Expertise</a>
+      <a href="../index.html#how-i-work" class="mobile-nav-link">How I work</a>
+      <a href="../index.html#contact" class="mobile-nav-link">Contact</a>
+    </div>
+  </div>
+
+  <main id="main">
+    <article class="case-study">
+      <div class="container">
+        <a class="cs-back" href="../index.html#work">← All work</a>
+
+        <span class="manifest-label"><span class="label-dot" aria-hidden="true"></span>Case Study · Platform</span>
+        <h1>Nutanix HCI Migration</h1>
+        <p class="cs-lede">Transforming a legacy Cisco UCS estate into a modern Nutanix HCI platform: architecture, migration planning, network design, and service transition for 1,000+ virtual machines.</p>
+        <p class="cs-context">Context: Finnish enterprise platform estate; 1,000+ VMs moving from legacy blade infrastructure to hyperconverged capacity.</p>
+
+        <div class="cs-summary">
+          <p><strong>Summary:</strong> Technical Lead. Led the architecture and migration planning for a Cisco UCS to Nutanix HCI transformation, aligning compute, storage, network, capacity, and operational transition work so the platform could be migrated without turning the infrastructure team into the bottleneck.</p>
+        </div>
+
+        <div class="cs-meta">
+          <span class="domain-tag">Nutanix</span>
+          <span class="domain-tag">HCI Migration</span>
+          <span class="domain-tag">Virtualisation</span>
+          <span class="domain-tag">Platform Architecture</span>
+        </div>
+
+        <h2>Problem</h2>
+        <p>The existing Cisco UCS platform carried a large VM estate but was becoming harder to scale, operate, and refresh cleanly. The target was not a cosmetic platform swap: the migration needed a simpler capacity model, clearer operational boundaries, and a network design that would let workloads move in controlled waves.</p>
+
+        <h2>Environment</h2>
+        <ul>
+          <li>Legacy Cisco UCS-based virtualization estate with 1,000+ VMs</li>
+          <li>Target Nutanix HCI platform integrated into existing datacenter network and operations</li>
+          <li>Enterprise workloads with mixed criticality, ownership, and maintenance-window constraints</li>
+        </ul>
+
+        <h2>Constraints</h2>
+        <ul>
+          <li>Migration waves had to respect application ownership, dependency groups, and service windows</li>
+          <li>Target capacity had to be modelled before migration, including growth headroom and failure-domain behavior</li>
+          <li>Network integration had to support coexistence while legacy and HCI platforms ran side by side</li>
+          <li>Operations needed a clear handover model: monitoring, backups, patching, and day-two ownership</li>
+        </ul>
+
+        <h2>Role and ownership</h2>
+        <p>Technical Lead for architecture and migration planning: owned the target-state design, network integration approach, capacity model, migration sequencing, and service transition plan. Coordinated platform, network, and operations stakeholders so the migration was treated as a service move, not just a hypervisor exercise.</p>
+
+        <h2>Architecture decisions</h2>
+        <div class="cs-adr">
+          <p><strong>Capacity model before migration waves.</strong> The target HCI platform was modelled around real workload demand, failure domains, and growth headroom before migration sequencing began. This prevented the easy mistake: moving VMs first and discovering the operational limits later.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Coexistence over one-shot platform cutover.</strong> Legacy UCS and Nutanix capacity run side by side during migration. That adds temporary operational complexity, but it keeps every wave bounded, observable, and reversible.</p>
+        </div>
+        <div class="cs-adr">
+          <p><strong>Network design treated as part of the platform.</strong> VLANs, routing reachability, management access, and backup paths were designed with the HCI target state. The platform was not considered ready until day-two network operations had the same clarity as compute operations.</p>
+        </div>
+
+        <h2>Implementation</h2>
+        <p>Planned as dependency-aware migration waves: workload inventory and ownership mapping first, target capacity and network integration next, then pilot migrations before broader service groups moved. Each wave includes validation of application reachability, backup posture, monitoring, and operational ownership before the next set is approved.</p>
+
+        <h2>Results</h2>
+        <ul>
+          <li>Target HCI architecture and migration approach defined for a 1,000+ VM estate</li>
+          <li>Legacy UCS replacement shaped around capacity, failure domains, and service transition instead of one-for-one hardware refresh</li>
+          <li>Network integration plan aligned with migration waves and operational handover</li>
+          <li>Operational model clarified for monitoring, backups, maintenance, and day-two platform ownership</li>
+        </ul>
+
+        <h2>Lessons learned</h2>
+        <p>Platform migrations fail when they are treated as storage-and-compute-only work. The successful path is inventory, dependencies, network reachability, capacity, and operational ownership in one plan. The VM move is the visible part; the service transition around it is the architecture.</p>
+
+        <h2>Technical notes</h2>
+        <ul>
+          <li>Source platform: Cisco UCS-based virtualization estate</li>
+          <li>Target platform: Nutanix HCI</li>
+          <li>Scope: architecture, capacity planning, network design, migration sequencing, and service transition</li>
+          <li>Execution model: pilot first, then dependency-aware migration waves with validation gates</li>
+        </ul>
+
+        <p class="cs-cta"><a class="btn btn-primary" href="../index.html#contact">Discuss a role or project →</a></p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">© 2026 Väinö Rikkonen · Helsinki</div>
+  </footer>
+  <script defer src="../js/main.js"></script>
+</body>
+</html>
