@@ -102,40 +102,6 @@
     document.documentElement.classList.remove('js-enabled');
   }
 
-  // Section-level scroll presence: keeps large desktop sections feeling paced.
-  const pageSections = Array.from(document.querySelectorAll('main > .section'));
-  if (pageSections.length > 0) {
-    let sectionTicking = false;
-
-    function setCurrentSection(section) {
-      pageSections.forEach(item => {
-        item.classList.toggle('is-section-current', item === section);
-      });
-    }
-
-    function updateCurrentSection() {
-      const viewportAnchor = window.scrollY + window.innerHeight * 0.52;
-      const currentSection = pageSections.find(section => {
-        const top = section.offsetTop;
-        const bottom = top + section.offsetHeight;
-        return viewportAnchor >= top && viewportAnchor < bottom;
-      }) || pageSections[pageSections.length - 1];
-
-      setCurrentSection(currentSection);
-      sectionTicking = false;
-    }
-
-    function requestSectionUpdate() {
-      if (sectionTicking) return;
-      sectionTicking = true;
-      requestAnimationFrame(updateCurrentSection);
-    }
-
-    window.addEventListener('scroll', requestSectionUpdate, { passive: true });
-    window.addEventListener('resize', requestSectionUpdate);
-    updateCurrentSection();
-  }
-
   const sectionNavLinks = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
   const navTargets = sectionNavLinks
     .map(link => document.querySelector(link.getAttribute('href')))
