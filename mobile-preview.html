@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>mobile preview 390px</title>
+<style>
+  body { margin:0; background:#333; padding:16px; }
+  .row { display:flex; gap:24px; align-items:flex-start; margin-bottom:24px; }
+  .frame p { color:#ccc; font:12px monospace; margin:0 0 6px; }
+  iframe { border:1px solid #666; display:block; }
+  .desktop iframe { width:1280px; height:1400px; }
+  .mobile iframe { width:390px; height:2200px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="frame desktop">
+      <p>1280px · #who-am-i</p>
+      <iframe src="./index.html#who-am-i"></iframe>
+    </div>
+  </div>
+  <div class="row">
+    <div class="frame mobile">
+      <p>390px · #who-am-i</p>
+      <iframe src="./index.html#who-am-i"></iframe>
+    </div>
+    <div class="frame mobile">
+      <p>390px · #work</p>
+      <iframe src="./index.html#work"></iframe>
+    </div>
+    <div class="frame mobile">
+      <p>390px · #contact</p>
+      <iframe src="./index.html#contact"></iframe>
+    </div>
+  </div>
+</body>
+</html>
