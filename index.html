@@ -11,7 +11,11 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://rikkova.fi/" />
   <meta property="og:site_name" content="rikkova.fi" />
-  <meta name="twitter:card" content="summary" />
+  <meta property="og:image" content="https://rikkova.fi/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Väinö Rikkonen — Infrastructure & Network Architect, Helsinki" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Väinö Rikkonen — Infrastructure & Network Architect" />
   <meta name="twitter:description" content="VXLAN-EVPN fabrics, datacenter migrations, SASE/Zero Trust, network automation. Ex-Google, Helsinki." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
@@ -24,6 +28,10 @@
     "url": "https://rikkova.fi/",
     "email": "mailto:vaino.rikkonen@gmail.com",
     "worksFor": { "@type": "Organization", "name": "CGI" },
+    "alumniOf": [
+      { "@type": "Organization", "name": "Google" },
+      { "@type": "Organization", "name": "Accenture" }
+    ],
     "address": { "@type": "PostalAddress", "addressLocality": "Helsinki", "addressCountry": "FI" },
     "sameAs": [
       "https://www.linkedin.com/in/rikkova",
@@ -37,16 +45,7 @@
     ]
   }
   </script>
-  <!-- Run before stylesheets: sets js-enabled (so .js-enabled .reveal hides correctly from first paint)
-       and data-theme (so light/dark colour tokens resolve before any paint, no colour flash) -->
-  <script>
-    document.documentElement.classList.add('js-enabled');
-    const savedTheme = localStorage.getItem('theme');
-    document.documentElement.setAttribute(
-      'data-theme',
-      savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    );
-  </script>
+  <script src="./js/head.js"></script>
   <!-- Fonts are self-hosted (@font-face in style.css → assets/fonts/). Preload the two above-the-fold faces. -->
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/SpaceGrotesk-Bold.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/Inter-Regular.woff2" crossorigin />
@@ -271,7 +270,7 @@
               <p class="case-transform">STP <span aria-hidden="true">→</span> VXLAN-EVPN</p>
               <p>Production fabric moved from spanning-tree to VXLAN-EVPN while MPLS integration stayed live through a phased parallel-run cutover.</p>
               <dl class="case-facts">
-                <div><dt>Outcome</dt><dd>Zero service interruption</dd></div>
+                <div><dt>Outcome</dt><dd>No outage across the migration</dd></div>
                 <div><dt>Constraint</dt><dd>Parallel-run migration</dd></div>
               </dl>
               <a class="case-link" href="./work/vxlan-evpn-migration.html">Case record <span aria-hidden="true">→</span></a>
@@ -688,6 +687,8 @@
           </div>
 
         </div>
+
+        <p class="ctc-context ctc-lang reveal" lang="fi">Voit ottaa yhteyttä myös suomeksi.</p>
       </div>
     </section>
 

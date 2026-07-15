@@ -13,3 +13,5 @@ node_modules
 wrangler.jsonc
 PRODUCT.md
 README.md
+mobile-preview.html
+assets/og-image.html

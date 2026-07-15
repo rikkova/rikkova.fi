@@ -5,14 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Page not found - Väinö Rikkonen</title>
   <meta name="robots" content="noindex" />
-  <script>
-    document.documentElement.classList.add('js-enabled');
-    const savedTheme = localStorage.getItem('theme');
-    document.documentElement.setAttribute(
-      'data-theme',
-      savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    );
-  </script>
+  <script src="./js/head.js"></script>
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/SpaceGrotesk-Bold.woff2" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/Inter-Regular.woff2" crossorigin />
   <link rel="stylesheet" href="./css/style.css" />

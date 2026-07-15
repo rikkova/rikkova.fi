@@ -7,17 +7,16 @@
   <meta name="description" content="Decommissioning a production datacenter and consolidating 20+ racks of critical infrastructure into existing facilities — physical through logical, no user-visible downtime. Case study by Väinö Rikkonen." />
   <link rel="canonical" href="https://rikkova.fi/work/datacenter-migration.html" />
   <meta property="og:title" content="Case Study: Datacenter Decommissioning &amp; Consolidation" />
-  <meta property="og:description" content="A production datacenter decommissioned and consolidated into existing facilities — rack, power, and cooling through BGP, MPLS, and DWDM. Zero service interruption." />
+  <meta property="og:description" content="A production datacenter decommissioned and consolidated into existing facilities — rack, power, and cooling through BGP, MPLS, and DWDM. Production ran through every move." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://rikkova.fi/work/datacenter-migration.html" />
+  <meta property="og:image" content="https://rikkova.fi/assets/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Väinö Rikkonen — Infrastructure & Network Architect, Helsinki" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0d10'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='22' cy='10' r='3' fill='%2372e0a0'/%3E%3Ccircle cx='16' cy='22' r='3' fill='%2372e0a0'/%3E%3Cpath d='M10 10h12M10 10l6 12M22 10l-6 12' stroke='%2372e0a0' stroke-width='1.4' opacity='.55'/%3E%3C/svg%3E" />
-  <script>
-    const savedTheme = localStorage.getItem('theme');
-    document.documentElement.setAttribute(
-      'data-theme',
-      savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    );
-  </script>
+  <script src="../js/head.js"></script>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -88,7 +87,7 @@
 
         <h2>Constraints</h2>
         <ul>
-          <li>Zero service interruption — the workloads were in production before, during, and after every move</li>
+          <li>No tolerance for service impact — the workloads were in production before, during, and after every move</li>
           <li>Target facilities were themselves live: every arriving workload had to fit existing power, cooling, and rack capacity without endangering what already ran there</li>
           <li>All changes confined to agreed maintenance windows, each with a verified rollback path</li>
           <li>Dependencies were partially undocumented — years of organic growth meant the real topology had to be discovered before it could be moved</li>
@@ -117,7 +116,7 @@
         <h2>Results</h2>
         <ul>
           <li>Production datacenter fully decommissioned; 20+ racks of critical infrastructure consolidated into existing facilities</li>
-          <li>Zero service interruption across all workloads, every move inside its agreed maintenance window</li>
+          <li>Every workload stayed in service, and every move landed inside its agreed maintenance window</li>
           <li>50+ underutilized and EOL devices retired instead of migrated, with their license and support contracts eliminated — contributing to a €50–100k reduction in annual infrastructure spend (roughly 10–15%)</li>
           <li>Consolidated estate is simpler to operate: fewer sites, fewer platforms, documented topology where organic growth had left gaps</li>
         </ul>
