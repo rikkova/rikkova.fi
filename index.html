@@ -96,7 +96,7 @@
     <section class="hero section" id="top">
       <div class="wide hero-grid">
         <div class="reveal">
-          <p class="hero-kicker">Infrastructure &amp; Network Architect · ex-Google · Helsinki</p>
+          <p class="hero-kicker"><span>Infrastructure &amp; Network Architect&nbsp;·</span> <span>ex-Google&nbsp;·</span> <span>Helsinki</span></p>
           <h1>Designing reliable networks people can trust.</h1>
           <p>
             Network fabrics, datacenter migrations, and the automation layer that keeps them operable. VXLAN-EVPN · BGP/MPLS · DWDM · Ansible.
@@ -124,6 +124,16 @@
               #hero-topo .ht-lbl{fill:var(--color-text-faint);font-size:10px;letter-spacing:.12em}
               #hero-topo .ht-ntext{fill:var(--color-text);font-size:10px;letter-spacing:.08em;text-anchor:middle;opacity:.9}
               #hero-topo .ht-vtep{fill:var(--color-primary)}
+              /* Light theme: the low-contrast mixes tuned for dark wash out on white */
+              [data-theme=light] #hero-topo .ht-node{stroke:color-mix(in oklab,var(--color-text) 55%,transparent)}
+              [data-theme=light] #hero-topo .ht-dc{stroke:color-mix(in oklab,var(--color-text) 45%,transparent)}
+              [data-theme=light] #hero-topo .ht-uplink{opacity:.85}
+              [data-theme=light] #hero-topo .ht-onramp{opacity:.65}
+              [data-theme=light] #hero-topo .ht-mesh{opacity:.7}
+              [data-theme=light] #hero-topo .ht-lbl{fill:var(--color-text-muted)}
+              [data-theme=light] #hero-topo .ht-mesh{stroke:var(--color-primary-text);opacity:.45}
+              [data-theme=light] #hero-topo .ht-overlay{stroke:var(--color-primary-text);opacity:.6}
+              [data-theme=light] #hero-topo .ht-vtep{fill:var(--color-primary-text)}
             </style>
 
             <!-- Cloud on-ramps -->
